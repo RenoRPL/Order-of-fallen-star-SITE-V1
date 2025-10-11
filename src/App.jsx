@@ -15,14 +15,14 @@ export default function App() {
 
       <div className="buttons">
         <a
-          href="https://discord.gg/YOUR_INVITE"
+          href="https://discord.gg/3dhZ38nbNZ"
           target="_blank"
           className="button primary"
         >
           Join Our Discord
         </a>
         <a
-          href="https://robertsspaceindustries.com/orgs/YOURTAG"
+          href="https://robertsspaceindustries.com/en/orgs/FALLSTR"
           target="_blank"
           className="button secondary"
         >
