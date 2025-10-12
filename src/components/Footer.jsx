@@ -1,12 +1,32 @@
-import React, { useState } from 'react'
-import './Footer.css'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Footer.css';
 
 export default function Footer() {
-  const [openDropdown, setOpenDropdown] = useState(null)
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [adminCode, setAdminCode] = useState('');
+  const navigate = useNavigate();
 
   const toggleDropdown = (dropdown) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown)
-  }
+  };
+
+  const handleAdminAccess = () => {
+    if (adminCode === '1313') {
+      navigate('/admin/content');
+      setShowAdminModal(false);
+      setAdminCode('');
+    } else {
+      alert('Invalid access code');
+      setAdminCode('');
+    }
+  };
+
+  const closeAdminModal = () => {
+    setShowAdminModal(false);
+    setAdminCode('');
+  };
   return (
     <footer className="site-footer">
       <div className="footer-content">
@@ -79,9 +99,35 @@ export default function Footer() {
             <div className="footer-legal">
               <p>Star Citizen is a trademark of Cloud Imperium Games Corporation</p>
             </div>
+            
+            <div className="admin-access" onClick={() => setShowAdminModal(true)}>
+              ⚙️
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Admin Access Modal */}
+      {showAdminModal && (
+        <div className="admin-modal-overlay" onClick={closeAdminModal}>
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Admin Access</h3>
+            <p>Enter access code:</p>
+            <input
+              type="password"
+              value={adminCode}
+              onChange={(e) => setAdminCode(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleAdminAccess()}
+              placeholder="Enter code"
+              autoFocus
+            />
+            <div className="admin-modal-buttons">
+              <button onClick={handleAdminAccess}>Access</button>
+              <button onClick={closeAdminModal}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </footer>
   )
 }
