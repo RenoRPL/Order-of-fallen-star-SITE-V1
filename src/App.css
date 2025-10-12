@@ -3,30 +3,147 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100vw;
   height: 100vh;
-  background-color: #0b0f19;
+  min-height: 100vh;
+  background: linear-gradient(rgba(11, 15, 25, 0.7), rgba(11, 15, 25, 0.8)), url('/Nebula BG.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   text-align: center;
   color: white;
   padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(1px 1px at 10% 15%, #ffffff, transparent),
+    radial-gradient(2px 2px at 85% 25%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 35% 45%, #ffffff, transparent),
+    radial-gradient(1px 1px at 75% 65%, #39b9ff, transparent),
+    radial-gradient(2px 2px at 15% 85%, #ffffff, transparent),
+    radial-gradient(1px 1px at 65% 10%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 95% 50%, #ffffff, transparent),
+    radial-gradient(2px 2px at 25% 70%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 55% 30%, #ffffff, transparent),
+    radial-gradient(1px 1px at 5% 90%, #00d4ff, transparent),
+    radial-gradient(2px 2px at 80% 80%, #ffffff, transparent),
+    radial-gradient(1px 1px at 45% 5%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 20% 35%, #ffffff, transparent),
+    radial-gradient(2px 2px at 90% 15%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 60% 75%, #ffffff, transparent),
+    radial-gradient(1px 1px at 30% 55%, #39b9ff, transparent),
+    radial-gradient(2px 2px at 70% 25%, #ffffff, transparent),
+    radial-gradient(1px 1px at 40% 85%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 85% 35%, #ffffff, transparent),
+    radial-gradient(2px 2px at 12% 60%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 50% 10%, #ffffff, transparent),
+    radial-gradient(1px 1px at 78% 45%, #00d4ff, transparent),
+    radial-gradient(2px 2px at 32% 20%, #ffffff, transparent),
+    radial-gradient(1px 1px at 68% 90%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 18% 40%, #ffffff, transparent),
+    radial-gradient(2px 2px at 58% 65%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 88% 75%, #ffffff, transparent),
+    radial-gradient(1px 1px at 42% 28%, #39b9ff, transparent);
+  background-repeat: repeat;
+  background-size: 100vw 100vh;
+  animation: starsMove 40s linear infinite;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+
+
+@keyframes starsMove {
+  from { 
+    transform: translateY(0) translateX(0); 
+  }
+  to { 
+    transform: translateY(-100vh) translateX(-20vw); 
+  }
 }
 
 .title {
   font-size: 3rem;
   font-weight: bold;
-  color: #39b9ff;
+  font-family: 'Orbitron', 'Exo 2', 'Rajdhani', monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: linear-gradient(45deg, #00d4ff, #39b9ff, #ffffff, #ffd700, #ff6b9d, #00d4ff);
+  background-size: 400% 400%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+  animation: cosmicGlow 12s ease-in-out infinite, gradientShift 18s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(57, 185, 255, 0.7)) 
+          drop-shadow(0 0 20px rgba(57, 185, 255, 0.5)) 
+          drop-shadow(0 0 30px rgba(57, 185, 255, 0.3));
 }
+
+
+
+
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  25% { background-position: 100% 0%; }
+  50% { background-position: 100% 100%; }
+  75% { background-position: 0% 100%; }
+}
+
+@keyframes cosmicGlow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 8px rgba(57, 185, 255, 0.6)) 
+            drop-shadow(0 0 16px rgba(57, 185, 255, 0.4)) 
+            drop-shadow(0 0 24px rgba(57, 185, 255, 0.2));
+  }
+  50% { 
+    filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.8)) 
+            drop-shadow(0 0 20px rgba(0, 212, 255, 0.5)) 
+            drop-shadow(0 0 28px rgba(0, 212, 255, 0.3));
+  }
+}
+
+
+
+
 
 @media (min-width: 768px) {
   .title {
-    font-size: 4rem;
+    font-size: 4.5rem;
+    letter-spacing: 0.15em;
+  }
+}
+
+@media (min-width: 1200px) {
+  .title {
+    font-size: 5.5rem;
+    letter-spacing: 0.2em;
   }
 }
 
 .subtitle {
   font-size: 1.25rem;
-  color: #9ca3af;
+  color: #b3d9ff;
+  text-shadow: 0 0 15px rgba(57, 185, 255, 0.3);
   margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 @media (min-width: 768px) {
@@ -37,8 +154,10 @@
 
 .description {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #8bb8e8;
   margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 .buttons {
@@ -46,6 +165,8 @@
   gap: 1.5rem;
   flex-wrap: wrap;
   justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 
 .button {
@@ -53,24 +174,33 @@
   border-radius: 0.75rem;
   font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   display: inline-block;
+  box-shadow: 0 4px 15px rgba(57, 185, 255, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 .button.primary {
-  background-color: #39b9ff;
-  color: black;
+  background: linear-gradient(45deg, #00d4ff, #39b9ff);
+  color: #0b0f19;
+  border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
 .button.primary:hover {
-  background-color: #2f9ee6;
+  background: linear-gradient(45deg, #39b9ff, #ffd700);
+  box-shadow: 0 6px 20px rgba(57, 185, 255, 0.4);
+  transform: translateY(-2px);
 }
 
 .button.secondary {
   border: 1px solid #39b9ff;
   color: white;
+  background: rgba(57, 185, 255, 0.1);
 }
 
 .button.secondary:hover {
-  background-color: rgba(57, 185, 255, 0.1);
+  background: rgba(57, 185, 255, 0.2);
+  box-shadow: 0 6px 20px rgba(57, 185, 255, 0.3);
+  transform: translateY(-2px);
+  border-color: #ffd700;
 }
