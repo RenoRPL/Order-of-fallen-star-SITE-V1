@@ -186,6 +186,140 @@ export default function ContentManagement() {
     </div>
   );
 
+  const renderSocialLinksEditor = () => (
+    <div className="editor-section">
+      <h3>Social Links Management</h3>
+      <p className="section-description">Configure your organization's social media and community links. These links will be used throughout the site for buttons and social navigation.</p>
+      
+      <div className="social-links-grid">
+        <div className="social-link-card">
+          <h4>🎮 Discord Server</h4>
+          <div className="form-group">
+            <label>Discord Invite URL</label>
+            <input
+              type="url"
+              value={content.socialLinks.discord.url}
+              onChange={(e) => updateContent('socialLinks', ['discord', 'url'], e.target.value)}
+              placeholder="https://discord.gg/your-server-code"
+            />
+            <small className="input-hint">Get this from your Discord server settings → Invites → Create Invite</small>
+          </div>
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={content.socialLinks.discord.enabled}
+                onChange={(e) => updateContent('socialLinks', ['discord', 'enabled'], e.target.checked)}
+              />
+              Enable Discord Link
+            </label>
+          </div>
+        </div>
+
+        <div className="social-link-card">
+          <h4>🌌 RSI Spectrum</h4>
+          <div className="form-group">
+            <label>Spectrum Organization URL</label>
+            <input
+              type="url"
+              value={content.socialLinks.spectrum.url}
+              onChange={(e) => updateContent('socialLinks', ['spectrum', 'url'], e.target.value)}
+              placeholder="https://robertsspaceindustries.com/orgs/YOURID"
+            />
+            <small className="input-hint">Your organization page on Roberts Space Industries website</small>
+          </div>
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={content.socialLinks.spectrum.enabled}
+                onChange={(e) => updateContent('socialLinks', ['spectrum', 'enabled'], e.target.checked)}
+              />
+              Enable Spectrum Link
+            </label>
+          </div>
+        </div>
+
+        <div className="social-link-card">
+          <h4>🌐 Website</h4>
+          <div className="form-group">
+            <label>Organization Website</label>
+            <input
+              type="url"
+              value={content.socialLinks.website.url}
+              onChange={(e) => updateContent('socialLinks', ['website', 'url'], e.target.value)}
+              placeholder="https://your-org-website.com"
+            />
+            <small className="input-hint">Your main organization website (optional)</small>
+          </div>
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={content.socialLinks.website.enabled}
+                onChange={(e) => updateContent('socialLinks', ['website', 'enabled'], e.target.checked)}
+              />
+              Enable Website Link
+            </label>
+          </div>
+        </div>
+
+        <div className="social-link-card">
+          <h4>📺 YouTube</h4>
+          <div className="form-group">
+            <label>YouTube Channel</label>
+            <input
+              type="url"
+              value={content.socialLinks.youtube.url}
+              onChange={(e) => updateContent('socialLinks', ['youtube', 'url'], e.target.value)}
+              placeholder="https://youtube.com/your-channel"
+            />
+            <small className="input-hint">Your organization's YouTube channel (optional)</small>
+          </div>
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={content.socialLinks.youtube.enabled}
+                onChange={(e) => updateContent('socialLinks', ['youtube', 'enabled'], e.target.checked)}
+              />
+              Enable YouTube Link
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div className="social-preview">
+        <h4>Link Preview</h4>
+        <div className="preview-links">
+          {content.socialLinks.discord.enabled && (
+            <a href={content.socialLinks.discord.url} target="_blank" rel="noopener noreferrer" className="preview-link discord">
+              🎮 Join Discord
+            </a>
+          )}
+          {content.socialLinks.spectrum.enabled && (
+            <a href={content.socialLinks.spectrum.url} target="_blank" rel="noopener noreferrer" className="preview-link spectrum">
+              🌌 View on Spectrum
+            </a>
+          )}
+          {content.socialLinks.website.enabled && (
+            <a href={content.socialLinks.website.url} target="_blank" rel="noopener noreferrer" className="preview-link website">
+              🌐 Visit Website
+            </a>
+          )}
+          {content.socialLinks.youtube.enabled && (
+            <a href={content.socialLinks.youtube.url} target="_blank" rel="noopener noreferrer" className="preview-link youtube">
+              📺 YouTube Channel
+            </a>
+          )}
+        </div>
+        {!Object.values(content.socialLinks).some(link => link.enabled) && (
+          <p className="no-links">No social links enabled. Enable links above to see them here.</p>
+        )}
+      </div>
+    </div>
+  );
+
   const renderJoinEditor = () => (
     <div className="editor-section">
       <h3>Join Section</h3>
@@ -433,6 +567,12 @@ export default function ContentManagement() {
         >
           Join Section
         </button>
+        <button 
+          className={activeTab === 'social' ? 'active' : ''} 
+          onClick={() => setActiveTab('social')}
+        >
+          Social Links
+        </button>
       </div>
 
           <div className="cm-content">
@@ -440,6 +580,7 @@ export default function ContentManagement() {
             {activeTab === 'features' && renderFeaturesEditor()}
             {activeTab === 'destiny' && renderDestinyEditor()}
             {activeTab === 'join' && renderJoinEditor()}
+            {activeTab === 'social' && renderSocialLinksEditor()}
           </div>
         </>
       )}

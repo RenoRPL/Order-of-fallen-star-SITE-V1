@@ -104,6 +104,24 @@ const defaultContent = {
       primary: "Join Now",
       secondary: "Join Discord"
     }
+  },
+  socialLinks: {
+    discord: {
+      url: "https://discord.gg/your-server-code",
+      enabled: true
+    },
+    spectrum: {
+      url: "https://robertsspaceindustries.com/orgs/OOFS",
+      enabled: true
+    },
+    website: {
+      url: "https://your-org-website.com",
+      enabled: false
+    },
+    youtube: {
+      url: "https://youtube.com/your-channel",
+      enabled: false
+    }
   }
 };
 
