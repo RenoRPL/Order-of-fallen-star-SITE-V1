@@ -204,3 +204,122 @@
   transform: translateY(-2px);
   border-color: #ffd700;
 }
+
+/* Developer Access Styles */
+.dev-access-icon {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(57, 185, 255, 0.1);
+  border: 1px solid rgba(57, 185, 255, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.dev-access-icon:hover {
+  background: rgba(57, 185, 255, 0.2);
+  border-color: rgba(57, 185, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.dev-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.dev-modal {
+  background: rgba(11, 15, 25, 0.95);
+  border: 1px solid rgba(57, 185, 255, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  min-width: 320px;
+  text-align: center;
+  backdrop-filter: blur(20px);
+}
+
+.dev-modal h3 {
+  color: #39b9ff;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.dev-modal p {
+  color: #b3d9ff;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.dev-input {
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(57, 185, 255, 0.1);
+  border: 1px solid rgba(57, 185, 255, 0.3);
+  border-radius: 6px;
+  color: white;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.dev-input:focus {
+  outline: none;
+  border-color: rgba(57, 185, 255, 0.6);
+  box-shadow: 0 0 10px rgba(57, 185, 255, 0.2);
+}
+
+.dev-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.dev-modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.dev-btn {
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dev-btn.cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dev-btn.cancel:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dev-btn.enter {
+  background: #39b9ff;
+  color: white;
+}
+
+.dev-btn.enter:hover {
+  background: #2ea3e6;
+  transform: translateY(-1px);
+}

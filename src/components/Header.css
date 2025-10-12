@@ -1,0 +1,179 @@
+/* Header Styles */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(11, 15, 25, 0.95);
+  backdrop-filter: blur(20px);
+  z-index: 1000;
+  padding: 1rem 0;
+}
+
+.site-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(57, 185, 255, 0.6) 0%,
+    rgba(0, 212, 255, 0.7) 25%,
+    rgba(255, 215, 0, 0.8) 50%,
+    rgba(0, 212, 255, 0.7) 75%,
+    rgba(57, 185, 255, 0.6) 100%
+  );
+  background-size: 400% 100%;
+  animation: headerGradientShift 20s ease-in-out infinite;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.org-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #39b9ff;
+  text-shadow: 0 0 10px rgba(57, 185, 255, 0.5);
+}
+
+.main-nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: #b3d9ff;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #39b9ff;
+  background: rgba(57, 185, 255, 0.1);
+  text-shadow: 0 0 5px rgba(57, 185, 255, 0.5);
+}
+
+.nav-link.active {
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.discord-btn, .spectrum-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.discord-btn {
+  background-image: url('/Structure/Asset 1@2x Scale BG.png');
+}
+
+.spectrum-btn {
+  background-image: url('/Structure/black horizontal section.png');
+}
+
+.discord-btn {
+  color: white;
+}
+
+.discord-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
+}
+
+.spectrum-btn {
+  color: #39b9ff;
+}
+
+.spectrum-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(57, 185, 255, 0.3);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+  
+  .main-nav {
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .nav-link {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .header-actions {
+    gap: 0.5rem;
+  }
+  
+  .discord-btn, .spectrum-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Header Gradient Animation */
+@keyframes headerGradientShift {
+  0%, 100% { 
+    background-position: 0% 50%;
+  }
+  25% { 
+    background-position: 100% 0%;
+  }
+  50% { 
+    background-position: 100% 100%;
+  }
+  75% { 
+    background-position: 0% 100%;
+  }
+}
