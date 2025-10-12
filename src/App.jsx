@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home'
 import ContentManagement from './pages/ContentManagement'
+import TermsPrivacy from './pages/TermsPrivacy'
 
 export default function App() {
   const [showDevModal, setShowDevModal] = useState(false)
@@ -30,6 +31,9 @@ export default function App() {
       <Routes>
         {/* Admin Content Management Route */}
         <Route path="/admin/content" element={<ContentManagement />} />
+        
+        {/* Terms of Service and Privacy Policy Route */}
+        <Route path="/terms-privacy" element={<TermsPrivacy />} />
         
         {/* Main Site Route */}
         <Route path="/" element={

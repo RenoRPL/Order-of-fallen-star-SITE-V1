@@ -186,20 +186,35 @@ export default function ContentManagement() {
     </div>
   );
 
-  const renderSocialLinksEditor = () => (
-    <div className="editor-section">
-      <h3>Social Links Management</h3>
-      <p className="section-description">Configure your organization's social media and community links. These links will be used throughout the site for buttons and social navigation.</p>
-      
-      <div className="social-links-grid">
-        <div className="social-link-card">
-          <h4>🎮 Discord Server</h4>
-          <div className="form-group">
-            <label>Discord Invite URL</label>
-            <input
-              type="url"
-              value={content.socialLinks.discord.url}
-              onChange={(e) => updateContent('socialLinks', ['discord', 'url'], e.target.value)}
+  const renderSocialLinksEditor = () => {
+    // Initialize socialLinks if it doesn't exist
+    if (!content.socialLinks) {
+      const newContent = { ...content };
+      newContent.socialLinks = {
+        discord: { url: "https://discord.gg/your-server-code", enabled: true },
+        spectrum: { url: "https://robertsspaceindustries.com/orgs/OOFS", enabled: true },
+        website: { url: "https://your-org-website.com", enabled: false },
+        youtube: { url: "https://youtube.com/your-channel", enabled: false }
+      };
+      setContent(newContent);
+      setHasChanges(true);
+      return <div>Loading...</div>;
+    }
+
+    return (
+      <div className="editor-section">
+        <h3>Social Links Management</h3>
+        <p className="section-description">Configure your organization's social media and community links. These links will be used throughout the site for buttons and social navigation.</p>
+        
+        <div className="social-links-grid">
+          <div className="social-link-card">
+            <h4>🎮 Discord Server</h4>
+            <div className="form-group">
+              <label>Discord Invite URL</label>
+              <input
+                type="url"
+                value={content.socialLinks.discord.url}
+                onChange={(e) => updateContent('socialLinks', ['discord', 'url'], e.target.value)}
               placeholder="https://discord.gg/your-server-code"
             />
             <small className="input-hint">Get this from your Discord server settings → Invites → Create Invite</small>
@@ -318,7 +333,8 @@ export default function ContentManagement() {
         )}
       </div>
     </div>
-  );
+    );
+  };
 
   const renderJoinEditor = () => (
     <div className="editor-section">

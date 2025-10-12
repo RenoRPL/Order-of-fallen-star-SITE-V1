@@ -1,0 +1,232 @@
+.terms-privacy-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+  color: #ffffff;
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated star field background */
+.terms-privacy-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 40% 70%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 90% 40%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(2px 2px at 80% 10%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 25% 80%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 75% 90%, white, transparent),
+    radial-gradient(2px 2px at 15% 60%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 60% 20%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 35% 25%, white, transparent),
+    radial-gradient(2px 2px at 70% 75%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 10% 90%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 85% 60%, white, transparent),
+    radial-gradient(2px 2px at 45% 15%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 65% 85%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 30% 45%, white, transparent),
+    radial-gradient(2px 2px at 95% 25%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 5% 70%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 55% 95%, white, transparent),
+    radial-gradient(2px 2px at 75% 35%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 22% 12%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 88% 80%, white, transparent),
+    radial-gradient(2px 2px at 12% 45%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 67% 55%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 42% 85%, white, transparent),
+    radial-gradient(2px 2px at 78% 5%, #39b9ff, transparent),
+    radial-gradient(1px 1px at 33% 65%, #00d4ff, transparent),
+    radial-gradient(1px 1px at 92% 15%, white, transparent);
+  animation: starsMove 40s linear infinite;
+  opacity: 0.4;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes starsMove {
+  from {
+    transform: translateY(0px) translateX(0px);
+  }
+  to {
+    transform: translateY(-100px) translateX(-100px);
+  }
+}
+
+.terms-privacy-content {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.terms-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  border-bottom: 2px solid #39b9ff;
+  padding-bottom: 2rem;
+}
+
+.terms-header h1 {
+  font-size: 2.5rem;
+  margin: 0 0 1rem 0;
+  background: linear-gradient(45deg, #39b9ff, #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(57, 185, 255, 0.3);
+}
+
+.terms-header h2 {
+  font-size: 1.8rem;
+  margin: 0 0 1rem 0;
+  color: #ffffff;
+  font-weight: 300;
+}
+
+.last-updated {
+  color: #cccccc;
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.terms-section, .privacy-section, .contact-section {
+  margin-bottom: 2.5rem;
+}
+
+.terms-section h3, .privacy-section h3, .contact-section h3 {
+  font-size: 1.8rem;
+  color: #39b9ff;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #39b9ff;
+  padding-left: 1rem;
+  text-shadow: 0 0 15px rgba(57, 185, 255, 0.3);
+}
+
+.subsection {
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.subsection h4 {
+  font-size: 1.3rem;
+  color: #00d4ff;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.subsection p {
+  color: #e0e0e0;
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+.subsection ul {
+  color: #e0e0e0;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.subsection li {
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.subsection li::marker {
+  color: #39b9ff;
+}
+
+.contact-link {
+  display: inline-block;
+  background: linear-gradient(45deg, #39b9ff, #00d4ff);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  font-weight: 600;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(57, 185, 255, 0.3);
+  text-align: center;
+}
+
+.contact-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(57, 185, 255, 0.5);
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.terms-footer {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cccccc;
+  font-size: 0.9rem;
+  margin-top: 3rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .terms-privacy-container {
+    padding: 1rem;
+  }
+  
+  .terms-privacy-content {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .terms-header h1 {
+    font-size: 2rem;
+  }
+  
+  .terms-header h2 {
+    font-size: 1.4rem;
+  }
+  
+  .subsection {
+    padding: 1rem;
+  }
+  
+  .contact-link {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .terms-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .terms-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .terms-section h3, .privacy-section h3, .contact-section h3 {
+    font-size: 1.5rem;
+  }
+  
+  .subsection h4 {
+    font-size: 1.1rem;
+  }
+}
