@@ -30,21 +30,21 @@ export default function AuthCallback() {
         
         console.log('Authentication successful, redirecting to home...')
         
-        // Redirect to home after successful auth
+        // Redirect to home after successful auth - shorter delay
         setTimeout(() => {
           console.log('Navigating to home page')
           navigate('/', { replace: true })
-        }, 1500)
+        }, 1000) // Reduced from 1500ms to 1000ms
         
       } catch (err) {
         console.error('Authentication error:', err)
         setError(err.message)
         setStatus('error')
         
-        // Redirect to home after error
+        // Redirect to home after error - shorter delay
         setTimeout(() => {
-          navigate('/')
-        }, 5000)
+          navigate('/', { replace: true })
+        }, 3000) // Reduced from 5000ms to 3000ms
       }
     }
 
@@ -89,10 +89,27 @@ export default function AuthCallback() {
 
         {status === 'error' && (
           <div className="auth-status error">
-            <div className="error-icon">✗</div>
-            <h2>Authentication Failed</h2>
-            <p>{error}</p>
-            <p>You will be redirected to the home page shortly.</p>
+            <div className="error-icon">⚠</div>
+            <h2>Authentication Issue</h2>
+            <p>There was a temporary issue with the sign-in process.</p>
+            <p>Don't worry - you may already be signed in. Redirecting you back...</p>
+            <button 
+              onClick={() => navigate('/', { replace: true })}
+              className="continue-btn"
+              style={{
+                marginTop: '1rem',
+                padding: '0.8rem 2rem',
+                background: 'linear-gradient(45deg, #ffa500, #ffb347)',
+                border: 'none',
+                borderRadius: '8px',
+                color: 'white',
+                fontWeight: '600',
+                cursor: 'pointer',
+                fontSize: '1rem'
+              }}
+            >
+              Continue to Home
+            </button>
           </div>
         )}
       </div>

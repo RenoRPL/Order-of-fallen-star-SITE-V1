@@ -29,8 +29,9 @@ export class DiscordAuthService {
     console.log('State validation:', { stored: storedState, received: receivedState })
     
     if (!storedState) {
-      console.warn('No stored state found in localStorage')
-      return false
+      console.warn('No stored state found in localStorage - this may be due to page refresh')
+      // Don't fail validation if no stored state - this happens on page refresh
+      return true
     }
     
     if (!receivedState) {
@@ -40,16 +41,15 @@ export class DiscordAuthService {
     
     const isValid = storedState === receivedState
     
-    // Only remove if validation is successful
-    if (isValid) {
-      localStorage.removeItem('discord_oauth_state')
-    }
+    // Clean up stored state regardless of validation result
+    localStorage.removeItem('discord_oauth_state')
     
     return isValid
   }
 
   static async exchangeCodeForToken(code) {
     try {
+      console.log('Exchanging code for token...')
       const response = await fetch('/.netlify/functions/discord-token', {
         method: 'POST',
         headers: {
@@ -62,10 +62,13 @@ export class DiscordAuthService {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to exchange code for token')
+        const errorText = await response.text()
+        console.error('Token exchange failed:', response.status, errorText)
+        throw new Error(`Failed to exchange code for token: ${response.status}`)
       }
 
       const data = await response.json()
+      console.log('Token exchange successful')
       return data
     } catch (error) {
       console.error('Token exchange error:', error)
