@@ -28,12 +28,16 @@ export default function AuthCallback() {
         await handleAuthCallback(code, state)
         setStatus('success')
         
+        console.log('Authentication successful, redirecting to home...')
+        
         // Redirect to home after successful auth
         setTimeout(() => {
-          navigate('/')
-        }, 2000)
+          console.log('Navigating to home page')
+          navigate('/', { replace: true })
+        }, 1500)
         
       } catch (err) {
+        console.error('Authentication error:', err)
         setError(err.message)
         setStatus('error')
         
@@ -63,6 +67,23 @@ export default function AuthCallback() {
             <div className="success-icon">✓</div>
             <h2>Authentication Successful!</h2>
             <p>Welcome to Order of the Fallen Star. Redirecting you now...</p>
+            <button 
+              onClick={() => navigate('/', { replace: true })}
+              className="continue-btn"
+              style={{
+                marginTop: '1rem',
+                padding: '0.8rem 2rem',
+                background: 'linear-gradient(45deg, #39b9ff, #00d4ff)',
+                border: 'none',
+                borderRadius: '8px',
+                color: 'white',
+                fontWeight: '600',
+                cursor: 'pointer',
+                fontSize: '1rem'
+              }}
+            >
+              Continue to Home
+            </button>
           </div>
         )}
 

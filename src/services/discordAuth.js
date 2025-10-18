@@ -24,8 +24,26 @@ export class DiscordAuthService {
 
   static validateState(receivedState) {
     const storedState = localStorage.getItem('discord_oauth_state')
-    localStorage.removeItem('discord_oauth_state')
-    return storedState === receivedState
+    console.log('State validation:', { stored: storedState, received: receivedState })
+    
+    if (!storedState) {
+      console.warn('No stored state found in localStorage')
+      return false
+    }
+    
+    if (!receivedState) {
+      console.warn('No state parameter received from Discord')
+      return false
+    }
+    
+    const isValid = storedState === receivedState
+    
+    // Only remove if validation is successful
+    if (isValid) {
+      localStorage.removeItem('discord_oauth_state')
+    }
+    
+    return isValid
   }
 
   static async exchangeCodeForToken(code) {
