@@ -1,13 +1,16 @@
 import React from 'react'
 import './Header.css'
+import LoginButton from './LoginButton'
 
 export default function Header() {
   return (
     <header className="site-header">
       <div className="header-container">
         <div className="logo-section">
-          <img src="/logo.png" alt="Order of the Fallen Star" className="logo" />
-          <span className="org-name">Order of the Fallen Star</span>
+          <a href="/" className="logo-link">
+            <img src="/logo.png" alt="Order of the Fallen Star" className="logo" />
+            <span className="org-name">Order of the Fallen Star</span>
+          </a>
         </div>
         
         <nav className="main-nav">
@@ -19,6 +22,7 @@ export default function Header() {
         </nav>
         
         <div className="header-actions">
+          <LoginButton />
           <a 
             href="https://discord.gg/3dhZ38nbNZ" 
             target="_blank" 

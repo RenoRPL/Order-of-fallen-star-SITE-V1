@@ -4,6 +4,8 @@ import './App.css'
 import Home from './pages/Home'
 import ContentManagement from './pages/ContentManagement'
 import TermsPrivacy from './pages/TermsPrivacy'
+import AuthCallback from './pages/AuthCallback'
+import { AuthProvider } from './contexts/AuthContext'
 
 export default function App() {
   const [showDevModal, setShowDevModal] = useState(false)
@@ -27,15 +29,19 @@ export default function App() {
   }
 
   return (
-    <Router>
-      <Routes>
-        {/* Admin Content Management Route */}
-        <Route path="/admin/content" element={<ContentManagement />} />
-        
-        {/* Terms of Service and Privacy Policy Route */}
-        <Route path="/terms-privacy" element={<TermsPrivacy />} />
-        
-        {/* Main Site Route */}
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Admin Content Management Route */}
+          <Route path="/admin/content" element={<ContentManagement />} />
+          
+          {/* Terms of Service and Privacy Policy Route */}
+          <Route path="/terms-privacy" element={<TermsPrivacy />} />
+          
+          {/* Discord Auth Callback Route */}
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          
+          {/* Main Site Route */}
         <Route path="/" element={
           isAuthenticated ? (
             <Home />
@@ -108,5 +114,6 @@ export default function App() {
         } />
       </Routes>
     </Router>
+    </AuthProvider>
   );
 }

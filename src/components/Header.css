@@ -44,10 +44,36 @@
   gap: 1rem;
 }
 
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.logo-link:hover {
+  background: rgba(57, 185, 255, 0.05);
+  transform: translateY(-1px);
+}
+
+.logo-link:hover .org-name {
+  color: #4dc3ff;
+  text-shadow: 0 0 12px rgba(57, 185, 255, 0.6);
+}
+
+.logo-link:hover .logo {
+  filter: brightness(1.1);
+}
+
 .logo {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  transition: filter 0.3s ease;
 }
 
 .org-name {
