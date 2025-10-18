@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home'
+import Profile from './pages/Profile'
 import ContentManagement from './pages/ContentManagement'
 import TermsPrivacy from './pages/TermsPrivacy'
 import AuthCallback from './pages/AuthCallback'
@@ -40,6 +41,9 @@ export default function App() {
           
           {/* Discord Auth Callback Route */}
           <Route path="/auth/callback" element={<AuthCallback />} />
+          
+          {/* Profile Route */}
+          <Route path="/profile" element={<Profile />} />
           
           {/* Main Site Route */}
         <Route path="/" element={

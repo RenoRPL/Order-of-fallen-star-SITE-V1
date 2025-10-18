@@ -203,3 +203,58 @@
     background-position: 0% 100%;
   }
 }
+
+/* Profile Link Styles */
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  background: rgba(57, 185, 255, 0.1);
+  border: 1px solid rgba(57, 185, 255, 0.3);
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.profile-link:hover {
+  background: rgba(57, 185, 255, 0.2);
+  border-color: rgba(57, 185, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(57, 185, 255, 0.3);
+}
+
+.profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #39b9ff;
+  object-fit: cover;
+}
+
+.profile-name {
+  font-size: 0.9rem;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Mobile adjustments for profile link */
+@media (max-width: 768px) {
+  .profile-link {
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .profile-avatar {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .profile-name {
+    font-size: 0.8rem;
+    max-width: 80px;
+  }
+}
