@@ -12,6 +12,7 @@ export default function Profile() {
   const [memberData, setMemberData] = useState(null)
   const [patrolData, setPatrolData] = useState([])
   const [patrolStats, setPatrolStats] = useState(null)
+  const [rankData, setRankData] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -27,6 +28,12 @@ export default function Profile() {
         // Fetch member data
         const member = await OFSDataService.getMemberData(user.id)
         setMemberData(member)
+        
+        // Fetch rank data if member exists
+        if (member?.Rank) {
+          const rank = await OFSDataService.getRankData(member.Rank)
+          setRankData(rank)
+        }
         
         // Fetch patrol data
         const patrols = await OFSDataService.getPatrolData(user.id)
@@ -86,39 +93,61 @@ export default function Profile() {
       <main className="profile-main">
         <div className="profile-container">
           
-          {/* Profile Header */}
-          <div className="profile-header">
-            <div className="profile-header-bg"></div>
-            <div className="profile-header-content">
-              <div className="profile-avatar">
-                <img 
-                  src={getAvatarUrl(user?.id, user?.avatar)} 
-                  alt={`${user?.username || 'User'}'s avatar`}
-                  className="avatar-image"
-                />
-                <div className="status-indicator online"></div>
-              </div>
-              <div className="profile-info">
-                <h1 className="profile-name">
-                  {user?.display_name || user?.global_name || user?.username || 'Unknown User'}
-                </h1>
-                <p className="profile-username">@{user?.username || 'unknown'}</p>
-                <div className="profile-badges">
-                  <span className="badge discord-member">Discord Member</span>
-                  <span className="badge ofs-member">OFS Member</span>
-                  {memberData?.Rank && (
-                    <span className="badge rank-badge">{memberData.Rank}</span>
-                  )}
-                  {memberData?.['Role Path'] && (
-                    <span className="badge role-badge">{memberData['Role Path']}</span>
-                  )}
+          {/* Epic Profile Header with Rank Display */}
+          <div className="profile-hero">
+            <div className="nebula-background"></div>
+            <div className="stars-overlay"></div>
+            
+            <div className="rank-display">
+              {rankData?.['Rank Icon'] && (
+                <div className="rank-icon-container">
+                  <img 
+                    src={rankData['Rank Icon'].replace('view?usp=drive_link', 'preview')} 
+                    alt={`${memberData?.Rank} Rank`}
+                    className="rank-icon"
+                    onError={(e) => {
+                      e.target.style.display = 'none'
+                    }}
+                  />
+                  <div className="rank-glow"></div>
                 </div>
+              )}
+              
+              <div className="rank-info">
+                <div className="rank-tier">
+                  {rankData?.Tier && `Tier ${rankData.Tier}`}
+                </div>
+                <h1 className="rank-title">
+                  {memberData?.Rank || 'Unranked'}
+                </h1>
+                <div className="member-title">
+                  {memberData?.Username || user?.username || 'Unknown Warrior'}
+                </div>
+              </div>
+            </div>
+
+            <div className="profile-stats-overview">
+              <div className="stat-crystal">
+                <div className="stat-number">{patrolStats?.totalQuests || 0}</div>
+                <div className="stat-label">Quests</div>
+              </div>
+              <div className="stat-crystal">
+                <div className="stat-number">{patrolStats?.patrolsLed || 0}</div>
+                <div className="stat-label">Led</div>
+              </div>
+              <div className="stat-crystal">
+                <div className="stat-number">{patrolStats?.totalFPSKills || 0}</div>
+                <div className="stat-label">Kills</div>
+              </div>
+              <div className="stat-crystal">
+                <div className="stat-number">{OFSDataService.calculateTimeInService(memberData?.['Join Date']).split(' ')[0] || '0'}</div>
+                <div className="stat-label">Service</div>
               </div>
             </div>
           </div>
 
-          {/* Profile Content */}
-          <div className="profile-content">
+          {/* Content Grid */}
+          <div className="profile-content-grid">
             
             {/* Error Display */}
             {error && (
@@ -126,191 +155,176 @@ export default function Profile() {
                 <p className="error-message">⚠️ {error}</p>
               </div>
             )}
-            
-            {/* Discord Information */}
-            <div className="profile-section">
-              <h2 className="section-title">
-                <span className="section-icon">🎮</span>
-                Discord Information
-              </h2>
-              <div className="info-grid">
-                <div className="info-item">
-                  <label>Discord ID</label>
-                  <span className="info-value">{user?.id || 'N/A'}</span>
-                </div>
-                <div className="info-item">
-                  <label>Username</label>
-                  <span className="info-value">{user?.username || 'N/A'}</span>
-                </div>
-                <div className="info-item">
-                  <label>Account Created</label>
-                  <span className="info-value">{formatJoinDate(user?.id)}</span>
-                </div>
-                <div className="info-item">
-                  <label>Account Type</label>
-                  <span className="info-value">Discord User</span>
-                </div>
-              </div>
-            </div>
 
-            {/* Organization Information */}
-            <div className="profile-section">
-              <h2 className="section-title">
-                <span className="section-icon">⭐</span>
-                Order of the Fallen Star
+            {/* Current Quests */}
+            <div className="quest-panel current-quests">
+              <h2 className="panel-title">
+                <span className="title-icon">🎯</span>
+                Active Quests
               </h2>
               {isLoading ? (
-                <div className="loading-state">Loading organization data...</div>
-              ) : memberData ? (
-                <div className="info-grid">
-                  <div className="info-item">
-                    <label>Member Status</label>
-                    <span className="info-value status-active">Active Member</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Rank</label>
-                    <span className="info-value">{memberData.Rank || 'Unassigned'}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Join Date</label>
-                    <span className="info-value">{memberData['Join Date'] || 'Unknown'}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Role Path</label>
-                    <span className="info-value">{memberData['Role Path'] || memberData.Role || 'Unassigned'}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Time in Service</label>
-                    <span className="info-value">{OFSDataService.calculateTimeInService(memberData['Join Date'])}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Current Chapter</label>
-                    <span className="info-value">{memberData['Current Chapter'] || 'General'}</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="no-data-state">
-                  <p>Member data not found in organization records.</p>
-                  <p>You may need to complete your membership registration.</p>
-                </div>
-              )}
-            </div>
-
-            {/* Combat Statistics */}
-            <div className="profile-section">
-              <h2 className="section-title">
-                <span className="section-icon">⚔️</span>
-                Combat Statistics
-              </h2>
-              {isLoading ? (
-                <div className="loading-state">Loading combat statistics...</div>
-              ) : patrolStats ? (
-                <div className="info-grid">
-                  <div className="info-item">
-                    <label>Total Patrols</label>
-                    <span className="info-value">{patrolStats.totalPatrols}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Patrols Led</label>
-                    <span className="info-value">{patrolStats.patrolsLed}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Quests Completed</label>
-                    <span className="info-value">{patrolStats.totalQuests}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>FPS Kills</label>
-                    <span className="info-value">{patrolStats.totalFPSKills}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Ship Kills</label>
-                    <span className="info-value">{patrolStats.totalShipKills}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Crusades</label>
-                    <span className="info-value">{patrolStats.totalCrusades}</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="no-data-state">
-                  <p>No patrol data found.</p>
-                  <p>Join a patrol to start building your combat record!</p>
-                </div>
-              )}
-            </div>
-
-            {/* Recent Patrol Activity */}
-            <div className="profile-section">
-              <h2 className="section-title">
-                <span className="section-icon">📊</span>
-                Recent Patrol Activity
-              </h2>
-              {isLoading ? (
-                <div className="loading-state">Loading patrol history...</div>
-              ) : patrolData && patrolData.length > 0 ? (
-                <div className="patrol-history">
-                  {patrolData.slice(0, 5).map((patrol, index) => (
-                    <div key={index} className="patrol-item">
-                      <div className="patrol-info">
-                        <div className="patrol-header">
-                          <h4 className="patrol-name">{patrol['Patrol Name'] || 'Unknown Mission'}</h4>
-                          <span className="patrol-date">{patrol['Patrol Start Time'] ? new Date(patrol['Patrol Start Time']).toLocaleDateString() : 'Unknown Date'}</span>
-                        </div>
-                        <p className="patrol-description">{patrol['Patrol Description'] || 'No description available'}</p>
-                        <div className="patrol-stats">
-                          <span className="stat">Leader: {patrol['Patrol Leader '] || 'Unknown'}</span>
-                          {patrol['Quest'] && patrol['Quest'] !== '❓' && (
-                            <span className="stat">Quests: {patrol['Quest']}</span>
-                          )}
-                          {patrol['Fps kills'] && patrol['Fps kills'] !== '❓' && (
-                            <span className="stat">FPS Kills: {patrol['Fps kills']}</span>
-                          )}
-                          {patrol['Ship kills'] && patrol['Ship kills'] !== '❓' && (
-                            <span className="stat">Ship Kills: {patrol['Ship kills']}</span>
-                          )}
+                <div className="loading-state">Scanning for active missions...</div>
+              ) : patrolStats?.currentQuests && patrolStats.currentQuests.length > 0 ? (
+                <div className="quest-grid">
+                  {patrolStats.currentQuests.slice(0, 3).map((quest, index) => (
+                    <div key={index} className="quest-card active">
+                      <div className="quest-image">
+                        {quest.image ? (
+                          <img src={quest.image} alt={quest.name} />
+                        ) : (
+                          <div className="quest-placeholder">🌌</div>
+                        )}
+                      </div>
+                      <div className="quest-info">
+                        <h4 className="quest-name">{quest.name}</h4>
+                        <p className="quest-description">{quest.description}</p>
+                        <div className="quest-status">
+                          <span className="status-indicator active">In Progress</span>
                         </div>
                       </div>
-                      {patrol['Patrol Leader ID'] === user?.id && (
-                        <div className="patrol-leader-badge">Leader</div>
-                      )}
                     </div>
                   ))}
-                  {patrolData.length > 5 && (
-                    <div className="more-patrols">
-                      <p>And {patrolData.length - 5} more patrol activities...</p>
-                    </div>
-                  )}
                 </div>
               ) : (
                 <div className="no-data-state">
-                  <p>No patrol history found.</p>
-                  <p>Participate in patrols to see your activity history here!</p>
+                  <div className="empty-quest-state">
+                    <span className="empty-icon">⭐</span>
+                    <p>No active quests</p>
+                    <p>Join a patrol to begin your next adventure!</p>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Account Actions */}
-            <div className="profile-section">
-              <h2 className="section-title">
-                <span className="section-icon">⚙️</span>
-                Account Settings
+            {/* Completed Quests */}
+            <div className="quest-panel completed-quests">
+              <h2 className="panel-title">
+                <span className="title-icon">🏆</span>
+                Completed Quests
               </h2>
-              <div className="action-buttons">
-                <button className="action-btn primary">
+              {isLoading ? (
+                <div className="loading-state">Loading quest archives...</div>
+              ) : patrolStats?.completedQuests && patrolStats.completedQuests.length > 0 ? (
+                <div className="quest-grid">
+                  {patrolStats.completedQuests.slice(0, 6).map((quest, index) => (
+                    <div key={index} className="quest-card completed">
+                      <div className="quest-image">
+                        {quest.image ? (
+                          <img src={quest.image} alt={quest.name} />
+                        ) : (
+                          <div className="quest-placeholder">✅</div>
+                        )}
+                      </div>
+                      <div className="quest-info">
+                        <h4 className="quest-name">{quest.name}</h4>
+                        <p className="quest-description">{quest.description}</p>
+                        <div className="quest-status">
+                          <span className="status-indicator completed">Completed</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="no-data-state">
+                  <div className="empty-quest-state">
+                    <span className="empty-icon">📜</span>
+                    <p>No completed quests yet</p>
+                    <p>Complete your first quest to build your legend!</p>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Knight's Codex - Member Information */}
+            <div className="codex-panel">
+              <h2 className="panel-title">
+                <span className="title-icon">📖</span>
+                Knight's Codex
+              </h2>
+              {isLoading ? (
+                <div className="loading-state">Accessing Order records...</div>
+              ) : memberData ? (
+                <div className="codex-content">
+                  <div className="codex-section">
+                    <h3>Order Allegiance</h3>
+                    <div className="codex-grid">
+                      <div className="codex-item">
+                        <label>Rank</label>
+                        <span className="codex-value rank">{memberData.Rank || 'Initiate'}</span>
+                      </div>
+                      <div className="codex-item">
+                        <label>Path</label>
+                        <span className="codex-value path">{memberData['Role Path'] || 'Unassigned'}</span>
+                      </div>
+                      <div className="codex-item">
+                        <label>Chapter</label>
+                        <span className="codex-value">{memberData['Current Chapter'] || 'General'}</span>
+                      </div>
+                      <div className="codex-item">
+                        <label>Sworn</label>
+                        <span className="codex-value">{memberData['Join Date'] || 'Unknown'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="codex-section">
+                    <h3>Battle Record</h3>
+                    <div className="battle-stats">
+                      <div className="battle-stat">
+                        <div className="stat-icon">⚔️</div>
+                        <div className="stat-info">
+                          <div className="stat-number">{patrolStats?.totalFPSKills || 0}</div>
+                          <div className="stat-name">Combat Victories</div>
+                        </div>
+                      </div>
+                      <div className="battle-stat">
+                        <div className="stat-icon">�</div>
+                        <div className="stat-info">
+                          <div className="stat-number">{patrolStats?.totalShipKills || 0}</div>
+                          <div className="stat-name">Ships Defeated</div>
+                        </div>
+                      </div>
+                      <div className="battle-stat">
+                        <div className="stat-icon">🎖️</div>
+                        <div className="stat-info">
+                          <div className="stat-number">{patrolStats?.totalCrusades || 0}</div>
+                          <div className="stat-name">Crusades</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="no-data-state">
+                  <p>Records not found in the Order's archives.</p>
+                  <p>Contact your Chapter Master to register your oath.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Command Center */}
+            <div className="command-panel">
+              <h2 className="panel-title">
+                <span className="title-icon">⚙️</span>
+                Command Center
+              </h2>
+              <div className="command-grid">
+                <button className="command-btn primary">
                   <span className="btn-icon">🔗</span>
-                  Connect RSI Account
+                  <span className="btn-text">Link RSI Account</span>
                 </button>
-                <button className="action-btn secondary">
-                  <span className="btn-icon">🔧</span>
-                  Edit Profile
+                <button className="command-btn secondary">
+                  <span className="btn-icon">�</span>
+                  <span className="btn-text">Update Profile</span>
                 </button>
-                <button className="action-btn secondary">
-                  <span className="btn-icon">🔒</span>
-                  Privacy Settings
+                <button className="command-btn secondary">
+                  <span className="btn-icon">�️</span>
+                  <span className="btn-text">Privacy Settings</span>
                 </button>
-                <button className="action-btn danger" onClick={handleLogout}>
+                <button className="command-btn danger" onClick={handleLogout}>
                   <span className="btn-icon">🚪</span>
-                  Sign Out
+                  <span className="btn-text">End Session</span>
                 </button>
               </div>
             </div>
