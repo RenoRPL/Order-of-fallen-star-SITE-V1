@@ -1,6 +1,7 @@
 // Service to fetch data from OFS Google Sheets
 const MEMBER_LOG_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=2052923864&single=true&output=csv'
 const PATROLS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1963239464&single=true&output=csv'
+const RANKS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1671642684&single=true&output=csv'
 
 class OFSDataService {
   static async fetchCSV(url) {
@@ -101,6 +102,25 @@ class OFSDataService {
     }
   }
 
+  static async getRankData(rankName) {
+    try {
+      const ranks = await this.fetchCSV(RANKS_URL)
+      return ranks.find(rank => rank['Rank Name'] === rankName) || null
+    } catch (error) {
+      console.error('Error fetching rank data:', error)
+      return null
+    }
+  }
+
+  static async getAllRanks() {
+    try {
+      return await this.fetchCSV(RANKS_URL)
+    } catch (error) {
+      console.error('Error fetching all ranks:', error)
+      return []
+    }
+  }
+
   static calculateTimeInService(joinDate) {
     if (!joinDate || joinDate === '#NUM!' || joinDate === '') return 'Unknown'
     
@@ -133,8 +153,12 @@ class OFSDataService {
       totalQuests: 0,
       totalFPSKills: 0,
       totalShipKills: 0,
-      totalCrusades: 0
+      totalCrusades: 0,
+      currentQuests: [],
+      completedQuests: []
     }
+
+    const questsMap = new Map()
 
     patrols.forEach(patrol => {
       if (patrol['Patrol Leader ID'] && patrol['Player ID']) {
@@ -153,6 +177,29 @@ class OFSDataService {
         stats.totalFPSKills += fpsKills
         stats.totalShipKills += shipKills
         stats.totalCrusades += crusades
+
+        // Track quest progress
+        const questName = patrol['Patrol Name'] || 'Unknown Quest'
+        const questCompleted = patrol['Quest Completed'] === '2025-10-17 22:48:14' || patrol['Quest Completed']
+        
+        if (!questsMap.has(questName)) {
+          questsMap.set(questName, {
+            name: questName,
+            description: patrol['Patrol Description'] || '',
+            completed: questCompleted,
+            lastActivity: patrol['Patrol Start Time'],
+            image: patrol['Patrol Image'] || ''
+          })
+        }
+      }
+    })
+
+    // Separate current and completed quests
+    questsMap.forEach(quest => {
+      if (quest.completed) {
+        stats.completedQuests.push(quest)
+      } else {
+        stats.currentQuests.push(quest)
       }
     })
 
