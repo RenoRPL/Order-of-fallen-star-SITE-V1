@@ -93,11 +93,12 @@ export default function Profile() {
       <main className="profile-main">
         <div className="profile-container">
           
-          {/* Epic Profile Header with Rank Display */}
+          {/* Epic Profile Header with Rank Display - Compact */}
           <div className="profile-hero">
             <div className="nebula-background"></div>
             <div className="stars-overlay"></div>
             
+            {/* Left: Rank Display */}
             <div className="rank-display">
               {rankData?.['Rank Icon'] && (
                 <div className="rank-icon-container">
@@ -121,33 +122,40 @@ export default function Profile() {
                   {memberData?.Rank || 'Unranked'}
                 </h1>
                 <div className="member-title">
-                  {memberData?.Username || user?.username || 'Unknown Warrior'}
+                  Member
                 </div>
               </div>
             </div>
 
+            {/* Center: Welcome Info */}
+            <div className="hero-info">
+              <h2 className="hero-welcome">
+                Welcome, {memberData?.Username || user?.username || 'Warrior'}
+              </h2>
+              <p className="hero-subtitle">
+                Order of the Fallen Star • {OFSDataService.calculateTimeInService(memberData?.['Join Date']) || 'New Recruit'}
+              </p>
+            </div>
+
+            {/* Right: Stats Overview */}
             <div className="profile-stats-overview">
               <div className="stat-crystal">
-                <div className="stat-number">{patrolStats?.totalQuests || 0}</div>
+                <div className="stat-value">{patrolStats?.totalQuests || 0}</div>
                 <div className="stat-label">Quests</div>
               </div>
               <div className="stat-crystal">
-                <div className="stat-number">{patrolStats?.patrolsLed || 0}</div>
+                <div className="stat-value">{patrolStats?.patrolsLed || 0}</div>
                 <div className="stat-label">Led</div>
               </div>
               <div className="stat-crystal">
-                <div className="stat-number">{patrolStats?.totalFPSKills || 0}</div>
+                <div className="stat-value">{patrolStats?.totalFPSKills || 0}</div>
                 <div className="stat-label">Kills</div>
-              </div>
-              <div className="stat-crystal">
-                <div className="stat-number">{OFSDataService.calculateTimeInService(memberData?.['Join Date']).split(' ')[0] || '0'}</div>
-                <div className="stat-label">Service</div>
               </div>
             </div>
           </div>
 
-          {/* Content Grid */}
-          <div className="profile-content-grid">
+          {/* Content Grid - Compact Layout */}
+          <div className="profile-content">
             
             {/* Error Display */}
             {error && (
@@ -156,82 +164,58 @@ export default function Profile() {
               </div>
             )}
 
-            {/* Current Quests */}
-            <div className="quest-panel current-quests">
-              <h2 className="panel-title">
-                <span className="title-icon">🎯</span>
+            {/* Left Column: Current Quests */}
+            <div className="profile-section">
+              <h2 className="section-title">
+                <span className="section-icon">🎯</span>
                 Active Quests
               </h2>
               {isLoading ? (
                 <div className="loading-state">Scanning for active missions...</div>
               ) : patrolStats?.currentQuests && patrolStats.currentQuests.length > 0 ? (
                 <div className="quest-grid">
-                  {patrolStats.currentQuests.slice(0, 3).map((quest, index) => (
+                  {patrolStats.currentQuests.slice(0, 4).map((quest, index) => (
                     <div key={index} className="quest-card active">
-                      <div className="quest-image">
-                        {quest.image ? (
-                          <img src={quest.image} alt={quest.name} />
-                        ) : (
-                          <div className="quest-placeholder">🌌</div>
-                        )}
+                      <div className="quest-header">
+                        <h3 className="quest-title">{quest.name}</h3>
+                        <span className="quest-status active">In Progress</span>
                       </div>
-                      <div className="quest-info">
-                        <h4 className="quest-name">{quest.name}</h4>
-                        <p className="quest-description">{quest.description}</p>
-                        <div className="quest-status">
-                          <span className="status-indicator active">In Progress</span>
-                        </div>
-                      </div>
+                      <p className="quest-description">{quest.description}</p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="no-data-state">
-                  <div className="empty-quest-state">
-                    <span className="empty-icon">⭐</span>
-                    <p>No active quests</p>
-                    <p>Join a patrol to begin your next adventure!</p>
-                  </div>
+                <div className="quest-empty">
+                  <h3>No Active Quests</h3>
+                  <p>Join a patrol to begin your next adventure!</p>
                 </div>
               )}
             </div>
 
-            {/* Completed Quests */}
-            <div className="quest-panel completed-quests">
-              <h2 className="panel-title">
-                <span className="title-icon">🏆</span>
+            {/* Right Column: Completed Quests */}
+            <div className="profile-section">
+              <h2 className="section-title">
+                <span className="section-icon">🏆</span>
                 Completed Quests
               </h2>
               {isLoading ? (
                 <div className="loading-state">Loading quest archives...</div>
               ) : patrolStats?.completedQuests && patrolStats.completedQuests.length > 0 ? (
                 <div className="quest-grid">
-                  {patrolStats.completedQuests.slice(0, 6).map((quest, index) => (
+                  {patrolStats.completedQuests.slice(0, 4).map((quest, index) => (
                     <div key={index} className="quest-card completed">
-                      <div className="quest-image">
-                        {quest.image ? (
-                          <img src={quest.image} alt={quest.name} />
-                        ) : (
-                          <div className="quest-placeholder">✅</div>
-                        )}
+                      <div className="quest-header">
+                        <h3 className="quest-title">{quest.name}</h3>
+                        <span className="quest-status completed">Completed</span>
                       </div>
-                      <div className="quest-info">
-                        <h4 className="quest-name">{quest.name}</h4>
-                        <p className="quest-description">{quest.description}</p>
-                        <div className="quest-status">
-                          <span className="status-indicator completed">Completed</span>
-                        </div>
-                      </div>
+                      <p className="quest-description">{quest.description}</p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="no-data-state">
-                  <div className="empty-quest-state">
-                    <span className="empty-icon">📜</span>
-                    <p>No completed quests yet</p>
-                    <p>Complete your first quest to build your legend!</p>
-                  </div>
+                <div className="quest-empty">
+                  <h3>No Completed Quests</h3>
+                  <p>Complete your first quest to build your legend!</p>
                 </div>
               )}
             </div>
