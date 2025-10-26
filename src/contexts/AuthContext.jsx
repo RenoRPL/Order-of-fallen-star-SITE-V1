@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
       setUserStats({
         rank: 'Recruit',
         role: 'Member',
-        points: 0
+        path: 'Unknown'
       })
     }
   }

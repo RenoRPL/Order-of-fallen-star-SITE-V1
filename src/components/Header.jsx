@@ -15,15 +15,6 @@ export default function Header() {
     return `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.png?size=64`
   }
 
-  const formatPoints = (points) => {
-    if (points >= 1000000) {
-      return `${(points / 1000000).toFixed(1)}M pts`
-    } else if (points >= 1000) {
-      return `${(points / 1000).toFixed(1)}K pts`
-    }
-    return `${points} pts`
-  }
-
   return (
     <header className="site-header">
       <div className="header-container">
@@ -52,11 +43,20 @@ export default function Header() {
               <div className="profile-info">
                 <span className="profile-name">{user.username}</span>
                 <div className="profile-details">
-                  <span className="profile-rank">{userStats?.rank || 'Loading...'}</span>
+                  <div className="profile-stat">
+                    <span className="profile-rank">{userStats?.rank || 'Loading...'}</span>
+                    <span className="profile-label">Rank</span>
+                  </div>
                   <span className="profile-separator">•</span>
-                  <span className="profile-role">{userStats?.role || 'Loading...'}</span>
+                  <div className="profile-stat">
+                    <span className="profile-role">{userStats?.role || 'Loading...'}</span>
+                    <span className="profile-label">Role</span>
+                  </div>
                   <span className="profile-separator">•</span>
-                  <span className="profile-points">{userStats ? formatPoints(userStats.points) : 'Loading...'}</span>
+                  <div className="profile-stat">
+                    <span className="profile-path">{userStats?.path || 'Loading...'}</span>
+                    <span className="profile-label">Path</span>
+                  </div>
                 </div>
               </div>
             </Link>
