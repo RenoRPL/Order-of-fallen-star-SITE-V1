@@ -29,10 +29,14 @@ class UserStatsService {
 
       // Extract rank, role, path, and org name from the member data
       // Based on your format: Member Log: gid=2052923864, (Rank:C), (Role:D), (Path:R), (Username:B)
+      console.log('Available columns in member data:', Object.keys(memberData))
+      
       const rank = memberData['Rank'] || memberData['rank'] || 'Recruit'
       const role = memberData['Role'] || memberData['role'] || 'Member'
-      const path = memberData['R'] || memberData['r'] || memberData['Path'] || 'Unknown'
-      const orgName = memberData['B'] || memberData['b'] || memberData['Username'] || null
+      const path = memberData['R'] || memberData['r'] || memberData['Role Path'] || memberData['role path'] || memberData['Path'] || memberData['path'] || 'Unknown'
+      const orgName = memberData['B'] || memberData['b'] || memberData['Username'] || memberData['username'] || null
+
+      console.log('Extracted data - Rank:', rank, 'Role:', role, 'Path:', path, 'OrgName:', orgName)
 
       // Get rank icon from local assets instead of Google Drive
       const rankName = this.formatRank(rank)
