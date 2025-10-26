@@ -3,7 +3,7 @@
   min-height: 100vh;
   background: 
     linear-gradient(135deg, rgba(5, 15, 35, 0.98) 0%, rgba(10, 25, 50, 0.95) 50%, rgba(15, 30, 60, 0.98) 100%),
-    url('/Nebula BG.jpeg');
+    url('/Nebula BG.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
