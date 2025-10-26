@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
-import ProfileTest from './pages/ProfileTest'
-import ProfileOrg from './pages/ProfileOrg'
 import ContentManagement from './pages/ContentManagement'
 import TermsPrivacy from './pages/TermsPrivacy'
 import AuthCallback from './pages/AuthCallback'
@@ -46,12 +44,6 @@ export default function App() {
           
           {/* Profile Route */}
           <Route path="/profile" element={<Profile />} />
-          
-          {/* Profile Test Route - For Development */}
-          <Route path="/profile-test" element={<ProfileTest />} />
-          
-          {/* Organization Profile Route - Star Citizen Style */}
-          <Route path="/profile-org" element={<ProfileOrg />} />
           
           {/* Main Site Route */}
         <Route path="/" element={
