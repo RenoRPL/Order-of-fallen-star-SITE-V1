@@ -43,7 +43,7 @@ class UserStatsService {
       
       let rankIcon = null
       if (rankData) {
-        const rawIconUrl = rankData['Rank Icon'] || rankData['C'] || rankData['rank icon']
+        const rawIconUrl = rankData['Rank icon'] || rankData['Rank Icon'] || rankData['C'] || rankData['rank icon']
         console.log('Raw icon URL:', rawIconUrl)
         rankIcon = this.convertGoogleDriveUrl(rawIconUrl)
         console.log('Converted icon URL:', rankIcon)
@@ -116,10 +116,8 @@ class UserStatsService {
     console.log('Converting URL:', url)
     
     // Convert Google Drive share URLs to direct image URLs
-    // From: https://drive.google.com/file/d/FILE_ID/view?usp=drive_link
-    // To: https://drive.google.com/uc?export=view&id=FILE_ID
+    // Try multiple formats for better compatibility
     
-    // Handle different Google Drive URL formats
     let fileId = null
     
     // Format 1: /file/d/FILE_ID/view
@@ -137,13 +135,14 @@ class UserStatsService {
     }
     
     if (fileId) {
-      const convertedUrl = `https://drive.google.com/uc?export=view&id=${fileId}`
-      console.log('Converted to:', convertedUrl)
+      // Try the thumbnail format first (more reliable for public files)
+      const convertedUrl = `https://lh3.googleusercontent.com/d/${fileId}=s75-c`
+      console.log('Converted to thumbnail format:', convertedUrl)
       return convertedUrl
     }
     
     console.log('Could not extract file ID, returning original URL')
-    return url // Return original URL if it doesn't match any pattern
+    return url
   }
 
   static async getUserProfile(discordId) {
