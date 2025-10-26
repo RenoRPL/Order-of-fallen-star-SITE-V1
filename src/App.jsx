@@ -5,7 +5,6 @@ import Home from './pages/Home'
 import Profile from './pages/Profile'
 import ProfileTest from './pages/ProfileTest'
 import ProfileOrg from './pages/ProfileOrg'
-import UC_Profile_Minimal from './pages/UC_Profile_Minimal'
 import ContentManagement from './pages/ContentManagement'
 import TermsPrivacy from './pages/TermsPrivacy'
 import AuthCallback from './pages/AuthCallback'
@@ -53,9 +52,6 @@ export default function App() {
           
           {/* Organization Profile Route - Star Citizen Style */}
           <Route path="/profile-org" element={<ProfileOrg />} />
-          
-          {/* UC Profile Route */}
-          <Route path="/uc-profile" element={<UC_Profile_Minimal />} />
           
           {/* Main Site Route */}
         <Route path="/" element={
