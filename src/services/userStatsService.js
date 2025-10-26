@@ -36,8 +36,18 @@ class UserStatsService {
 
       // Get rank icon from Ranks sheet
       const rankName = this.formatRank(rank)
+      console.log('Looking up rank:', rankName)
+      
       const rankData = await OFSDataService.getRankData(rankName)
-      const rankIcon = this.convertGoogleDriveUrl(rankData?.['Rank Icon'] || rankData?.['C'])
+      console.log('Rank data found:', rankData)
+      
+      let rankIcon = null
+      if (rankData) {
+        const rawIconUrl = rankData['Rank Icon'] || rankData['C'] || rankData['rank icon']
+        console.log('Raw icon URL:', rawIconUrl)
+        rankIcon = this.convertGoogleDriveUrl(rawIconUrl)
+        console.log('Converted icon URL:', rankIcon)
+      }
 
       return {
         rank: rankName,
@@ -98,18 +108,42 @@ class UserStatsService {
   }
 
   static convertGoogleDriveUrl(url) {
-    if (!url) return null
+    if (!url) {
+      console.log('No URL provided for conversion')
+      return null
+    }
+    
+    console.log('Converting URL:', url)
     
     // Convert Google Drive share URLs to direct image URLs
     // From: https://drive.google.com/file/d/FILE_ID/view?usp=drive_link
     // To: https://drive.google.com/uc?export=view&id=FILE_ID
-    const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)
+    
+    // Handle different Google Drive URL formats
+    let fileId = null
+    
+    // Format 1: /file/d/FILE_ID/view
+    let match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)
     if (match) {
-      const fileId = match[1]
-      return `https://drive.google.com/uc?export=view&id=${fileId}`
+      fileId = match[1]
     }
     
-    return url // Return original URL if it doesn't match the pattern
+    // Format 2: id=FILE_ID
+    if (!fileId) {
+      match = url.match(/[?&]id=([a-zA-Z0-9_-]+)/)
+      if (match) {
+        fileId = match[1]
+      }
+    }
+    
+    if (fileId) {
+      const convertedUrl = `https://drive.google.com/uc?export=view&id=${fileId}`
+      console.log('Converted to:', convertedUrl)
+      return convertedUrl
+    }
+    
+    console.log('Could not extract file ID, returning original URL')
+    return url // Return original URL if it doesn't match any pattern
   }
 
   static async getUserProfile(discordId) {

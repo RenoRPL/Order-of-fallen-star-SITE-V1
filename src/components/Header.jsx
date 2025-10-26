@@ -45,6 +45,13 @@ export default function Header() {
                   src={userStats.rankIcon} 
                   alt="Rank Icon" 
                   className="rank-icon-large"
+                  onError={(e) => {
+                    console.error('Failed to load rank icon:', userStats.rankIcon)
+                    e.target.style.display = 'none'
+                  }}
+                  onLoad={() => {
+                    console.log('Rank icon loaded successfully:', userStats.rankIcon)
+                  }}
                 />
               )}
               <div className="profile-info">
