@@ -47,16 +47,7 @@ export default function Header() {
                   className="rank-icon-large"
                   onError={(e) => {
                     console.error('Failed to load rank icon:', userStats.rankIcon)
-                    // Try fallback URL format
-                    const fileIdMatch = userStats.rankIcon.match(/\/d\/([a-zA-Z0-9_-]+)/)
-                    if (fileIdMatch && !e.target.src.includes('uc?export=view')) {
-                      const fileId = fileIdMatch[1]
-                      const fallbackUrl = `https://drive.google.com/uc?export=view&id=${fileId}`
-                      console.log('Trying fallback URL:', fallbackUrl)
-                      e.target.src = fallbackUrl
-                    } else {
-                      e.target.style.display = 'none'
-                    }
+                    e.target.style.display = 'none'
                   }}
                   onLoad={() => {
                     console.log('Rank icon loaded successfully:', userStats.rankIcon)

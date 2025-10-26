@@ -34,20 +34,13 @@ class UserStatsService {
       const path = memberData['R'] || memberData['r'] || memberData['Path'] || 'Unknown'
       const orgName = memberData['B'] || memberData['b'] || memberData['Username'] || null
 
-      // Get rank icon from Ranks sheet
+      // Get rank icon from local assets instead of Google Drive
       const rankName = this.formatRank(rank)
       console.log('Looking up rank:', rankName)
       
-      const rankData = await OFSDataService.getRankData(rankName)
-      console.log('Rank data found:', rankData)
-      
-      let rankIcon = null
-      if (rankData) {
-        const rawIconUrl = rankData['Rank icon'] || rankData['Rank Icon'] || rankData['C'] || rankData['rank icon']
-        console.log('Raw icon URL:', rawIconUrl)
-        rankIcon = this.convertGoogleDriveUrl(rawIconUrl)
-        console.log('Converted icon URL:', rankIcon)
-      }
+      // Use local rank icon from /Ranks folder
+      const rankIcon = `/Ranks/${rankName}.png`
+      console.log('Using local rank icon:', rankIcon)
 
       return {
         rank: rankName,
@@ -105,44 +98,6 @@ class UserStatsService {
     }
     
     return pathMap[path] || path || 'Unknown'
-  }
-
-  static convertGoogleDriveUrl(url) {
-    if (!url) {
-      console.log('No URL provided for conversion')
-      return null
-    }
-    
-    console.log('Converting URL:', url)
-    
-    // Convert Google Drive share URLs to direct image URLs
-    // Try multiple formats for better compatibility
-    
-    let fileId = null
-    
-    // Format 1: /file/d/FILE_ID/view
-    let match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)
-    if (match) {
-      fileId = match[1]
-    }
-    
-    // Format 2: id=FILE_ID
-    if (!fileId) {
-      match = url.match(/[?&]id=([a-zA-Z0-9_-]+)/)
-      if (match) {
-        fileId = match[1]
-      }
-    }
-    
-    if (fileId) {
-      // Try the thumbnail format first (more reliable for public files)
-      const convertedUrl = `https://lh3.googleusercontent.com/d/${fileId}=s75-c`
-      console.log('Converted to thumbnail format:', convertedUrl)
-      return convertedUrl
-    }
-    
-    console.log('Could not extract file ID, returning original URL')
-    return url
   }
 
   static async getUserProfile(discordId) {
