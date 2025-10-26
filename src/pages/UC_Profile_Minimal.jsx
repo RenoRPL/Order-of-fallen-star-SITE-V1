@@ -4,7 +4,7 @@ import OFSDataService from '../services/ofsDataService'
 import './UC_Profile_Minimal.css'
 
 const UC_Profile_Minimal = () => {
-  const { user, isAuthenticated } = useAuth()
+  const { user, isAuthenticated, login } = useAuth()
   const [memberData, setMemberData] = useState(null)
   const [patrolData, setPatrolData] = useState([])
   const [ranksData, setRanksData] = useState([])
@@ -45,7 +45,7 @@ const UC_Profile_Minimal = () => {
   }, [isAuthenticated, user])
 
   const handleDiscordLogin = () => {
-    window.location.href = '/api/auth/discord'
+    login()
   }
 
   const closeModal = () => {
