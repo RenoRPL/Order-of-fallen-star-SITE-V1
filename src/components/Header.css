@@ -227,20 +227,54 @@
   box-shadow: 0 4px 15px rgba(57, 185, 255, 0.3);
 }
 
+.avatar-container {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.avatar-container:hover .profile-avatar {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.avatar-container:hover .rank-overlay {
+  opacity: 1;
+  transform: scale(1);
+}
+
 .profile-avatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
   border: 2px solid #39b9ff;
   object-fit: cover;
-  flex-shrink: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.4s ease;
+  opacity: 1;
+  transform: scale(1);
 }
 
 .rank-icon-large {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
-  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid #ffd700;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.4s ease;
+  background: rgba(11, 15, 25, 0.9);
+  padding: 2px;
+}
+
+.rank-overlay {
+  opacity: 0;
+  transform: scale(1.1);
 }
 
 .profile-info {
@@ -326,14 +360,19 @@
     gap: 0.4rem;
   }
   
+  .avatar-container {
+    width: 30px;
+    height: 30px;
+  }
+  
   .profile-avatar {
     width: 30px;
     height: 30px;
   }
   
   .rank-icon-large {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
   }
   
   .profile-name {

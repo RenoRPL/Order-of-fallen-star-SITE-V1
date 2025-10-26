@@ -35,25 +35,27 @@ export default function Header() {
         <div className="header-actions">
           {isAuthenticated && user ? (
             <Link to="/profile" className="profile-link">
-              <img 
-                src={getAvatarUrl(user.id, user.avatar)} 
-                alt="Profile"
-                className="profile-avatar"
-              />
-              {userStats?.rankIcon && (
+              <div className="avatar-container">
                 <img 
-                  src={userStats.rankIcon} 
-                  alt="Rank Icon" 
-                  className="rank-icon-large"
-                  onError={(e) => {
-                    console.error('Failed to load rank icon:', userStats.rankIcon)
-                    e.target.style.display = 'none'
-                  }}
-                  onLoad={() => {
-                    console.log('Rank icon loaded successfully:', userStats.rankIcon)
-                  }}
+                  src={getAvatarUrl(user.id, user.avatar)} 
+                  alt="Profile"
+                  className="profile-avatar"
                 />
-              )}
+                {userStats?.rankIcon && (
+                  <img 
+                    src={userStats.rankIcon} 
+                    alt="Rank Icon" 
+                    className="rank-icon-large rank-overlay"
+                    onError={(e) => {
+                      console.error('Failed to load rank icon:', userStats.rankIcon)
+                      e.target.style.display = 'none'
+                    }}
+                    onLoad={() => {
+                      console.log('Rank icon loaded successfully:', userStats.rankIcon)
+                    }}
+                  />
+                )}
+              </div>
               <div className="profile-info">
                 <span className="profile-name">{userStats?.orgName || user.username}</span>
                 <div className="profile-details">
