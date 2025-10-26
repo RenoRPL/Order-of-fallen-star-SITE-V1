@@ -10,8 +10,8 @@
   --hint-green: #00cc88;
   --hint-pink: #ff6bb3;
   --sharp-cyan: #00d4ff;
-  --dark-bg: #0a0a0f;
-  --card-bg: rgba(5, 15, 25, 0.95);
+  --dark-bg: #050510;
+  --card-bg: rgba(2, 8, 15, 0.98);
   --border-glow: rgba(0, 153, 255, 0.6);
   --text-primary: #ffffff;
   --text-secondary: #a8c8ec;
@@ -35,9 +35,9 @@
   max-width: 1600px;
   margin: 0 auto;
   background: linear-gradient(135deg, 
-    rgba(0, 10, 25, 0.97) 0%, 
-    rgba(5, 15, 35, 0.97) 50%, 
-    rgba(0, 20, 40, 0.97) 100%);
+    rgba(0, 5, 15, 0.98) 0%, 
+    rgba(0, 8, 20, 0.98) 50%, 
+    rgba(0, 10, 25, 0.98) 100%);
   border: 2px solid var(--sharp-cyan);
   border-radius: 8px;
   padding: 30px;
@@ -85,8 +85,8 @@
 /* Left Sidebar - Member Info */
 .left-sidebar {
   background: linear-gradient(135deg, 
-    rgba(0, 153, 255, 0.12) 0%, 
-    rgba(5, 15, 35, 0.95) 100%);
+    rgba(0, 50, 100, 0.08) 0%, 
+    rgba(0, 5, 20, 0.98) 100%);
   border: 1px solid var(--sharp-cyan);
   border-radius: 6px;
   padding: 25px;
@@ -249,8 +249,8 @@
   border-radius: 50%;
   border: 2px solid rgba(0, 153, 255, 0.4);
   background: radial-gradient(circle, 
-    rgba(0, 20, 40, 0.95) 0%, 
-    rgba(0, 10, 25, 0.95) 100%);
+    rgba(0, 8, 20, 0.98) 0%, 
+    rgba(0, 3, 10, 0.99) 100%);
   color: rgba(0, 153, 255, 0.6);
   transition: all 0.5s ease;
   position: relative;
@@ -278,9 +278,9 @@
 
 .medal.earned {
   background: radial-gradient(circle, 
-    rgba(0, 153, 255, 0.4) 0%, 
-    rgba(0, 99, 255, 0.3) 50%, 
-    rgba(0, 20, 40, 0.95) 100%);
+    rgba(0, 50, 100, 0.3) 0%, 
+    rgba(0, 30, 80, 0.25) 50%, 
+    rgba(0, 8, 20, 0.98) 100%);
   border: 2px solid var(--sharp-cyan);
   color: #FFD700;
   box-shadow: 
@@ -313,8 +313,8 @@
 
 .stats-section {
   background: linear-gradient(135deg, 
-    rgba(0, 153, 255, 0.12) 0%, 
-    rgba(5, 15, 35, 0.95) 100%);
+    rgba(0, 50, 100, 0.08) 0%, 
+    rgba(0, 5, 20, 0.98) 100%);
   border: 1px solid var(--sharp-cyan);
   border-radius: 6px;
   padding: 20px;
@@ -358,8 +358,8 @@
 
 .stat-box {
   background: linear-gradient(135deg, 
-    rgba(0, 153, 255, 0.15) 0%, 
-    rgba(0, 20, 40, 0.95) 100%);
+    rgba(0, 50, 100, 0.1) 0%, 
+    rgba(0, 3, 15, 0.98) 100%);
   border: 1px solid var(--sharp-cyan);
   border-radius: 6px;
   padding: 15px 10px;
@@ -438,8 +438,8 @@
 .crusade-section,
 .backstory-section {
   background: linear-gradient(135deg, 
-    rgba(0, 153, 255, 0.12) 0%, 
-    rgba(5, 15, 35, 0.95) 100%);
+    rgba(0, 50, 100, 0.08) 0%, 
+    rgba(0, 5, 20, 0.98) 100%);
   border: 1px solid var(--sharp-cyan);
   border-radius: 6px;
   padding: 20px;
@@ -488,8 +488,8 @@
 .quest-list,
 .crusade-list {
   min-height: 140px;
-  background: rgba(10, 10, 20, 0.8);
-  border: 1px solid rgba(0, 255, 80, 0.3);
+  background: rgba(0, 3, 8, 0.95);
+  border: 1px solid rgba(0, 153, 255, 0.3);
   border-radius: 10px;
   padding: 15px;
   position: relative;
