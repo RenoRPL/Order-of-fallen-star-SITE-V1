@@ -229,8 +229,8 @@
 
 .avatar-container {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
 }
 
@@ -245,9 +245,9 @@
 }
 
 .profile-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
   border: 2px solid #39b9ff;
   object-fit: cover;
   position: absolute;
@@ -259,8 +259,8 @@
 }
 
 .rank-icon-large {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   object-fit: contain;
   position: absolute;
   top: 0;
@@ -358,18 +358,19 @@
   }
   
   .avatar-container {
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
   }
   
   .profile-avatar {
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
   }
   
   .rank-icon-large {
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
   }
   
   .profile-name {
