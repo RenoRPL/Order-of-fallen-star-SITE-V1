@@ -43,7 +43,16 @@ export default function Header() {
               <span className="profile-name">{userStats?.orgName || user.username}</span>
               <div className="profile-details">
                 <div className="profile-stat">
-                  <span className="profile-rank">{userStats?.rank || 'Loading...'}</span>
+                  <div className="rank-display">
+                    {userStats?.rankIcon && (
+                      <img 
+                        src={userStats.rankIcon} 
+                        alt="Rank Icon" 
+                        className="rank-icon"
+                      />
+                    )}
+                    <span className="profile-rank">{userStats?.rank || 'Loading...'}</span>
+                  </div>
                   <span className="profile-label">Rank</span>
                 </div>
                 <span className="profile-separator">•</span>

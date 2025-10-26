@@ -41,7 +41,8 @@ export const AuthProvider = ({ children }) => {
         rank: 'Recruit',
         role: 'Member',
         path: 'Unknown',
-        orgName: null
+        orgName: null,
+        rankIcon: null
       })
     }
   }

@@ -7,7 +7,8 @@ class UserStatsService {
         rank: 'Unknown',
         role: 'Unknown',
         path: 'Unknown',
-        orgName: null
+        orgName: null,
+        rankIcon: null
       }
     }
 
@@ -21,7 +22,8 @@ class UserStatsService {
           rank: 'Recruit',
           role: 'Member',
           path: 'Unknown',
-          orgName: null
+          orgName: null,
+          rankIcon: null
         }
       }
 
@@ -32,11 +34,17 @@ class UserStatsService {
       const path = memberData['R'] || memberData['r'] || memberData['Path'] || 'Unknown'
       const orgName = memberData['B'] || memberData['b'] || memberData['Username'] || null
 
+      // Get rank icon from Ranks sheet
+      const rankName = this.formatRank(rank)
+      const rankData = await OFSDataService.getRankData(rankName)
+      const rankIcon = this.convertGoogleDriveUrl(rankData?.['Rank Icon'] || rankData?.['C'])
+
       return {
-        rank: this.formatRank(rank),
+        rank: rankName,
         role: this.formatRole(role),
         path: this.formatPath(path),
-        orgName: orgName
+        orgName: orgName,
+        rankIcon: rankIcon
       }
     } catch (error) {
       console.error('Error fetching user stats:', error)
@@ -44,7 +52,8 @@ class UserStatsService {
         rank: 'Unknown',
         role: 'Unknown',
         path: 'Unknown',
-        orgName: null
+        orgName: null,
+        rankIcon: null
       }
     }
   }
@@ -86,6 +95,21 @@ class UserStatsService {
     }
     
     return pathMap[path] || path || 'Unknown'
+  }
+
+  static convertGoogleDriveUrl(url) {
+    if (!url) return null
+    
+    // Convert Google Drive share URLs to direct image URLs
+    // From: https://drive.google.com/file/d/FILE_ID/view?usp=drive_link
+    // To: https://drive.google.com/uc?export=view&id=FILE_ID
+    const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)
+    if (match) {
+      const fileId = match[1]
+      return `https://drive.google.com/uc?export=view&id=${fileId}`
+    }
+    
+    return url // Return original URL if it doesn't match the pattern
   }
 
   static async getUserProfile(discordId) {

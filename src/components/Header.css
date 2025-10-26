@@ -266,6 +266,18 @@
   gap: 0.1rem;
 }
 
+.rank-display {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.rank-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
 .profile-rank {
   color: #ffd700;
   font-weight: 600;
@@ -322,6 +334,11 @@
   .profile-role,
   .profile-path {
     font-size: 0.75rem;
+  }
+  
+  .rank-icon {
+    width: 14px;
+    height: 14px;
   }
   
   .profile-label {
