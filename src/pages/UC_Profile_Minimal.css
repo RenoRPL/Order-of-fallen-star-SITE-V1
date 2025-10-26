@@ -1,30 +1,32 @@
-/* UC Profile Minimal - Cyberpunk Holographic Style */
+/* UC Profile Minimal - High Contrast Dark Theme */
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --neon-blue: #0088cc;
-  --electric-blue: #006699;
-  --deep-blue: #003366;
-  --accent-purple: #663399;
-  --hint-green: #008866;
-  --hint-pink: #cc5588;
-  --sharp-cyan: #00aacc;
-  --dark-bg: #000005;
-  --card-bg: rgba(0, 2, 5, 0.99);
-  --border-glow: rgba(0, 136, 204, 0.8);
+  --neon-blue: #00d4ff;
+  --electric-blue: #0096ff;
+  --deep-blue: #0066cc;
+  --accent-purple: #8866ff;
+  --hint-green: #00ff96;
+  --hint-pink: #ff6699;
+  --sharp-cyan: #00d4ff;
+  --dark-bg: #0a1420;
+  --card-bg: rgba(15, 25, 40, 0.95);
+  --border-glow: rgba(0, 212, 255, 0.8);
   --text-primary: #ffffff;
-  --text-secondary: #8899bb;
-  --text-accent: #00aacc;
+  --text-secondary: #e0e0e0;
+  --text-accent: #00d4ff;
 }
 
 .uc-stats-page {
   min-height: 100vh;
   background: 
-    radial-gradient(circle at 20% 50%, rgba(0, 68, 136, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(102, 51, 153, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(0, 102, 153, 0.05) 0%, transparent 50%),
-    linear-gradient(180deg, rgba(0, 0, 5, 0.95) 0%, rgba(0, 0, 10, 0.98) 100%),
+    linear-gradient(135deg, 
+      rgba(8, 16, 32, 0.98) 0%, 
+      rgba(12, 20, 35, 0.97) 25%, 
+      rgba(16, 24, 40, 0.98) 50%, 
+      rgba(12, 20, 35, 0.97) 75%, 
+      rgba(8, 16, 32, 0.98) 100%),
     url('/Nebula BG.png') no-repeat center center fixed;
   background-size: cover;
   padding: 2rem;
@@ -35,18 +37,15 @@
 .stats-container {
   max-width: 1600px;
   margin: 0 auto;
-  background: linear-gradient(135deg, 
-    rgba(0, 1, 3, 0.99) 0%, 
-    rgba(0, 2, 5, 0.99) 50%, 
-    rgba(0, 3, 8, 0.99) 100%);
+  background: rgba(20, 30, 45, 0.95);
   border: 2px solid var(--sharp-cyan);
-  border-radius: 4px;
+  border-radius: 15px;
   padding: 30px;
   color: var(--text-primary);
   box-shadow: 
-    0 0 30px rgba(0, 136, 204, 0.6),
-    inset 0 0 20px rgba(0, 136, 204, 0.15),
-    0 0 80px rgba(0, 170, 204, 0.3);
+    0 0 30px rgba(0, 212, 255, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 80px rgba(0, 212, 255, 0.3);
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(20px);
@@ -85,18 +84,16 @@
 
 /* Left Sidebar - Member Info */
 .left-sidebar {
-  background: linear-gradient(135deg, 
-    rgba(0, 34, 68, 0.03) 0%, 
-    rgba(0, 1, 5, 0.99) 100%);
-  border: 1px solid var(--sharp-cyan);
-  border-radius: 4px;
+  background: rgba(20, 30, 45, 0.95);
+  border: 2px solid var(--sharp-cyan);
+  border-radius: 15px;
   padding: 25px;
   position: relative;
   box-shadow: 
-    0 0 20px rgba(0, 136, 204, 0.5),
-    inset 0 0 15px rgba(0, 170, 204, 0.1),
+    0 0 25px rgba(0, 212, 255, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
     0 2px 10px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(20px);
 }
 
 .left-sidebar::before {
@@ -141,11 +138,9 @@
 .input-field input {
   width: 100%;
   padding: 12px 16px;
-  background: linear-gradient(135deg, 
-    rgba(0, 34, 68, 0.05) 0%, 
-    rgba(0, 1, 3, 0.98) 100%);
-  border: 1px solid var(--sharp-cyan);
-  border-radius: 4px;
+  background: rgba(30, 40, 55, 0.8);
+  border: 2px solid var(--sharp-cyan);
+  border-radius: 10px;
   color: var(--text-primary);
   font-weight: 500;
   font-size: 14px;
@@ -178,19 +173,17 @@
   box-shadow: none;
 }
 
-/* Center Section - Holographic Display */
+/* Center Section - High Contrast Display */
 .center-section {
-  background: linear-gradient(135deg, 
-    rgba(255, 0, 255, 0.1) 0%, 
-    rgba(10, 10, 30, 0.9) 100%);
-  border: 1px solid var(--neon-purple);
+  background: rgba(20, 30, 45, 0.95);
+  border: 2px solid var(--sharp-cyan);
   border-radius: 15px;
   padding: 30px;
   text-align: center;
   position: relative;
   box-shadow: 
-    0 0 40px rgba(255, 0, 255, 0.3),
-    inset 0 0 40px rgba(255, 0, 255, 0.1);
+    0 0 30px rgba(0, 212, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .center-section::after {
@@ -313,16 +306,14 @@
 }
 
 .stats-section {
-  background: linear-gradient(135deg, 
-    rgba(0, 34, 68, 0.03) 0%, 
-    rgba(0, 1, 5, 0.99) 100%);
-  border: 1px solid var(--sharp-cyan);
-  border-radius: 4px;
+  background: rgba(20, 30, 45, 0.95);
+  border: 2px solid var(--sharp-cyan);
+  border-radius: 15px;
   padding: 20px;
   position: relative;
   box-shadow: 
-    0 0 20px rgba(0, 136, 204, 0.5),
-    inset 0 0 15px rgba(0, 170, 204, 0.1),
+    0 0 25px rgba(0, 212, 255, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
     0 2px 10px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(15px);
 }
