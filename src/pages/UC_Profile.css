@@ -1,20 +1,18 @@
-/* UC Profile Page Styles */
+/* UC Profile Page Styles - High Contrast Dark Theme */
 .uc-profile-page {
   min-height: 100vh;
   background: 
     linear-gradient(135deg, 
-      rgba(2, 6, 15, 0.98) 0%, 
-      rgba(8, 15, 25, 0.96) 25%, 
-      rgba(12, 20, 35, 0.97) 50%, 
-      rgba(10, 18, 30, 0.96) 75%, 
-      rgba(5, 12, 28, 0.98) 100%),
-    radial-gradient(circle at 30% 20%, rgba(90, 80, 140, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 70% 80%, rgba(80, 120, 160, 0.06) 0%, transparent 50%),
+      rgba(8, 16, 32, 0.98) 0%, 
+      rgba(12, 20, 35, 0.97) 25%, 
+      rgba(16, 24, 40, 0.98) 50%, 
+      rgba(12, 20, 35, 0.97) 75%, 
+      rgba(8, 16, 32, 0.98) 100%),
     url('/Nebula BG.jpeg');
-  background-size: cover, 100% 100%, 100% 100%, cover;
+  background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  color: #e8f2ff;
+  color: #ffffff;
   font-family: 'Segoe UI', 'Arial', sans-serif;
 }
 
@@ -24,61 +22,70 @@
   padding: 2rem;
 }
 
-/* Header Section */
+/* Header Section - High Contrast */
 .uc-header {
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem;
-  background: rgba(8, 15, 30, 0.8);
-  border: 1px solid rgba(64, 120, 180, 0.3);
+  background: rgba(15, 25, 40, 0.95);
+  border: 2px solid rgba(0, 150, 255, 0.6);
   border-radius: 15px;
   backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(64, 120, 180, 0.1);
+  box-shadow: 
+    0 0 30px rgba(0, 150, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .uc-header h1 {
   font-size: 2.5rem;
   font-weight: 900;
-  color: #5a9fd8;
+  color: #00d4ff;
   margin: 0 0 1rem 0;
   text-transform: uppercase;
   letter-spacing: 2px;
-  text-shadow: 0 0 15px rgba(90, 159, 216, 0.3);
+  text-shadow: 
+    0 0 20px rgba(0, 212, 255, 0.8),
+    0 0 40px rgba(0, 212, 255, 0.4);
 }
 
 .uc-header p {
   font-size: 1.2rem;
-  color: #b8d4ed;
+  color: #e0e0e0;
   margin: 0;
   line-height: 1.6;
 }
 
-/* Login Prompt */
+/* Login Prompt - High Contrast */
 .uc-login-prompt {
   text-align: center;
   padding: 4rem 2rem;
-  background: rgba(8, 15, 30, 0.9);
-  border: 1px solid rgba(100, 120, 200, 0.25);
+  background: rgba(15, 25, 40, 0.95);
+  border: 2px solid rgba(0, 150, 255, 0.6);
   border-radius: 20px;
   backdrop-filter: blur(20px);
+  box-shadow: 
+    0 0 30px rgba(0, 150, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .uc-login-prompt h1 {
   font-size: 2.5rem;
-  color: #7ba7d1;
+  color: #00d4ff;
   margin-bottom: 1rem;
-  text-shadow: 0 0 12px rgba(123, 167, 209, 0.4);
+  text-shadow: 
+    0 0 20px rgba(0, 212, 255, 0.8),
+    0 0 40px rgba(0, 212, 255, 0.4);
 }
 
 .uc-login-note {
   margin-top: 2rem;
   padding: 1rem;
-  background: rgba(90, 159, 216, 0.08);
-  border: 1px solid rgba(90, 159, 216, 0.2);
+  background: rgba(0, 150, 255, 0.1);
+  border: 1px solid rgba(0, 150, 255, 0.4);
   border-radius: 10px;
 }
 
-/* Loading State */
+/* Loading State - High Contrast */
 .uc-loading {
   text-align: center;
   padding: 4rem 2rem;
@@ -87,11 +94,12 @@
 .loading-spinner {
   width: 60px;
   height: 60px;
-  border: 3px solid rgba(90, 159, 216, 0.2);
-  border-top: 3px solid #5a9fd8;
+  border: 4px solid rgba(0, 150, 255, 0.3);
+  border-top: 4px solid #00d4ff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 2rem;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
 }
 
 @keyframes spin {
@@ -100,74 +108,93 @@
 }
 
 .uc-loading h2 {
-  color: #5a9fd8;
+  color: #00d4ff;
   margin-bottom: 1rem;
+  text-shadow: 
+    0 0 15px rgba(0, 212, 255, 0.6),
+    0 0 30px rgba(0, 212, 255, 0.3);
 }
 
-/* Error State */
+/* Error State - High Contrast */
 .uc-error {
   padding: 2rem;
-  background: rgba(45, 25, 35, 0.7);
-  border: 1px solid rgba(150, 80, 100, 0.4);
+  background: rgba(60, 20, 20, 0.95);
+  border: 2px solid rgba(255, 100, 100, 0.6);
   border-radius: 15px;
   text-align: center;
+  box-shadow: 
+    0 0 25px rgba(255, 100, 100, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .uc-error h2 {
-  color: #d18590;
+  color: #ff6666;
   margin-bottom: 1rem;
+  text-shadow: 0 0 10px rgba(255, 102, 102, 0.5);
 }
 
 .uc-error-help {
   margin: 2rem 0;
   padding: 1rem;
-  background: rgba(8, 15, 30, 0.6);
+  background: rgba(20, 30, 45, 0.8);
   border-radius: 10px;
   text-align: left;
+  border: 1px solid rgba(0, 150, 255, 0.3);
 }
 
 .uc-error-help ul {
   margin: 0.5rem 0 0 1rem;
-  color: #b8d4ed;
+  color: #e0e0e0;
 }
 
 .retry-btn {
-  background: linear-gradient(45deg, #5a9fd8, #4a89c8);
-  color: #ffffff;
-  border: none;
+  background: linear-gradient(45deg, #0096ff, #00d4ff);
+  color: #000000;
+  border: 2px solid rgba(0, 150, 255, 0.6);
   padding: 1rem 2rem;
   border-radius: 10px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-shadow: 0 0 8px rgba(90, 159, 216, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 
+    0 0 20px rgba(0, 150, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .retry-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(90, 159, 216, 0.25);
-  background: linear-gradient(45deg, #6ba9e0, #5a9fd8);
+  box-shadow: 
+    0 15px 40px rgba(0, 150, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  background: linear-gradient(45deg, #00d4ff, #40e0ff);
+  border-color: rgba(0, 150, 255, 0.9);
 }
 
-/* Progress Section */
+/* Progress Section - High Contrast */
 .uc-progress-section {
   margin-bottom: 3rem;
   padding: 2rem;
-  background: rgba(8, 15, 30, 0.7);
-  border: 1px solid rgba(90, 159, 216, 0.25);
+  background: rgba(20, 30, 45, 0.95);
+  border: 2px solid rgba(0, 150, 255, 0.5);
   border-radius: 15px;
   backdrop-filter: blur(15px);
-  box-shadow: 0 8px 32px rgba(90, 159, 216, 0.08);
+  box-shadow: 
+    0 0 25px rgba(0, 150, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .uc-progress-section h2 {
-  color: #5a9fd8;
+  color: #00d4ff;
   margin-bottom: 2rem;
   font-size: 1.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 0 0 10px rgba(90, 159, 216, 0.3);
+  text-shadow: 
+    0 0 15px rgba(0, 212, 255, 0.6),
+    0 0 30px rgba(0, 212, 255, 0.3);
 }
 
 .progress-grid {
@@ -181,54 +208,57 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(12, 20, 35, 0.6);
-  border: 1px solid rgba(90, 159, 216, 0.15);
+  background: rgba(30, 40, 55, 0.8);
+  border: 2px solid rgba(0, 150, 255, 0.3);
   border-radius: 10px;
   transition: all 0.3s ease;
 }
 
 .progress-item.completed {
-  border-color: rgba(80, 180, 120, 0.35);
-  background: linear-gradient(135deg, rgba(80, 180, 120, 0.1), rgba(70, 160, 110, 0.08));
-  box-shadow: 0 0 20px rgba(80, 180, 120, 0.12);
+  border-color: rgba(0, 255, 150, 0.6);
+  background: rgba(0, 255, 150, 0.1);
+  box-shadow: 0 0 20px rgba(0, 255, 150, 0.2);
 }
 
 .progress-item.in-progress {
-  border-color: rgba(120, 100, 200, 0.35);
-  background: linear-gradient(135deg, rgba(120, 100, 200, 0.1), rgba(100, 80, 180, 0.08));
-  box-shadow: 0 0 20px rgba(120, 100, 200, 0.12);
+  border-color: rgba(255, 200, 0, 0.6);
+  background: rgba(255, 200, 0, 0.1);
+  box-shadow: 0 0 20px rgba(255, 200, 0, 0.2);
 }
 
 .progress-item.pending {
-  border-color: rgba(90, 100, 120, 0.25);
-  background: linear-gradient(135deg, rgba(90, 100, 120, 0.06), rgba(70, 80, 100, 0.04));
+  border-color: rgba(120, 120, 120, 0.4);
+  background: rgba(120, 120, 120, 0.05);
 }
 
 .progress-icon {
   font-size: 1.5rem;
   min-width: 2rem;
-  filter: drop-shadow(0 0 8px currentColor);
+  filter: drop-shadow(0 0 10px currentColor);
 }
 
 .progress-text {
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #e8f2ff;
+  color: #ffffff;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
-/* Data Section */
+/* Data Section - High Contrast */
 .uc-data-section {
   margin-bottom: 3rem;
 }
 
 .uc-data-section h2 {
-  color: #8db0d8;
+  color: #00d4ff;
   margin-bottom: 2rem;
   font-size: 1.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 0 0 10px rgba(141, 176, 216, 0.3);
+  text-shadow: 
+    0 0 15px rgba(0, 212, 255, 0.6),
+    0 0 30px rgba(0, 212, 255, 0.3);
 }
 
 .data-preview {
@@ -238,23 +268,27 @@
 }
 
 .data-card {
-  background: rgba(8, 15, 30, 0.8);
-  border: 1px solid rgba(120, 140, 180, 0.25);
+  background: rgba(20, 30, 45, 0.95);
+  border: 2px solid rgba(0, 150, 255, 0.5);
   border-radius: 15px;
   padding: 2rem;
   backdrop-filter: blur(15px);
-  box-shadow: 0 8px 32px rgba(120, 140, 180, 0.08);
+  box-shadow: 
+    0 0 25px rgba(0, 150, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .data-card h3 {
-  color: #7ba7d1;
+  color: #00d4ff;
   margin-bottom: 1.5rem;
   font-size: 1.3rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  border-bottom: 1px solid rgba(123, 167, 209, 0.25);
+  border-bottom: 2px solid rgba(0, 212, 255, 0.5);
   padding-bottom: 0.5rem;
-  text-shadow: 0 0 8px rgba(123, 167, 209, 0.3);
+  text-shadow: 
+    0 0 10px rgba(0, 212, 255, 0.6),
+    0 0 20px rgba(0, 212, 255, 0.3);
 }
 
 .data-row {
@@ -262,7 +296,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem 0;
-  border-bottom: 1px solid rgba(90, 159, 216, 0.1);
+  border-bottom: 1px solid rgba(0, 150, 255, 0.2);
 }
 
 .data-row:last-child {
@@ -270,16 +304,17 @@
 }
 
 .data-row .label {
-  color: #b8d4ed;
-  font-weight: 500;
+  color: #b0b0b0;
+  font-weight: 600;
   text-transform: uppercase;
   font-size: 0.9rem;
   letter-spacing: 0.5px;
 }
 
 .data-row .value {
-  color: #e8f2ff;
-  font-weight: 600;
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
 .rank-preview {
@@ -291,22 +326,24 @@
   max-width: 80px;
   height: auto;
   border-radius: 10px;
-  border: 2px solid #7ba7d1;
-  box-shadow: 0 0 15px rgba(123, 167, 209, 0.3);
+  border: 2px solid #00d4ff;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
 }
 
-/* Next Steps Section */
+/* Next Steps Section - High Contrast */
 .uc-next-steps {
   margin-bottom: 3rem;
 }
 
 .uc-next-steps h2 {
-  color: #6ba9e0;
+  color: #00d4ff;
   margin-bottom: 2rem;
   font-size: 1.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 0 0 10px rgba(107, 169, 224, 0.3);
+  text-shadow: 
+    0 0 15px rgba(0, 212, 255, 0.6),
+    0 0 30px rgba(0, 212, 255, 0.3);
 }
 
 .steps-grid {
@@ -316,58 +353,68 @@
 }
 
 .step-card {
-  background: rgba(8, 15, 30, 0.7);
-  border: 1px solid rgba(107, 169, 224, 0.25);
+  background: rgba(20, 30, 45, 0.95);
+  border: 2px solid rgba(0, 150, 255, 0.4);
   border-radius: 15px;
   padding: 2rem;
   backdrop-filter: blur(15px);
   transition: all 0.3s ease;
-  box-shadow: 0 8px 32px rgba(107, 169, 224, 0.08);
+  box-shadow: 
+    0 0 20px rgba(0, 150, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .step-card:hover {
   transform: translateY(-5px);
-  border-color: rgba(107, 169, 224, 0.4);
-  box-shadow: 0 12px 40px rgba(107, 169, 224, 0.15);
+  border-color: rgba(0, 150, 255, 0.8);
+  box-shadow: 
+    0 15px 50px rgba(0, 150, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .step-card h3 {
-  color: #6ba9e0;
+  color: #00d4ff;
   margin-bottom: 1rem;
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba(107, 169, 224, 0.3);
+  text-shadow: 
+    0 0 10px rgba(0, 212, 255, 0.6),
+    0 0 20px rgba(0, 212, 255, 0.3);
 }
 
 .step-card p {
-  color: #b8d4ed;
+  color: #e0e0e0;
   line-height: 1.6;
   margin: 0;
 }
 
-/* Test Section */
+/* Test Section - High Contrast */
 .uc-test-section {
   text-align: center;
   padding: 2rem;
-  background: rgba(8, 15, 30, 0.6);
-  border: 1px solid rgba(120, 140, 200, 0.25);
+  background: rgba(20, 30, 45, 0.95);
+  border: 2px solid rgba(0, 150, 255, 0.5);
   border-radius: 15px;
   backdrop-filter: blur(15px);
-  box-shadow: 0 8px 32px rgba(120, 140, 200, 0.08);
+  box-shadow: 
+    0 0 25px rgba(0, 150, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .uc-test-section h2 {
-  color: #788cc8;
+  color: #00d4ff;
   margin-bottom: 1rem;
   font-size: 1.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 0 0 10px rgba(120, 140, 200, 0.3);
+  text-shadow: 
+    0 0 15px rgba(0, 212, 255, 0.6),
+    0 0 30px rgba(0, 212, 255, 0.3);
 }
 
 .uc-test-section p {
-  color: #b8d4ed;
+  color: #e0e0e0;
   margin-bottom: 2rem;
 }
 
@@ -381,23 +428,27 @@
 .test-btn {
   display: inline-block;
   padding: 1rem 2rem;
-  background: linear-gradient(45deg, #5a9fd8, #6ba9e0);
-  color: #ffffff;
+  background: linear-gradient(45deg, #0096ff, #00d4ff);
+  color: #000000;
   text-decoration: none;
   border-radius: 10px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: all 0.3s ease;
-  text-shadow: 0 0 8px rgba(90, 159, 216, 0.3);
-  border: 1px solid rgba(90, 159, 216, 0.3);
+  border: 2px solid rgba(0, 150, 255, 0.6);
+  box-shadow: 
+    0 0 20px rgba(0, 150, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .test-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(90, 159, 216, 0.25);
-  background: linear-gradient(45deg, #6ba9e0, #7bb3e8);
-  border-color: rgba(90, 159, 216, 0.5);
+  box-shadow: 
+    0 15px 40px rgba(0, 150, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  background: linear-gradient(45deg, #00d4ff, #40e0ff);
+  border-color: rgba(0, 150, 255, 0.9);
 }
 
 /* Responsive Design */
@@ -428,7 +479,7 @@
   }
 }
 
-/* Interstellar Enhancement Effects */
+/* High Contrast Enhancement Effects */
 .uc-container::before {
   content: '';
   position: fixed;
@@ -437,24 +488,24 @@
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(circle at 20% 30%, rgba(90, 159, 216, 0.04) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(120, 100, 200, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(100, 180, 120, 0.025) 0%, transparent 50%),
-    radial-gradient(circle at 60% 20%, rgba(140, 120, 180, 0.02) 0%, transparent 50%);
+    radial-gradient(circle at 25% 25%, rgba(0, 150, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(0, 150, 255, 0.02) 0%, transparent 50%);
   pointer-events: none;
   z-index: -1;
 }
 
 /* Subtle pulsing animation for headers */
-@keyframes subtle-glow {
+@keyframes high-contrast-glow {
   0%, 100% { 
-    text-shadow: 0 0 10px rgba(90, 159, 216, 0.3);
+    text-shadow: 
+      0 0 15px rgba(0, 212, 255, 0.6),
+      0 0 30px rgba(0, 212, 255, 0.3);
   }
   50% { 
     text-shadow: 
-      0 0 15px rgba(90, 159, 216, 0.4), 
-      0 0 25px rgba(90, 159, 216, 0.2),
-      0 0 35px rgba(120, 100, 200, 0.1);
+      0 0 20px rgba(0, 212, 255, 0.8),
+      0 0 40px rgba(0, 212, 255, 0.4),
+      0 0 60px rgba(0, 212, 255, 0.2);
   }
 }
 
@@ -462,55 +513,25 @@
 .uc-progress-section h2,
 .uc-data-section h2,
 .uc-next-steps h2,
-.uc-test-section h2 {
-  animation: subtle-glow 4s ease-in-out infinite;
+.uc-test-section h2,
+.data-card h3 {
+  animation: high-contrast-glow 3s ease-in-out infinite;
 }
 
 /* Enhanced border glow on hover */
 .data-card:hover,
-.step-card:hover {
+.step-card:hover,
+.progress-item:hover {
+  transform: translateY(-3px);
   box-shadow: 
-    0 12px 40px rgba(107, 169, 224, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 0 30px rgba(120, 100, 200, 0.08);
+    0 15px 50px rgba(0, 150, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-color: rgba(0, 150, 255, 0.8);
 }
 
-/* Subtle particle effect simulation */
-.uc-progress-section::after,
-.uc-data-section::after,
-.uc-next-steps::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(1px 1px at 20px 30px, rgba(255, 255, 255, 0.1), transparent),
-    radial-gradient(1px 1px at 40px 70px, rgba(90, 159, 216, 0.15), transparent),
-    radial-gradient(1px 1px at 90px 40px, rgba(120, 100, 200, 0.1), transparent),
-    radial-gradient(1px 1px at 130px 80px, rgba(100, 180, 120, 0.08), transparent),
-    radial-gradient(1px 1px at 170px 20px, rgba(140, 120, 180, 0.06), transparent);
-  background-repeat: repeat;
-  background-size: 200px 120px;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.6;
-}
-
+/* Clean, high contrast design - no particle effects */
 .uc-progress-section,
 .uc-data-section,
 .uc-next-steps {
   position: relative;
-}
-
-/* Additional subtle interstellar effects */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.progress-item:hover,
-.data-card:hover {
-  animation: float 3s ease-in-out infinite;
 }
