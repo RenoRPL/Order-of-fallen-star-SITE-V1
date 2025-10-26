@@ -26,9 +26,10 @@ export default function Header() {
         </div>
         
         <nav className="main-nav">
-          <Link to="/" className="nav-link">Home</Link>
           <a href="/about" className="nav-link">About</a>
           <a href="/fleet" className="nav-link">Fleet</a>
+          <a href="/primarchs" className="nav-link">Primarchs</a>
+          <a href="/codex" className="nav-link">Codex</a>
         </nav>
         
         <div className="header-actions">
@@ -39,7 +40,16 @@ export default function Header() {
                 alt="Profile"
                 className="profile-avatar"
               />
-              <span className="profile-name">{user.username}</span>
+              <div className="profile-info">
+                <span className="profile-name">{user.username}</span>
+                <div className="profile-details">
+                  <span className="profile-rank">Knight</span>
+                  <span className="profile-separator">•</span>
+                  <span className="profile-role">Pilot</span>
+                  <span className="profile-separator">•</span>
+                  <span className="profile-points">1,250 pts</span>
+                </div>
+              </div>
             </Link>
           ) : (
             <LoginButton />

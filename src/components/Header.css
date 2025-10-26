@@ -208,8 +208,8 @@
 .profile-link {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  gap: 0.75rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 25px;
   background: rgba(57, 185, 255, 0.1);
   border: 1px solid rgba(57, 185, 255, 0.3);
@@ -217,6 +217,7 @@
   text-decoration: none;
   transition: all 0.3s ease;
   font-weight: 500;
+  min-width: 200px;
 }
 
 .profile-link:hover {
@@ -227,34 +228,75 @@
 }
 
 .profile-avatar {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 2px solid #39b9ff;
   object-fit: cover;
+  flex-shrink: 0;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
 }
 
 .profile-name {
-  font-size: 0.9rem;
-  max-width: 100px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.profile-details {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: #b3d9ff;
+}
+
+.profile-rank {
+  color: #ffd700;
+  font-weight: 500;
+}
+
+.profile-role {
+  color: #4dc3ff;
+}
+
+.profile-points {
+  color: #00ff88;
+  font-weight: 500;
+}
+
+.profile-separator {
+  color: #666;
+  font-size: 0.6rem;
+}
+
 /* Mobile adjustments for profile link */
 @media (max-width: 768px) {
   .profile-link {
-    padding: 0.4rem 0.8rem;
+    padding: 0.5rem 0.8rem;
+    min-width: 160px;
   }
   
   .profile-avatar {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
   }
   
   .profile-name {
-    font-size: 0.8rem;
-    max-width: 80px;
+    font-size: 0.85rem;
+  }
+  
+  .profile-details {
+    font-size: 0.7rem;
+    gap: 0.3rem;
   }
 }
