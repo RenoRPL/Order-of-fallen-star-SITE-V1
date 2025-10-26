@@ -24,8 +24,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,14 +33,15 @@
 }
 
 .login-modal {
-  background: #000000;
-  border: 2px solid rgba(88, 101, 242, 0.3);
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(88, 101, 242, 0.5);
   border-radius: 15px;
   padding: 3rem;
   max-width: 450px;
   width: 90%;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
 }
 
 .modal-close {
@@ -68,12 +69,6 @@
 
 .modal-content {
   text-align: center;
-}
-
-.discord-icon-large {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-  filter: drop-shadow(0 0 20px rgba(88, 101, 242, 0.7));
 }
 
 .modal-content h2 {

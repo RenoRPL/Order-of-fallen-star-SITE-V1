@@ -63,11 +63,10 @@ const UC_Profile_Minimal = () => {
             ✕
           </button>
           <div className="modal-content">
-            <div className="discord-icon-large">🎮</div>
             <h2>Member Stats Access</h2>
-            <p>Please sign in with Discord to view your member statistics</p>
+            <p>Please sign in with Discord to view your member statistics (Beta)</p>
             <button onClick={handleDiscordLogin} className="modal-discord-btn">
-              🎮 Sign in with Discord
+              Sign in with Discord
             </button>
           </div>
         </div>
