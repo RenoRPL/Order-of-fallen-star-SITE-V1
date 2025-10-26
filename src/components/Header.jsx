@@ -29,11 +29,6 @@ export default function Header() {
           <Link to="/" className="nav-link">Home</Link>
           <a href="/about" className="nav-link">About</a>
           <a href="/fleet" className="nav-link">Fleet</a>
-          <a href="/join" className="nav-link">Join Us</a>
-          <a href="/progress" className="nav-link">Progress</a>
-          {/* Test Links - Development Only */}
-          <Link to="/profile-test" className="nav-link" style={{color: '#ff6b6b', fontSize: '0.9rem'}}>🧪 Test</Link>
-          <Link to="/profile-org" className="nav-link" style={{color: '#d4af37', fontSize: '0.9rem'}}>👑 Org</Link>
         </nav>
         
         <div className="header-actions">
@@ -49,23 +44,6 @@ export default function Header() {
           ) : (
             <LoginButton />
           )}
-          
-          <a 
-            href="https://discord.gg/3dhZ38nbNZ" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="discord-btn"
-          >
-            Discord
-          </a>
-          <a 
-            href="https://robertsspaceindustries.com/en/orgs/FALLSTR" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="spectrum-btn"
-          >
-            Spectrum
-          </a>
         </div>
       </div>
     </header>
