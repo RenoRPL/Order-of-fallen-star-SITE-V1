@@ -6,7 +6,8 @@ class UserStatsService {
       return {
         rank: 'Unknown',
         role: 'Unknown',
-        path: 'Unknown'
+        path: 'Unknown',
+        orgName: null
       }
     }
 
@@ -19,27 +20,31 @@ class UserStatsService {
         return {
           rank: 'Recruit',
           role: 'Member',
-          path: 'Unknown'
+          path: 'Unknown',
+          orgName: null
         }
       }
 
-      // Extract rank, role, and path from the member data
-      // Based on your format: Member Log: gid=2052923864, (Rank:C), (Role:D), (Path:R)
+      // Extract rank, role, path, and org name from the member data
+      // Based on your format: Member Log: gid=2052923864, (Rank:C), (Role:D), (Path:R), (Username:B)
       const rank = memberData['Rank'] || memberData['rank'] || 'Recruit'
       const role = memberData['Role'] || memberData['role'] || 'Member'
       const path = memberData['R'] || memberData['r'] || memberData['Path'] || 'Unknown'
+      const orgName = memberData['B'] || memberData['b'] || memberData['Username'] || null
 
       return {
         rank: this.formatRank(rank),
         role: this.formatRole(role),
-        path: this.formatPath(path)
+        path: this.formatPath(path),
+        orgName: orgName
       }
     } catch (error) {
       console.error('Error fetching user stats:', error)
       return {
         rank: 'Unknown',
         role: 'Unknown',
-        path: 'Unknown'
+        path: 'Unknown',
+        orgName: null
       }
     }
   }

@@ -40,23 +40,21 @@ export default function Header() {
                 alt="Profile"
                 className="profile-avatar"
               />
-              <div className="profile-info">
-                <span className="profile-name">{user.username}</span>
-                <div className="profile-details">
-                  <div className="profile-stat">
-                    <span className="profile-rank">{userStats?.rank || 'Loading...'}</span>
-                    <span className="profile-label">Rank</span>
-                  </div>
-                  <span className="profile-separator">•</span>
-                  <div className="profile-stat">
-                    <span className="profile-role">{userStats?.role || 'Loading...'}</span>
-                    <span className="profile-label">Role</span>
-                  </div>
-                  <span className="profile-separator">•</span>
-                  <div className="profile-stat">
-                    <span className="profile-path">{userStats?.path || 'Loading...'}</span>
-                    <span className="profile-label">Path</span>
-                  </div>
+              <span className="profile-name">{userStats?.orgName || user.username}</span>
+              <div className="profile-details">
+                <div className="profile-stat">
+                  <span className="profile-rank">{userStats?.rank || 'Loading...'}</span>
+                  <span className="profile-label">Rank</span>
+                </div>
+                <span className="profile-separator">•</span>
+                <div className="profile-stat">
+                  <span className="profile-role">{userStats?.role || 'Loading...'}</span>
+                  <span className="profile-label">Role</span>
+                </div>
+                <span className="profile-separator">•</span>
+                <div className="profile-stat">
+                  <span className="profile-path">{userStats?.path || 'Loading...'}</span>
+                  <span className="profile-label">Path</span>
                 </div>
               </div>
             </Link>
