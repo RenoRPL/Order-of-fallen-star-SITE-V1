@@ -207,16 +207,16 @@
 /* Avatar Gradient Animation */
 @keyframes avatarGradientShift {
   0%, 100% { 
-    border-image: linear-gradient(45deg, #1e40af, #3b82f6, #60a5fa, #93c5fd, #3b82f6, #1e40af) 1;
+    background: linear-gradient(45deg, #1e40af, #3b82f6, #60a5fa, #93c5fd, #3b82f6, #1e40af);
   }
   25% { 
-    border-image: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd, #1e40af, #60a5fa, #3b82f6) 1;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd, #1e40af, #60a5fa, #3b82f6);
   }
   50% { 
-    border-image: linear-gradient(225deg, #60a5fa, #93c5fd, #1e40af, #3b82f6, #93c5fd, #60a5fa) 1;
+    background: linear-gradient(225deg, #60a5fa, #93c5fd, #1e40af, #3b82f6, #93c5fd, #60a5fa);
   }
   75% { 
-    border-image: linear-gradient(315deg, #93c5fd, #1e40af, #3b82f6, #60a5fa, #1e40af, #93c5fd) 1;
+    background: linear-gradient(315deg, #93c5fd, #1e40af, #3b82f6, #60a5fa, #1e40af, #93c5fd);
   }
 }
 
@@ -264,9 +264,6 @@
   width: 42px;
   height: 42px;
   border-radius: 8px;
-  border: 2px solid;
-  border-image: linear-gradient(45deg, #1e40af, #3b82f6, #60a5fa, #93c5fd, #3b82f6, #1e40af) 1;
-  border-image-slice: 1;
   object-fit: cover;
   position: absolute;
   top: 0;
@@ -274,6 +271,18 @@
   transition: all 0.4s ease;
   opacity: 1;
   transform: scale(1);
+}
+
+.profile-avatar::before {
+  content: '';
+  position: absolute;
+  top: -1.5px;
+  left: -1.5px;
+  right: -1.5px;
+  bottom: -1.5px;
+  background: linear-gradient(45deg, #1e40af, #3b82f6, #60a5fa, #93c5fd, #3b82f6, #1e40af);
+  border-radius: 8px;
+  z-index: -1;
   animation: avatarGradientShift 3s ease-in-out infinite;
 }
 
@@ -385,10 +394,14 @@
     width: 36px;
     height: 36px;
     border-radius: 6px;
-    border: 2px solid;
-    border-image: linear-gradient(45deg, #1e40af, #3b82f6, #60a5fa, #93c5fd, #3b82f6, #1e40af) 1;
-    border-image-slice: 1;
-    animation: avatarGradientShift 3s ease-in-out infinite;
+  }
+  
+  .profile-avatar::before {
+    top: -1.5px;
+    left: -1.5px;
+    right: -1.5px;
+    bottom: -1.5px;
+    border-radius: 6px;
   }
   
   .rank-icon-large {
