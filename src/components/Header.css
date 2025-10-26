@@ -208,7 +208,7 @@
 .profile-link {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   padding: 0.6rem 1.2rem;
   border-radius: 25px;
   background: rgba(57, 185, 255, 0.1);
@@ -217,7 +217,7 @@
   text-decoration: none;
   transition: all 0.3s ease;
   font-weight: 500;
-  min-width: 200px;
+  min-width: 250px;
 }
 
 .profile-link:hover {
@@ -236,11 +236,19 @@
   flex-shrink: 0;
 }
 
+.rank-icon-large {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .profile-info {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.3rem;
   flex: 1;
+  align-items: center;
 }
 
 .profile-name {
@@ -250,6 +258,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: center;
 }
 
 .profile-details {
@@ -313,12 +322,18 @@
 @media (max-width: 768px) {
   .profile-link {
     padding: 0.5rem 0.8rem;
-    min-width: 180px;
+    min-width: 200px;
+    gap: 0.4rem;
   }
   
   .profile-avatar {
     width: 30px;
     height: 30px;
+  }
+  
+  .rank-icon-large {
+    width: 24px;
+    height: 24px;
   }
   
   .profile-name {
