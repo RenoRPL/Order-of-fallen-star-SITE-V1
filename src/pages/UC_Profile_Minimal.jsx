@@ -15,11 +15,20 @@ const UC_Profile_Minimal = () => {
       if (isAuthenticated && user) {
         try {
           setLoading(true)
-          console.log('User data:', user) // Debug log to see what data we have
+          console.log('User data:', user)
+          console.log('User ID:', user.id)
+          
+          // Check if OFSDataService has the function
+          if (typeof OFSDataService.getPatrolStats !== 'function') {
+            console.error('getPatrolStats function not found in OFSDataService')
+            setError('Service error: getPatrolStats function not available')
+            setLoading(false)
+            return
+          }
           
           // Get patrol stats using Discord ID
           const patrolStats = await OFSDataService.getPatrolStats(user.id)
-          console.log('Patrol stats:', patrolStats) // Debug log
+          console.log('Patrol stats response:', patrolStats)
           
           if (patrolStats) {
             setMemberData(patrolStats)
@@ -29,13 +38,15 @@ const UC_Profile_Minimal = () => {
           }
         } catch (err) {
           console.error('Error loading member data:', err)
-          setError('Failed to load member data')
+          setError(`Failed to load member data: ${err.message}`)
         } finally {
           setLoading(false)
         }
       } else {
         setLoading(false)
-        setShowLoginModal(true)
+        if (!isAuthenticated) {
+          setShowLoginModal(true)
+        }
       }
     }
 
@@ -131,17 +142,7 @@ const UC_Profile_Minimal = () => {
     )
   }
 
-  // Get member's patrols
-  const memberPatrols = patrolData.filter(patrol => 
-    patrol['Discord Username']?.toLowerCase() === user.username?.toLowerCase()
-  )
-
-  // Get member's rank info
-  const memberRank = ranksData.find(rank => 
-    rank['Rank Name'] === memberData['Current Rank'] || 
-    rank.Rank === memberData.Rank
-  )
-
+  // Display member stats
   return (
     <div className="uc-stats-page">
       <div className="stats-container">
