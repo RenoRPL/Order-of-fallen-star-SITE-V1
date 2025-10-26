@@ -2,7 +2,10 @@ import OFSDataService from './ofsDataService'
 
 class UserStatsService {
   static async getUserStats(discordId) {
+    console.log('getUserStats called with discordId:', discordId)
+    
     if (!discordId) {
+      console.log('No discordId provided')
       return {
         rank: 'Unknown',
         role: 'Unknown',
@@ -14,7 +17,9 @@ class UserStatsService {
 
     try {
       // Fetch member data from the Google Sheets
+      console.log('Fetching member data for:', discordId)
       const memberData = await OFSDataService.getMemberData(discordId)
+      console.log('Member data result:', memberData)
       
       if (!memberData) {
         console.log('No member data found for user:', discordId)
