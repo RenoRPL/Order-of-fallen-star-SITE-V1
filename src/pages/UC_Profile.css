@@ -2,12 +2,19 @@
 .uc-profile-page {
   min-height: 100vh;
   background: 
-    linear-gradient(135deg, rgba(5, 15, 35, 0.95) 0%, rgba(10, 25, 50, 0.9) 50%, rgba(15, 30, 60, 0.95) 100%),
+    linear-gradient(135deg, 
+      rgba(2, 6, 15, 0.98) 0%, 
+      rgba(8, 15, 25, 0.96) 25%, 
+      rgba(12, 20, 35, 0.97) 50%, 
+      rgba(10, 18, 30, 0.96) 75%, 
+      rgba(5, 12, 28, 0.98) 100%),
+    radial-gradient(circle at 30% 20%, rgba(90, 80, 140, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(80, 120, 160, 0.06) 0%, transparent 50%),
     url('/Nebula BG.jpeg');
-  background-size: cover;
+  background-size: cover, 100% 100%, 100% 100%, cover;
   background-position: center;
   background-attachment: fixed;
-  color: #ffffff;
+  color: #e8f2ff;
   font-family: 'Segoe UI', 'Arial', sans-serif;
 }
 
@@ -22,25 +29,26 @@
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem;
-  background: rgba(0, 0, 0, 0.6);
-  border: 2px solid rgba(57, 185, 255, 0.3);
+  background: rgba(8, 15, 30, 0.8);
+  border: 1px solid rgba(64, 120, 180, 0.3);
   border-radius: 15px;
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(64, 120, 180, 0.1);
 }
 
 .uc-header h1 {
   font-size: 2.5rem;
   font-weight: 900;
-  color: #39b9ff;
+  color: #5a9fd8;
   margin: 0 0 1rem 0;
   text-transform: uppercase;
   letter-spacing: 2px;
-  text-shadow: 0 0 20px rgba(57, 185, 255, 0.5);
+  text-shadow: 0 0 15px rgba(90, 159, 216, 0.3);
 }
 
 .uc-header p {
   font-size: 1.2rem;
-  color: #cccccc;
+  color: #b8d4ed;
   margin: 0;
   line-height: 1.6;
 }
@@ -49,24 +57,24 @@
 .uc-login-prompt {
   text-align: center;
   padding: 4rem 2rem;
-  background: rgba(0, 0, 0, 0.7);
-  border: 2px solid rgba(212, 175, 55, 0.3);
+  background: rgba(8, 15, 30, 0.9);
+  border: 1px solid rgba(100, 120, 200, 0.25);
   border-radius: 20px;
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(20px);
 }
 
 .uc-login-prompt h1 {
   font-size: 2.5rem;
-  color: #d4af37;
+  color: #7ba7d1;
   margin-bottom: 1rem;
-  text-shadow: 0 0 15px rgba(212, 175, 55, 0.7);
+  text-shadow: 0 0 12px rgba(123, 167, 209, 0.4);
 }
 
 .uc-login-note {
   margin-top: 2rem;
   padding: 1rem;
-  background: rgba(57, 185, 255, 0.1);
-  border: 1px solid rgba(57, 185, 255, 0.3);
+  background: rgba(90, 159, 216, 0.08);
+  border: 1px solid rgba(90, 159, 216, 0.2);
   border-radius: 10px;
 }
 
@@ -79,8 +87,8 @@
 .loading-spinner {
   width: 60px;
   height: 60px;
-  border: 4px solid rgba(57, 185, 255, 0.3);
-  border-top: 4px solid #39b9ff;
+  border: 3px solid rgba(90, 159, 216, 0.2);
+  border-top: 3px solid #5a9fd8;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 2rem;
@@ -92,40 +100,40 @@
 }
 
 .uc-loading h2 {
-  color: #39b9ff;
+  color: #5a9fd8;
   margin-bottom: 1rem;
 }
 
 /* Error State */
 .uc-error {
   padding: 2rem;
-  background: rgba(255, 71, 87, 0.1);
-  border: 2px solid rgba(255, 71, 87, 0.3);
+  background: rgba(45, 25, 35, 0.7);
+  border: 1px solid rgba(150, 80, 100, 0.4);
   border-radius: 15px;
   text-align: center;
 }
 
 .uc-error h2 {
-  color: #ff4757;
+  color: #d18590;
   margin-bottom: 1rem;
 }
 
 .uc-error-help {
   margin: 2rem 0;
   padding: 1rem;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(8, 15, 30, 0.6);
   border-radius: 10px;
   text-align: left;
 }
 
 .uc-error-help ul {
   margin: 0.5rem 0 0 1rem;
-  color: #cccccc;
+  color: #b8d4ed;
 }
 
 .retry-btn {
-  background: linear-gradient(45deg, #39b9ff, #00d4ff);
-  color: white;
+  background: linear-gradient(45deg, #5a9fd8, #4a89c8);
+  color: #ffffff;
   border: none;
   padding: 1rem 2rem;
   border-radius: 10px;
@@ -133,29 +141,33 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  text-shadow: 0 0 8px rgba(90, 159, 216, 0.3);
 }
 
 .retry-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(57, 185, 255, 0.4);
+  box-shadow: 0 8px 25px rgba(90, 159, 216, 0.25);
+  background: linear-gradient(45deg, #6ba9e0, #5a9fd8);
 }
 
 /* Progress Section */
 .uc-progress-section {
   margin-bottom: 3rem;
   padding: 2rem;
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(57, 185, 255, 0.3);
+  background: rgba(8, 15, 30, 0.7);
+  border: 1px solid rgba(90, 159, 216, 0.25);
   border-radius: 15px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 32px rgba(90, 159, 216, 0.08);
 }
 
 .uc-progress-section h2 {
-  color: #39b9ff;
+  color: #5a9fd8;
   margin-bottom: 2rem;
   font-size: 1.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(90, 159, 216, 0.3);
 }
 
 .progress-grid {
@@ -169,36 +181,40 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(12, 20, 35, 0.6);
+  border: 1px solid rgba(90, 159, 216, 0.15);
   border-radius: 10px;
   transition: all 0.3s ease;
 }
 
 .progress-item.completed {
-  border-color: rgba(0, 255, 136, 0.4);
-  background: rgba(0, 255, 136, 0.1);
+  border-color: rgba(80, 180, 120, 0.35);
+  background: linear-gradient(135deg, rgba(80, 180, 120, 0.1), rgba(70, 160, 110, 0.08));
+  box-shadow: 0 0 20px rgba(80, 180, 120, 0.12);
 }
 
 .progress-item.in-progress {
-  border-color: rgba(255, 193, 7, 0.4);
-  background: rgba(255, 193, 7, 0.1);
+  border-color: rgba(120, 100, 200, 0.35);
+  background: linear-gradient(135deg, rgba(120, 100, 200, 0.1), rgba(100, 80, 180, 0.08));
+  box-shadow: 0 0 20px rgba(120, 100, 200, 0.12);
 }
 
 .progress-item.pending {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(90, 100, 120, 0.25);
+  background: linear-gradient(135deg, rgba(90, 100, 120, 0.06), rgba(70, 80, 100, 0.04));
 }
 
 .progress-icon {
   font-size: 1.5rem;
   min-width: 2rem;
+  filter: drop-shadow(0 0 8px currentColor);
 }
 
 .progress-text {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  color: #e8f2ff;
 }
 
 /* Data Section */
@@ -207,11 +223,12 @@
 }
 
 .uc-data-section h2 {
-  color: #d4af37;
+  color: #8db0d8;
   margin-bottom: 2rem;
   font-size: 1.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(141, 176, 216, 0.3);
 }
 
 .data-preview {
@@ -221,21 +238,23 @@
 }
 
 .data-card {
-  background: rgba(0, 0, 0, 0.6);
-  border: 2px solid rgba(212, 175, 55, 0.3);
+  background: rgba(8, 15, 30, 0.8);
+  border: 1px solid rgba(120, 140, 180, 0.25);
   border-radius: 15px;
   padding: 2rem;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 32px rgba(120, 140, 180, 0.08);
 }
 
 .data-card h3 {
-  color: #d4af37;
+  color: #7ba7d1;
   margin-bottom: 1.5rem;
   font-size: 1.3rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  border-bottom: 1px solid rgba(123, 167, 209, 0.25);
   padding-bottom: 0.5rem;
+  text-shadow: 0 0 8px rgba(123, 167, 209, 0.3);
 }
 
 .data-row {
@@ -243,7 +262,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(90, 159, 216, 0.1);
 }
 
 .data-row:last-child {
@@ -251,7 +270,7 @@
 }
 
 .data-row .label {
-  color: #cccccc;
+  color: #b8d4ed;
   font-weight: 500;
   text-transform: uppercase;
   font-size: 0.9rem;
@@ -259,7 +278,7 @@
 }
 
 .data-row .value {
-  color: #ffffff;
+  color: #e8f2ff;
   font-weight: 600;
 }
 
@@ -272,7 +291,8 @@
   max-width: 80px;
   height: auto;
   border-radius: 10px;
-  border: 2px solid #d4af37;
+  border: 2px solid #7ba7d1;
+  box-shadow: 0 0 15px rgba(123, 167, 209, 0.3);
 }
 
 /* Next Steps Section */
@@ -281,11 +301,12 @@
 }
 
 .uc-next-steps h2 {
-  color: #39b9ff;
+  color: #6ba9e0;
   margin-bottom: 2rem;
   font-size: 1.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(107, 169, 224, 0.3);
 }
 
 .steps-grid {
@@ -295,30 +316,32 @@
 }
 
 .step-card {
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(57, 185, 255, 0.3);
+  background: rgba(8, 15, 30, 0.7);
+  border: 1px solid rgba(107, 169, 224, 0.25);
   border-radius: 15px;
   padding: 2rem;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
   transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(107, 169, 224, 0.08);
 }
 
 .step-card:hover {
   transform: translateY(-5px);
-  border-color: rgba(57, 185, 255, 0.6);
-  box-shadow: 0 10px 30px rgba(57, 185, 255, 0.2);
+  border-color: rgba(107, 169, 224, 0.4);
+  box-shadow: 0 12px 40px rgba(107, 169, 224, 0.15);
 }
 
 .step-card h3 {
-  color: #39b9ff;
+  color: #6ba9e0;
   margin-bottom: 1rem;
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(107, 169, 224, 0.3);
 }
 
 .step-card p {
-  color: #cccccc;
+  color: #b8d4ed;
   line-height: 1.6;
   margin: 0;
 }
@@ -327,22 +350,24 @@
 .uc-test-section {
   text-align: center;
   padding: 2rem;
-  background: rgba(0, 0, 0, 0.4);
-  border: 2px solid rgba(212, 175, 55, 0.3);
+  background: rgba(8, 15, 30, 0.6);
+  border: 1px solid rgba(120, 140, 200, 0.25);
   border-radius: 15px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 32px rgba(120, 140, 200, 0.08);
 }
 
 .uc-test-section h2 {
-  color: #d4af37;
+  color: #788cc8;
   margin-bottom: 1rem;
   font-size: 1.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(120, 140, 200, 0.3);
 }
 
 .uc-test-section p {
-  color: #cccccc;
+  color: #b8d4ed;
   margin-bottom: 2rem;
 }
 
@@ -356,20 +381,23 @@
 .test-btn {
   display: inline-block;
   padding: 1rem 2rem;
-  background: linear-gradient(45deg, #d4af37, #ffd700);
-  color: #000;
+  background: linear-gradient(45deg, #5a9fd8, #6ba9e0);
+  color: #ffffff;
   text-decoration: none;
   border-radius: 10px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: all 0.3s ease;
+  text-shadow: 0 0 8px rgba(90, 159, 216, 0.3);
+  border: 1px solid rgba(90, 159, 216, 0.3);
 }
 
 .test-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
-  background: linear-gradient(45deg, #ffd700, #d4af37);
+  box-shadow: 0 10px 25px rgba(90, 159, 216, 0.25);
+  background: linear-gradient(45deg, #6ba9e0, #7bb3e8);
+  border-color: rgba(90, 159, 216, 0.5);
 }
 
 /* Responsive Design */
@@ -398,4 +426,91 @@
     flex-direction: column;
     align-items: center;
   }
+}
+
+/* Interstellar Enhancement Effects */
+.uc-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(90, 159, 216, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(120, 100, 200, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(100, 180, 120, 0.025) 0%, transparent 50%),
+    radial-gradient(circle at 60% 20%, rgba(140, 120, 180, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Subtle pulsing animation for headers */
+@keyframes subtle-glow {
+  0%, 100% { 
+    text-shadow: 0 0 10px rgba(90, 159, 216, 0.3);
+  }
+  50% { 
+    text-shadow: 
+      0 0 15px rgba(90, 159, 216, 0.4), 
+      0 0 25px rgba(90, 159, 216, 0.2),
+      0 0 35px rgba(120, 100, 200, 0.1);
+  }
+}
+
+.uc-header h1,
+.uc-progress-section h2,
+.uc-data-section h2,
+.uc-next-steps h2,
+.uc-test-section h2 {
+  animation: subtle-glow 4s ease-in-out infinite;
+}
+
+/* Enhanced border glow on hover */
+.data-card:hover,
+.step-card:hover {
+  box-shadow: 
+    0 12px 40px rgba(107, 169, 224, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 30px rgba(120, 100, 200, 0.08);
+}
+
+/* Subtle particle effect simulation */
+.uc-progress-section::after,
+.uc-data-section::after,
+.uc-next-steps::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, rgba(255, 255, 255, 0.1), transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(90, 159, 216, 0.15), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(120, 100, 200, 0.1), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(100, 180, 120, 0.08), transparent),
+    radial-gradient(1px 1px at 170px 20px, rgba(140, 120, 180, 0.06), transparent);
+  background-repeat: repeat;
+  background-size: 200px 120px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.uc-progress-section,
+.uc-data-section,
+.uc-next-steps {
+  position: relative;
+}
+
+/* Additional subtle interstellar effects */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.progress-item:hover,
+.data-card:hover {
+  animation: float 3s ease-in-out infinite;
 }
