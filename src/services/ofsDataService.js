@@ -2,6 +2,7 @@
 const MEMBER_LOG_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=2052923864&single=true&output=csv'
 const PATROLS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1963239464&single=true&output=csv'
 const RANKS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1671642684&single=true&output=csv'
+const PATROL_STATS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1245860458&single=true&output=csv'
 
 class OFSDataService {
   static async fetchCSV(url) {
@@ -99,6 +100,16 @@ class OFSDataService {
     } catch (error) {
       console.error('Error fetching all patrol data:', error)
       return []
+    }
+  }
+
+  static async getPatrolStats(discordId) {
+    try {
+      const patrolStats = await this.fetchCSV(PATROL_STATS_URL)
+      return patrolStats.find(stats => stats.UserID === discordId) || null
+    } catch (error) {
+      console.error('Error fetching patrol stats:', error)
+      return null
     }
   }
 
