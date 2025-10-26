@@ -204,6 +204,22 @@
   }
 }
 
+/* Avatar Gradient Animation */
+@keyframes avatarGradientShift {
+  0%, 100% { 
+    border-image: linear-gradient(45deg, #1e40af, #3b82f6, #60a5fa, #93c5fd, #3b82f6, #1e40af) 1;
+  }
+  25% { 
+    border-image: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd, #1e40af, #60a5fa, #3b82f6) 1;
+  }
+  50% { 
+    border-image: linear-gradient(225deg, #60a5fa, #93c5fd, #1e40af, #3b82f6, #93c5fd, #60a5fa) 1;
+  }
+  75% { 
+    border-image: linear-gradient(315deg, #93c5fd, #1e40af, #3b82f6, #60a5fa, #1e40af, #93c5fd) 1;
+  }
+}
+
 /* Profile Link Styles */
 .profile-link {
   display: flex;
@@ -248,7 +264,9 @@
   width: 42px;
   height: 42px;
   border-radius: 8px;
-  border: 2px solid #39b9ff;
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #1e40af, #3b82f6, #60a5fa, #93c5fd, #3b82f6, #1e40af) 1;
+  border-image-slice: 1;
   object-fit: cover;
   position: absolute;
   top: 0;
@@ -256,6 +274,7 @@
   transition: all 0.4s ease;
   opacity: 1;
   transform: scale(1);
+  animation: avatarGradientShift 3s ease-in-out infinite;
 }
 
 .rank-icon-large {
@@ -366,6 +385,10 @@
     width: 36px;
     height: 36px;
     border-radius: 6px;
+    border: 2px solid;
+    border-image: linear-gradient(45deg, #1e40af, #3b82f6, #60a5fa, #93c5fd, #3b82f6, #1e40af) 1;
+    border-image-slice: 1;
+    animation: avatarGradientShift 3s ease-in-out infinite;
   }
   
   .rank-icon-large {
