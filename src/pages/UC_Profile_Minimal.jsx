@@ -109,13 +109,10 @@ const UC_Profile_Minimal = () => {
     return (
       <div className="uc-stats-page">
         <div className="stats-container">
-          <div className="error-stats">
-            <h2>❌ Error Loading Stats</h2>
+          <div className="error-message">
+            <h2>⚠️ Error Loading Stats</h2>
             <p>{error}</p>
-            <button 
-              onClick={() => window.location.reload()}
-              className="retry-btn"
-            >
+            <button onClick={() => window.location.reload()} className="retry-btn">
               Retry
             </button>
           </div>
@@ -142,111 +139,150 @@ const UC_Profile_Minimal = () => {
     )
   }
 
-  // Display member stats
+  // Display member stats with new layout
   return (
     <div className="uc-stats-page">
       <div className="stats-container">
         
-        {/* Member Header */}
-        <div className="member-header">
-          <div className="member-avatar">
-            {user.avatar ? (
-              <img 
-                src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`} 
-                alt={user.username}
-              />
-            ) : (
-              <div className="default-avatar">{user.username?.charAt(0)?.toUpperCase()}</div>
-            )}
-          </div>
-          <div className="member-info">
-            <h1>{memberData.DisplayName || user.username}</h1>
-            <div className="member-details">
-              <span className="discord-tag">@{user.username}</span>
-              <span className="rank">Active Member</span>
+        {/* Profile Layout */}
+        <div className="profile-layout">
+          
+          {/* Left Sidebar - Member Info */}
+          <div className="left-sidebar">
+            <div className="search-section">
+              <div className="input-field">
+                <input type="text" placeholder="Search Bar For Other Members" disabled />
+              </div>
             </div>
+            
+            <div className="member-info-section">
+              <div className="input-field">
+                <label>Character Name</label>
+                <input type="text" value={memberData.DisplayName || user.username} readOnly />
+              </div>
+              
+              <div className="input-field">
+                <label>Rank Name</label>
+                <input type="text" value="Active Member" readOnly />
+              </div>
+              
+              <div className="input-field">
+                <label>Role Name</label>
+                <input type="text" value="Organization Member" readOnly />
+              </div>
+              
+              <div className="input-field">
+                <label>Chapter Name</label>
+                <input type="text" value="Order of the Fallen Star" readOnly />
+              </div>
+            </div>
+          </div>
+
+          {/* Center Section - Wall of Medals */}
+          <div className="center-section">
+            <h3>Wall of Medals</h3>
+            <div className="medals-grid">
+              {/* Top row of medals */}
+              <div className="medal-row">
+                <div className={`medal ${(memberData.PatrolCount || 0) >= 1 ? 'earned' : ''}`}>⭐</div>
+                <div className={`medal ${(memberData.PatrolCount || 0) >= 3 ? 'earned' : ''}`}>⭐</div>
+                <div className={`medal ${(memberData.PatrolCount || 0) >= 5 ? 'earned' : ''}`}>⭐</div>
+                <div className={`medal ${(memberData.FPS_Kills_Total || 0) >= 10 ? 'earned' : ''}`}>⭐</div>
+                <div className={`medal ${(memberData.Quest_Total || 0) >= 5 ? 'earned' : ''}`}>⭐</div>
+              </div>
+              {/* Bottom row of medals */}
+              <div className="medal-row">
+                <div className={`medal ${(memberData.Led_Completed_Quests || 0) >= 1 ? 'earned' : ''}`}>⭐</div>
+                <div className={`medal ${(memberData.FPS_Kills_Total || 0) >= 25 ? 'earned' : ''}`}>⭐</div>
+                <div className={`medal ${(memberData.PatrolCount || 0) >= 10 ? 'earned' : ''}`}>⭐</div>
+                <div className={`medal ${(memberData.Quest_Total || 0) >= 10 ? 'earned' : ''}`}>⭐</div>
+                <div className={`medal ${(memberData.Led_Completed_Crusades || 0) >= 1 ? 'earned' : ''}`}>⭐</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Section - Stats */}
+          <div className="right-sidebar">
+            
+            {/* Led Stats */}
+            <div className="stats-section">
+              <h4>Led</h4>
+              <div className="stat-boxes">
+                <div className="stat-box">
+                  <div className="stat-number">{memberData.Led_Completed_Quests || 0}</div>
+                  <div className="stat-label">Quests</div>
+                </div>
+                <div className="stat-box">
+                  <div className="stat-number">{memberData.Led_Completed_Crusades || 0}</div>
+                  <div className="stat-label">Crusades</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Completed Stats */}
+            <div className="stats-section">
+              <h4>Completed</h4>
+              <div className="stat-boxes">
+                <div className="stat-box">
+                  <div className="stat-number">{memberData.Quest_Total || 0}</div>
+                  <div className="stat-label">Quests</div>
+                </div>
+                <div className="stat-box">
+                  <div className="stat-number">{memberData.Crusades_Total || 0}</div>
+                  <div className="stat-label">Crusades</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Kills Stats */}
+            <div className="stats-section">
+              <h4>Kills</h4>
+              <div className="stat-boxes">
+                <div className="stat-box">
+                  <div className="stat-number">{memberData.FPS_Kills_Total || 0}</div>
+                  <div className="stat-label">Ground</div>
+                </div>
+                <div className="stat-box">
+                  <div className="stat-number">{memberData.Ship_Kills_Total || 0}</div>
+                  <div className="stat-label">Pilot</div>
+                </div>
+                <div className="stat-box">
+                  <div className="stat-number">{memberData.Turret_Kills_Total || 0}</div>
+                  <div className="stat-label">Turret</div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="stats-grid">
+        {/* Bottom Section */}
+        <div className="bottom-section">
           
-          {/* Activity Stats */}
-          <div className="stat-card">
-            <h3>� Activity Stats</h3>
-            <div className="stat-rows">
-              <div className="stat-row">
-                <span className="label">Total Patrols</span>
-                <span className="value highlight">{memberData.PatrolCount || 0}</span>
-              </div>
-              <div className="stat-row">
-                <span className="label">Last Patrol</span>
-                <span className="value">
-                  {memberData.LastPatrolDate && memberData.LastPatrolDate !== '' 
-                    ? new Date(memberData.LastPatrolDate).toLocaleDateString()
-                    : 'No patrols yet'
-                  }
-                </span>
-              </div>
-              <div className="stat-row">
-                <span className="label">First Patrol</span>
-                <span className="value">
-                  {memberData.FirstPatrolDate && memberData.FirstPatrolDate !== '' 
-                    ? new Date(memberData.FirstPatrolDate).toLocaleDateString()
-                    : 'No patrols yet'
-                  }
-                </span>
-              </div>
-              <div className="stat-row">
-                <span className="label">Total Length</span>
-                <span className="value">{memberData.TotalLength || 0} hours</span>
-              </div>
+          {/* Completed Quests */}
+          <div className="quest-section">
+            <h3>Completed Quests</h3>
+            <div className="quest-list">
+              <div className="quest-item">Quest data coming soon...</div>
             </div>
           </div>
 
-          {/* Combat Stats */}
-          <div className="stat-card">
-            <h3>⚔️ Combat Stats</h3>
-            <div className="stat-rows">
-              <div className="stat-row">
-                <span className="label">FPS Kills</span>
-                <span className="value highlight">{memberData.FPS_Kills_Total || 0}</span>
-              </div>
-              <div className="stat-row">
-                <span className="label">Ship Kills</span>
-                <span className="value highlight">{memberData.Ship_Kills_Total || 0}</span>
-              </div>
-              <div className="stat-row">
-                <span className="label">Turret Kills</span>
-                <span className="value highlight">{memberData.Turret_Kills_Total || 0}</span>
-              </div>
-              <div className="stat-row">
-                <span className="label">Crusades</span>
-                <span className="value">{memberData.Crusades_Total || 0}</span>
-              </div>
+          {/* Completed Crusades */}
+          <div className="crusade-section">
+            <h3>Completed Crusades</h3>
+            <div className="crusade-list">
+              <div className="crusade-item">Crusade data coming soon...</div>
             </div>
           </div>
 
-          {/* Mission Stats */}
-          <div className="stat-card">
-            <h3>🎯 Mission Stats</h3>
-            <div className="stat-rows">
-              <div className="stat-row">
-                <span className="label">Quests Completed</span>
-                <span className="value highlight">{memberData.Quest_Total || 0}</span>
-              </div>
-              <div className="stat-row">
-                <span className="label">Quests Led</span>
-                <span className="value highlight">{memberData.Led_Completed_Quests || 0}</span>
-              </div>
-              <div className="stat-row">
-                <span className="label">Crusades Led</span>
-                <span className="value highlight">{memberData.Led_Completed_Crusades || 0}</span>
-              </div>
-              <div className="stat-row">
-                <span className="label">Star Citizen Patrols</span>
-                <span className="value">{memberData['Game:Star Citizen Patrols'] || 0}</span>
-              </div>
+          {/* Backstory */}
+          <div className="backstory-section">
+            <h3>Backstory</h3>
+            <div className="backstory-content">
+              <p>Member of the Order of the Fallen Star organization.</p>
+              <p>Join Date: {memberData.FirstPatrolDate ? new Date(memberData.FirstPatrolDate).toLocaleDateString() : 'Unknown'}</p>
+              <p>Total Patrols: {memberData.PatrolCount || 0}</p>
+              <p>Last Activity: {memberData.LastPatrolDate ? new Date(memberData.LastPatrolDate).toLocaleDateString() : 'No recent activity'}</p>
             </div>
           </div>
 
