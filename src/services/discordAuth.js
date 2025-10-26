@@ -7,21 +7,18 @@ const DISCORD_API_BASE = 'https://discord.com/api/v10'
 
 export class DiscordAuthService {
   static generateAuthUrl() {
-    // Validate environment variables at runtime
-    if (!DISCORD_CLIENT_ID || DISCORD_CLIENT_ID === 'development-client-id') {
-      console.warn('Discord Client ID not configured properly')
-      console.log('Current DISCORD_CLIENT_ID:', DISCORD_CLIENT_ID)
-      console.log('Available env vars:', import.meta.env)
-    }
+    // Use the known working client ID and redirect URI
+    const CLIENT_ID = '1429228667564851383'
+    const REDIRECT_URI = 'https://orderofthefallenstar.com/auth/callback'
     
-    console.log('Generating auth URL with:', {
-      client_id: DISCORD_CLIENT_ID,
-      redirect_uri: DISCORD_REDIRECT_URI
+    console.log('Generating auth URL with hardcoded values:', {
+      client_id: CLIENT_ID,
+      redirect_uri: REDIRECT_URI
     })
     
     const params = new URLSearchParams({
-      client_id: DISCORD_CLIENT_ID,
-      redirect_uri: DISCORD_REDIRECT_URI,
+      client_id: CLIENT_ID,
+      redirect_uri: REDIRECT_URI,
       response_type: 'code',
       scope: 'identify guilds',
       state: this.generateState()

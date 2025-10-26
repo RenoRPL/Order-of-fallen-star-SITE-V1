@@ -45,7 +45,13 @@ const UC_Profile_Minimal = () => {
   }, [isAuthenticated, user])
 
   const handleDiscordLogin = () => {
-    login()
+    console.log('Discord login button clicked!')
+    console.log('Login function:', login)
+    try {
+      login()
+    } catch (error) {
+      console.error('Error calling login function:', error)
+    }
   }
 
   const closeModal = () => {

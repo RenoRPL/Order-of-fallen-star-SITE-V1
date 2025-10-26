@@ -27,11 +27,24 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const login = () => {
-    const authUrl = DiscordAuthService.generateAuthUrl()
-    console.log('Generated Discord auth URL:', authUrl)
-    console.log('Client ID:', import.meta.env.VITE_DISCORD_CLIENT_ID)
-    console.log('Redirect URI:', import.meta.env.VITE_DISCORD_REDIRECT_URI)
-    window.location.href = authUrl
+    try {
+      const authUrl = DiscordAuthService.generateAuthUrl()
+      console.log('Generated Discord auth URL:', authUrl)
+      console.log('Client ID:', import.meta.env.VITE_DISCORD_CLIENT_ID)
+      console.log('Redirect URI:', import.meta.env.VITE_DISCORD_REDIRECT_URI)
+      
+      if (!authUrl || authUrl === 'undefined') {
+        console.error('Failed to generate auth URL')
+        alert('Error: Unable to generate Discord authorization URL. Please try again.')
+        return
+      }
+      
+      console.log('Redirecting to Discord...')
+      window.location.href = authUrl
+    } catch (error) {
+      console.error('Error during login:', error)
+      alert('Error during Discord login. Please try again.')
+    }
   }
 
   const logout = () => {
