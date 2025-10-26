@@ -1,7 +1,7 @@
 // Discord OAuth Configuration
 // Updated: Production environment variables configured in Netlify
 // Deployment triggered for environment variable update
-const DISCORD_CLIENT_ID = import.meta.env.VITE_DISCORD_CLIENT_ID || 'development-client-id'
+const DISCORD_CLIENT_ID = import.meta.env.VITE_DISCORD_CLIENT_ID || '1429228667564851383'
 const DISCORD_REDIRECT_URI = import.meta.env.VITE_DISCORD_REDIRECT_URI || `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173'}/auth/callback`
 const DISCORD_API_BASE = 'https://discord.com/api/v10'
 
@@ -10,7 +10,14 @@ export class DiscordAuthService {
     // Validate environment variables at runtime
     if (!DISCORD_CLIENT_ID || DISCORD_CLIENT_ID === 'development-client-id') {
       console.warn('Discord Client ID not configured properly')
+      console.log('Current DISCORD_CLIENT_ID:', DISCORD_CLIENT_ID)
+      console.log('Available env vars:', import.meta.env)
     }
+    
+    console.log('Generating auth URL with:', {
+      client_id: DISCORD_CLIENT_ID,
+      redirect_uri: DISCORD_REDIRECT_URI
+    })
     
     const params = new URLSearchParams({
       client_id: DISCORD_CLIENT_ID,
@@ -20,7 +27,9 @@ export class DiscordAuthService {
       state: this.generateState()
     })
     
-    return `https://discord.com/api/oauth2/authorize?${params.toString()}`
+    const authUrl = `https://discord.com/api/oauth2/authorize?${params.toString()}`
+    console.log('Final auth URL:', authUrl)
+    return authUrl
   }
 
   static generateState() {

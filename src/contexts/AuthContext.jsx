@@ -28,6 +28,9 @@ export const AuthProvider = ({ children }) => {
 
   const login = () => {
     const authUrl = DiscordAuthService.generateAuthUrl()
+    console.log('Generated Discord auth URL:', authUrl)
+    console.log('Client ID:', import.meta.env.VITE_DISCORD_CLIENT_ID)
+    console.log('Redirect URI:', import.meta.env.VITE_DISCORD_REDIRECT_URI)
     window.location.href = authUrl
   }
 
