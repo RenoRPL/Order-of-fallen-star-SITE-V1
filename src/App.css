@@ -169,6 +169,15 @@
   z-index: 1;
 }
 
+/* Discord Login Section */
+.discord-login-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
 .button {
   padding: 0.75rem 1.25rem;
   border-radius: 0.75rem;
@@ -203,6 +212,95 @@
   box-shadow: 0 6px 20px rgba(57, 185, 255, 0.3);
   transform: translateY(-2px);
   border-color: #ffd700;
+}
+
+.button.tertiary {
+  border: 1px solid #d4af37;
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.button.tertiary:hover {
+  background: rgba(212, 175, 55, 0.2);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+  transform: translateY(-2px);
+  border-color: #ffd700;
+  color: #ffd700;
+}
+
+/* Discord Login Button */
+.button.discord {
+  width: 331.5px;
+  min-width: 331.5px;
+  height: 45px;
+  margin: 0 auto;
+  padding: 0;
+  background: linear-gradient(135deg, #5865f2, #6b73f5, #5865f2);
+  background-size: 300% 300%;
+  color: white;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: discordGradient 8s ease-in-out infinite;
+}
+
+.button.discord::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #5865f2, #6b73f5, #7289da, #6b73f5, #5865f2);
+  background-size: 400% 400%;
+  border-radius: 10px;
+  z-index: -1;
+  animation: discordStroke 6s ease-in-out infinite;
+}
+
+.button.discord:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 20px rgba(88, 101, 242, 0.3);
+  background: linear-gradient(135deg, #5259d1, #5865f2, #5259d1);
+}
+
+.button.discord .discord-icon {
+  margin-right: 0.8rem;
+  font-size: 1.4rem;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+}
+
+@keyframes discordGradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes discordStroke {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
 }
 
 /* Developer Access Styles */

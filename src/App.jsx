@@ -1,8 +1,12 @@
 import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
+import ProfileTest from './pages/ProfileTest'
+import ProfileOrg from './pages/ProfileOrg'
+import UC_Profile from './pages/UC_Profile'
+import UC_Profile_Minimal from './pages/UC_Profile_Minimal'
 import ContentManagement from './pages/ContentManagement'
 import TermsPrivacy from './pages/TermsPrivacy'
 import AuthCallback from './pages/AuthCallback'
@@ -45,6 +49,18 @@ export default function App() {
           {/* Profile Route */}
           <Route path="/profile" element={<Profile />} />
           
+          {/* Profile Test Route - For Development */}
+          <Route path="/profile-test" element={<ProfileTest />} />
+          
+          {/* Organization Profile Route - Star Citizen Style */}
+          <Route path="/profile-org" element={<ProfileOrg />} />
+          
+          {/* Under Construction Profile Route */}
+          <Route path="/uc-profile" element={<UC_Profile_Minimal />} />
+          
+          {/* Under Construction Profile Route - Full Version */}
+          <Route path="/uc-profile-full" element={<UC_Profile />} />
+          
           {/* Main Site Route */}
         <Route path="/" element={
           isAuthenticated ? (
@@ -85,6 +101,16 @@ export default function App() {
                 >
                   Visit Spectrum
                 </a>
+              </div>
+              
+              {/* Discord Member Login Button */}
+              <div className="discord-login-section">
+                <Link
+                  to="/uc-profile"
+                  className="button discord"
+                >
+                  Link Discord
+                </Link>
               </div>
 
               {/* Developer Access Modal */}
