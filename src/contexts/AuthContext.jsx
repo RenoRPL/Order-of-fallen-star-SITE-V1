@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { DiscordAuthService } from '../services/discordAuth'
+import UserStatsService from '../services/userStatsService'
 
 const AuthContext = createContext(null)
 
@@ -13,6 +14,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
+  const [userStats, setUserStats] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
@@ -22,9 +24,26 @@ export const AuthProvider = ({ children }) => {
     if (userData) {
       setUser(userData.user)
       setIsAuthenticated(true)
+      // Fetch user stats after setting user
+      fetchUserStats(userData.user.id)
     }
     setIsLoading(false)
   }, [])
+
+  const fetchUserStats = async (userId) => {
+    try {
+      const stats = await UserStatsService.getUserStats(userId)
+      setUserStats(stats)
+    } catch (error) {
+      console.error('Error fetching user stats:', error)
+      // Set default stats on error
+      setUserStats({
+        rank: 'Recruit',
+        role: 'Member',
+        points: 0
+      })
+    }
+  }
 
   const login = () => {
     try {
@@ -50,6 +69,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     DiscordAuthService.logout()
     setUser(null)
+    setUserStats(null)
     setIsAuthenticated(false)
   }
 
@@ -91,6 +111,9 @@ export const AuthProvider = ({ children }) => {
         setUser(mockUser)
         setIsAuthenticated(true)
         
+        // Fetch mock user stats for testing
+        await fetchUserStats(mockUser.id)
+        
         return authData
       }
 
@@ -105,6 +128,9 @@ export const AuthProvider = ({ children }) => {
       
       setUser(userData)
       setIsAuthenticated(true)
+      
+      // Fetch user stats after successful authentication
+      await fetchUserStats(userData.id)
       
       return authData
     } catch (error) {
@@ -127,11 +153,13 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    userStats,
     isAuthenticated,
     isLoading,
     login,
     logout,
-    handleAuthCallback
+    handleAuthCallback,
+    refreshUserStats: () => user && fetchUserStats(user.id)
   }
 
   return (
