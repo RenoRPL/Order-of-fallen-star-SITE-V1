@@ -10,6 +10,7 @@ const UC_Profile_Minimal = () => {
   const [ranksData, setRanksData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [showLoginModal, setShowLoginModal] = useState(false)
 
   useEffect(() => {
     const loadData = async () => {
@@ -36,27 +37,37 @@ const UC_Profile_Minimal = () => {
         }
       } else {
         setLoading(false)
+        setShowLoginModal(true)
       }
     }
 
     loadData()
   }, [isAuthenticated, user])
 
-  // Login prompt for non-authenticated users
-  if (!isAuthenticated) {
+  const handleDiscordLogin = () => {
+    window.location.href = '/api/auth/discord'
+  }
+
+  const closeModal = () => {
+    setShowLoginModal(false)
+    // Redirect back to home page
+    window.location.href = '/'
+  }
+
+  // Login Modal
+  if (showLoginModal && !isAuthenticated) {
     return (
-      <div className="uc-stats-page">
-        <div className="stats-container">
-          <div className="login-required">
-            <div className="discord-logo">🎮</div>
-            <h1>Member Stats Access</h1>
+      <div className="login-modal-overlay">
+        <div className="login-modal">
+          <button className="modal-close" onClick={closeModal}>
+            ✕
+          </button>
+          <div className="modal-content">
+            <div className="discord-icon-large">🎮</div>
+            <h2>Member Stats Access</h2>
             <p>Please sign in with Discord to view your member statistics</p>
-            <button 
-              onClick={() => window.location.href = '/api/auth/discord'}
-              className="discord-login-btn"
-            >
-              <span className="discord-icon">🎮</span>
-              Sign in with Discord
+            <button onClick={handleDiscordLogin} className="modal-discord-btn">
+              🎮 Sign in with Discord
             </button>
           </div>
         </div>

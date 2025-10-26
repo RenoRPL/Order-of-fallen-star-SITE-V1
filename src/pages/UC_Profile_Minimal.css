@@ -17,40 +17,84 @@
   margin: 0 auto;
 }
 
-/* Login Required Section */
-.login-required {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid rgba(88, 101, 242, 0.5);
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
+/* Login Modal */
+.login-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
-.discord-logo {
+.login-modal {
+  background: #000000;
+  border: 2px solid rgba(88, 101, 242, 0.3);
+  border-radius: 15px;
+  padding: 3rem;
+  max-width: 450px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ff4757;
+}
+
+.modal-content {
+  text-align: center;
+}
+
+.discord-icon-large {
   font-size: 4rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   filter: drop-shadow(0 0 20px rgba(88, 101, 242, 0.7));
 }
 
-.login-required h1 {
-  font-size: 2.5rem;
+.modal-content h2 {
   color: #5865f2;
+  font-size: 2rem;
   margin-bottom: 1rem;
-  text-shadow: 0 0 20px rgba(88, 101, 242, 0.6);
+  font-weight: 700;
 }
 
-.login-required p {
-  font-size: 1.2rem;
+.modal-content p {
   color: #cccccc;
+  font-size: 1.1rem;
   margin-bottom: 2rem;
+  line-height: 1.6;
 }
 
-.discord-login-btn {
-  padding: 1rem 2rem;
-  background: linear-gradient(45deg, #5865f2, #7289da);
+.modal-discord-btn {
+  background: linear-gradient(135deg, #5865f2, #7289da);
   color: white;
   border: none;
+  padding: 1rem 2rem;
   border-radius: 10px;
   font-size: 1.1rem;
   font-weight: 600;
@@ -59,12 +103,14 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  min-width: 200px;
+  justify-content: center;
 }
 
-.discord-login-btn:hover {
-  transform: translateY(-3px);
+.modal-discord-btn:hover {
+  transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
-  background: linear-gradient(45deg, #4752c4, #5865f2);
+  background: linear-gradient(135deg, #4752c4, #5865f2);
 }
 
 /* Loading Section */
