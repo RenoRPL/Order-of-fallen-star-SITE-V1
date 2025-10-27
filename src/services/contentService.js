@@ -4,7 +4,7 @@ import OFSDataService from './ofsDataService.js';
 
 // Default content structure
 const defaultContent = {
-  version: "1.3.1", // Updated version to remove emojis
+  version: "1.3.2", // Updated version for Join Org button changes
   hero: {
     title: "Welcome to Order of the Fallen Star",
     subtitle: "Elite Star Citizen Organization - Forging Legends Among the Stars",
@@ -58,12 +58,12 @@ const defaultContent = {
     title: "Ready to Join the Elite?",
     description: "Take your place among the stars with Order of the Fallen Star. Experience epic adventures, forge unbreakable bonds, and become part of a legendary organization that shapes the galaxy's future.",
     benefits: [
-      { icon: "🌟", text: "Exclusive missions and events" },
-      { icon: "🚀", text: "Access to organization fleet" },
-      { icon: "🤝", text: "Active community support" }
+      { text: "Exclusive missions and events" },
+      { text: "Access to organization fleet" },
+      { text: "Active community support" }
     ],
     buttons: {
-      primary: "Join Now",
+      primary: "Join Org",
       secondary: "Join Discord"
     }
   },

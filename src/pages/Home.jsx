@@ -198,22 +198,21 @@ export default function Home() {
           <div className="join-overlay">
             <div className="join-container">
               <div className="join-content">
-                <h2>{content.join.title}</h2>
+                <h2>{content?.join?.title || "Ready to Join the Elite?"}</h2>
                 <p className="join-description">
-                  {content.join.description}
+                  {content?.join?.description || "Take your place among the stars with Order of the Fallen Star."}
                 </p>
                 <div className="join-benefits">
-                  {content.join.benefits.map((benefit, index) => (
+                  {(content?.join?.benefits || []).map((benefit, index) => (
                     <div key={index} className="benefit">
-                      <span className="benefit-icon">{benefit.icon}</span>
                       <span>{benefit.text}</span>
                     </div>
                   ))}
                 </div>
                 <div className="join-buttons">
-                  <a href="/join" className="btn primary">{content.join.buttons.primary}</a>
+                  <a href="https://robertsspaceindustries.com/en/orgs/FALLSTR" target="_blank" rel="noopener noreferrer" className="btn primary">{content?.join?.buttons?.primary || "Join Org"}</a>
                   <a href="https://discord.gg/3dhZ38nbNZ" target="_blank" rel="noopener noreferrer" className="btn secondary">
-                    {content.join.buttons.secondary}
+                    {content?.join?.buttons?.secondary || "Join Discord"}
                   </a>
                 </div>
               </div>
