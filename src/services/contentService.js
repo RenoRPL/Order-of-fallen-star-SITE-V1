@@ -4,6 +4,7 @@ import OFSDataService from './ofsDataService.js';
 
 // Default content structure
 const defaultContent = {
+  version: "1.2.0", // Added version for cache busting
   hero: {
     title: "Welcome to Order of the Fallen Star",
     subtitle: "Elite Star Citizen Organization - Forging Legends Among the Stars",
@@ -117,7 +118,17 @@ class ContentService {
     try {
       const stored = localStorage.getItem('homePageContent');
       if (stored) {
-        this.content = JSON.parse(stored);
+        const parsedContent = JSON.parse(stored);
+        // Check version to force updates
+        if (parsedContent.version !== defaultContent.version) {
+          console.log('Content version mismatch, using new defaults');
+          this.content = { ...defaultContent };
+          localStorage.removeItem('homePageContent');
+        } else {
+          this.content = parsedContent;
+        }
+      } else {
+        this.content = { ...defaultContent };
       }
     } catch (error) {
       console.error('Error loading content:', error);
@@ -198,7 +209,9 @@ class ContentService {
   resetToDefault() {
     this.content = { ...defaultContent };
     localStorage.removeItem('homePageContent');
-    this.loadPaths(); // Reload paths from spreadsheet
+    this.loadDynamicData(); // Reload dynamic data
+    // Force immediate update
+    window.dispatchEvent(new CustomEvent('contentUpdated'));
     return this.content;
   }
 
@@ -217,6 +230,16 @@ class ContentService {
       this.loadPaths(),
       this.loadDynamicStats()
     ]);
+    return this.content;
+  }
+
+  // Force clear cache and reload defaults
+  forceClearCache() {
+    localStorage.removeItem('homePageContent');
+    this.content = { ...defaultContent };
+    this.loadDynamicData();
+    window.dispatchEvent(new CustomEvent('contentUpdated'));
+    console.log('Cache cleared, content reset to defaults');
     return this.content;
   }
 }
