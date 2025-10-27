@@ -12,31 +12,45 @@ export class GoogleSheetsService {
    */
   async fetchUserStats(userId) {
     try {
-      // Query to find user by Discord ID or username
-      const query = `SELECT * WHERE A CONTAINS '${userId}' OR B CONTAINS '${userId}'`;
+      // Query to find user by Discord ID (Column A) or DisplayName (Column B)
+      const query = `SELECT * WHERE A = '${userId}' OR B CONTAINS '${userId}'`;
       const url = `${this.baseUrl}gid=${this.sheetGid}&tq=${encodeURIComponent(query)}`;
+      
+      console.log('Fetching stats for user:', userId);
+      console.log('Query URL:', url);
       
       const response = await fetch(url);
       const text = await response.text();
       
+      console.log('Response text:', text);
+      
       // Parse Google Sheets response (JSON-P format)
       const jsonData = this.parseGoogleSheetsResponse(text);
+      console.log('Parsed JSON data:', jsonData);
       
       if (jsonData && jsonData.table && jsonData.table.rows && jsonData.table.rows.length > 0) {
         const row = jsonData.table.rows[0];
         const cols = row.c;
         
-        return {
-          quests: this.getCellValue(cols[2]) || '0', // Column C - Quests
-          crusades: this.getCellValue(cols[3]) || '0', // Column D - Crusades
-          groundKills: this.getCellValue(cols[4]) || '0', // Column E - Ground Kills (FPS)
-          pilotKills: this.getCellValue(cols[5]) || '0', // Column F - Pilot Kills (Ship)
-          turretKills: this.getCellValue(cols[6]) || '0', // Column G - Turret Kills
-          ledQuests: this.getCellValue(cols[7]) || '0', // Column H - Led Quests
-          ledCrusades: this.getCellValue(cols[8]) || '0', // Column I - Led Crusades
+        console.log('Row data:', cols);
+        
+        const stats = {
+          patrolCount: this.getCellValue(cols[2]) || '0', // Column C - PatrolCount
+          totalLength: this.getCellValue(cols[3]) || '0', // Column D - TotalLength
+          fpsKills: this.getCellValue(cols[4]) || '0', // Column E - FPS_Kills_Total
+          shipKills: this.getCellValue(cols[5]) || '0', // Column F - Ship_Kills_Total
+          crusades: this.getCellValue(cols[6]) || '0', // Column G - Crusades_Total
+          turretKills: this.getCellValue(cols[7]) || '0', // Column H - Turret_Kills_Total
+          quests: this.getCellValue(cols[8]) || '0', // Column I - Quest_Total
+          ledQuests: this.getCellValue(cols[9]) || '0', // Column J - Led_Completed_Quests
+          ledCrusades: this.getCellValue(cols[10]) || '0', // Column K - Led_Completed_Crusades
         };
+        
+        console.log('Extracted stats:', stats);
+        return stats;
       }
       
+      console.log('No matching rows found, returning default stats');
       return this.getDefaultStats();
     } catch (error) {
       console.error('Error fetching user stats from Google Sheets:', error);
@@ -76,11 +90,13 @@ export class GoogleSheetsService {
    */
   getDefaultStats() {
     return {
-      quests: '0',
+      patrolCount: '0',
+      totalLength: '0',
+      fpsKills: '0',
+      shipKills: '0',
       crusades: '0',
-      groundKills: '0',
-      pilotKills: '0',
       turretKills: '0',
+      quests: '0',
       ledQuests: '0',
       ledCrusades: '0',
     };
@@ -93,11 +109,13 @@ export class GoogleSheetsService {
    */
   getFormattedStats(stats) {
     return [
-      { label: 'Quests', value: stats.quests },
+      { label: 'Patrols', value: stats.patrolCount },
+      { label: 'Total Hours', value: stats.totalLength },
+      { label: 'Ground Kills', value: stats.fpsKills },
+      { label: 'Ship Kills', value: stats.shipKills },
       { label: 'Crusades', value: stats.crusades },
-      { label: 'Ground Kills', value: stats.groundKills },
-      { label: 'Pilot Kills', value: stats.pilotKills },
       { label: 'Turret Kills', value: stats.turretKills },
+      { label: 'Quests', value: stats.quests },
       { label: 'Led Quests', value: stats.ledQuests },
       { label: 'Led Crusades', value: stats.ledCrusades },
     ];
