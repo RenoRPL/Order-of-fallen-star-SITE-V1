@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import RSILinkModal from '../components/RSILinkModal'
 import OFSDataService from '../services/ofsDataService'
 import { GoogleSheetsService } from '../services/googleSheetsService'
 import './Profile.css'
@@ -21,6 +22,12 @@ export default function Profile() {
   const [googleStats, setGoogleStats] = useState(null)
   const [statsLoading, setStatsLoading] = useState(true)
   const googleSheetsService = new GoogleSheetsService()
+  
+  // RSI account linking
+  const [rsiData, setRsiData] = useState(null)
+  const [rsiLoading, setRsiLoading] = useState(false)
+  const [showRsiModal, setShowRsiModal] = useState(false)
+  const [notification, setNotification] = useState(null)
 
   // Fetch member and patrol data
   useEffect(() => {
@@ -97,6 +104,64 @@ export default function Profile() {
     navigate('/')
   }
 
+  // RSI Account Linking Functions
+  const handleRsiLink = async (rsiHandle) => {
+    setRsiLoading(true)
+    try {
+      // For demonstration, we'll simulate a successful link
+      // In production, you would integrate with RSI API or verification system
+      await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate API call
+      
+      const mockRsiInfo = {
+        handle: rsiHandle,
+        verified: true,
+        citizen_record: Math.floor(Math.random() * 1000000) + 1000000,
+        enlisted: new Date().toISOString(),
+        organization: {
+          name: "Order of the Fallen Star",
+          rank: "Member"
+        },
+        ships: [
+          { name: "Aurora MR", type: "Starter" },
+          { name: "Cutlass Black", type: "Medium Fighter" }
+        ]
+      }
+      
+      setRsiData(mockRsiInfo)
+      
+      // Update local member data
+      setMemberData(prev => ({
+        ...prev,
+        RSI_Handle: rsiHandle,
+        RSI_Verified: true,
+        RSI_Data: mockRsiInfo
+      }))
+      
+      setShowRsiModal(false)
+      setNotification({
+        type: 'success',
+        message: `Successfully linked RSI account: ${rsiHandle}! You can now access fleet features and verified citizen benefits.`
+      })
+      
+      // Clear notification after 5 seconds
+      setTimeout(() => setNotification(null), 5000)
+      
+    } catch (error) {
+      console.error('Error linking RSI account:', error)
+      setNotification({
+        type: 'error',
+        message: 'Failed to link RSI account. Please check the handle and try again.'
+      })
+      setTimeout(() => setNotification(null), 5000)
+    } finally {
+      setRsiLoading(false)
+    }
+  }
+
+  const openRsiModal = () => {
+    setShowRsiModal(true)
+  }
+
   const formatJoinDate = (timestamp) => {
     if (!timestamp) return 'Unknown'
     const date = new Date(parseInt(timestamp) / 4194304 + 1420070400000)
@@ -119,6 +184,22 @@ export default function Profile() {
   return (
     <div className="profile-page">
       <Header />
+      
+      {/* Notification */}
+      {notification && (
+        <div className={`notification ${notification.type}`}>
+          <span className="notification-icon">
+            {notification.type === 'success' ? '✅' : '❌'}
+          </span>
+          <span className="notification-message">{notification.message}</span>
+          <button 
+            className="notification-close"
+            onClick={() => setNotification(null)}
+          >
+            ×
+          </button>
+        </div>
+      )}
       
       <main className="profile-main">
         <div className="profile-container">
@@ -265,16 +346,23 @@ export default function Profile() {
                 Command Center
               </h2>
               <div className="command-grid">
-                <button className="command-btn primary">
-                  <span className="btn-icon">🔗</span>
-                  <span className="btn-text">Link RSI Account</span>
-                </button>
+                {memberData?.RSI_Verified || rsiData ? (
+                  <button className="command-btn success">
+                    <span className="btn-icon">✅</span>
+                    <span className="btn-text">RSI Linked: {memberData?.RSI_Handle || rsiData?.handle}</span>
+                  </button>
+                ) : (
+                  <button className="command-btn primary" onClick={openRsiModal}>
+                    <span className="btn-icon">🔗</span>
+                    <span className="btn-text">Link RSI Account</span>
+                  </button>
+                )}
                 <button className="command-btn secondary">
-                  <span className="btn-icon">�</span>
+                  <span className="btn-icon">🛠️</span>
                   <span className="btn-text">Update Profile</span>
                 </button>
                 <button className="command-btn secondary">
-                  <span className="btn-icon">�️</span>
+                  <span className="btn-icon">🔒</span>
                   <span className="btn-text">Privacy Settings</span>
                 </button>
                 <button className="command-btn danger" onClick={handleLogout}>
@@ -289,6 +377,14 @@ export default function Profile() {
       </main>
 
       <Footer />
+      
+      {/* RSI Link Modal */}
+      <RSILinkModal
+        isOpen={showRsiModal}
+        onClose={() => setShowRsiModal(false)}
+        onSubmit={handleRsiLink}
+        isLoading={rsiLoading}
+      />
     </div>
   )
 }
