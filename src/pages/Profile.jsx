@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import OFSDataService from '../services/ofsDataService'
+import { GoogleSheetsService } from '../services/googleSheetsService'
 import './Profile.css'
 
 export default function Profile() {
@@ -15,6 +16,11 @@ export default function Profile() {
   const [rankData, setRankData] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
+  
+  // Google Sheets stats
+  const [googleStats, setGoogleStats] = useState(null)
+  const [statsLoading, setStatsLoading] = useState(true)
+  const googleSheetsService = new GoogleSheetsService()
 
   // Fetch member and patrol data
   useEffect(() => {
@@ -53,6 +59,30 @@ export default function Profile() {
     
     if (isAuthenticated && user?.id) {
       fetchData()
+    }
+  }, [user?.id, isAuthenticated])
+
+  // Fetch Google Sheets patrol stats
+  useEffect(() => {
+    const fetchGoogleStats = async () => {
+      if (!user?.id) return
+      
+      setStatsLoading(true)
+      try {
+        console.log('Fetching Google Sheets stats for user:', user.id)
+        const stats = await googleSheetsService.fetchUserStats(user.id)
+        setGoogleStats(stats)
+        console.log('Profile: Received Google stats:', stats)
+      } catch (err) {
+        console.error('Error fetching Google Sheets stats:', err)
+        setGoogleStats(null)
+      } finally {
+        setStatsLoading(false)
+      }
+    }
+
+    if (isAuthenticated && user?.id) {
+      fetchGoogleStats()
     }
   }, [user?.id, isAuthenticated])
 
@@ -140,16 +170,28 @@ export default function Profile() {
             {/* Right: Stats Overview */}
             <div className="profile-stats-overview">
               <div className="stat-crystal">
-                <div className="stat-value">{patrolStats?.totalQuests || 0}</div>
+                <div className="stat-value">
+                  {statsLoading ? '...' : (googleStats?.quests || '0')}
+                </div>
                 <div className="stat-label">Quests</div>
               </div>
               <div className="stat-crystal">
-                <div className="stat-value">{patrolStats?.patrolsLed || 0}</div>
+                <div className="stat-value">
+                  {statsLoading ? '...' : (googleStats?.ledQuests || '0')}
+                </div>
                 <div className="stat-label">Led</div>
               </div>
               <div className="stat-crystal">
-                <div className="stat-value">{patrolStats?.totalFPSKills || 0}</div>
+                <div className="stat-value">
+                  {statsLoading ? '...' : (googleStats?.fpsKills || '0')}
+                </div>
                 <div className="stat-label">Kills</div>
+              </div>
+              <div className="stat-crystal">
+                <div className="stat-value">
+                  {statsLoading ? '...' : (googleStats?.patrolCount || '0')}
+                </div>
+                <div className="stat-label">Patrols</div>
               </div>
             </div>
           </div>
@@ -163,62 +205,6 @@ export default function Profile() {
                 <p className="error-message">⚠️ {error}</p>
               </div>
             )}
-
-            {/* Left Column: Current Quests */}
-            <div className="profile-section">
-              <h2 className="section-title">
-                <span className="section-icon">🎯</span>
-                Active Quests
-              </h2>
-              {isLoading ? (
-                <div className="loading-state">Scanning for active missions...</div>
-              ) : patrolStats?.currentQuests && patrolStats.currentQuests.length > 0 ? (
-                <div className="quest-grid">
-                  {patrolStats.currentQuests.slice(0, 4).map((quest, index) => (
-                    <div key={index} className="quest-card active">
-                      <div className="quest-header">
-                        <h3 className="quest-title">{quest.name}</h3>
-                        <span className="quest-status active">In Progress</span>
-                      </div>
-                      <p className="quest-description">{quest.description}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="quest-empty">
-                  <h3>No Active Quests</h3>
-                  <p>Join a patrol to begin your next adventure!</p>
-                </div>
-              )}
-            </div>
-
-            {/* Right Column: Completed Quests */}
-            <div className="profile-section">
-              <h2 className="section-title">
-                <span className="section-icon">🏆</span>
-                Completed Quests
-              </h2>
-              {isLoading ? (
-                <div className="loading-state">Loading quest archives...</div>
-              ) : patrolStats?.completedQuests && patrolStats.completedQuests.length > 0 ? (
-                <div className="quest-grid">
-                  {patrolStats.completedQuests.slice(0, 4).map((quest, index) => (
-                    <div key={index} className="quest-card completed">
-                      <div className="quest-header">
-                        <h3 className="quest-title">{quest.name}</h3>
-                        <span className="quest-status completed">Completed</span>
-                      </div>
-                      <p className="quest-description">{quest.description}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="quest-empty">
-                  <h3>No Completed Quests</h3>
-                  <p>Complete your first quest to build your legend!</p>
-                </div>
-              )}
-            </div>
             
             {/* Knight's Codex - Member Information */}
             <div className="codex-panel">
@@ -258,22 +244,37 @@ export default function Profile() {
                       <div className="battle-stat">
                         <div className="stat-icon">⚔️</div>
                         <div className="stat-info">
-                          <div className="stat-number">{patrolStats?.totalFPSKills || 0}</div>
+                          <div className="stat-number">
+                            {statsLoading ? '...' : (googleStats?.fpsKills || '0')}
+                          </div>
                           <div className="stat-name">Combat Victories</div>
                         </div>
                       </div>
                       <div className="battle-stat">
-                        <div className="stat-icon">�</div>
+                        <div className="stat-icon">🚀</div>
                         <div className="stat-info">
-                          <div className="stat-number">{patrolStats?.totalShipKills || 0}</div>
+                          <div className="stat-number">
+                            {statsLoading ? '...' : (googleStats?.shipKills || '0')}
+                          </div>
                           <div className="stat-name">Ships Defeated</div>
                         </div>
                       </div>
                       <div className="battle-stat">
                         <div className="stat-icon">🎖️</div>
                         <div className="stat-info">
-                          <div className="stat-number">{patrolStats?.totalCrusades || 0}</div>
+                          <div className="stat-number">
+                            {statsLoading ? '...' : (googleStats?.crusades || '0')}
+                          </div>
                           <div className="stat-name">Crusades</div>
+                        </div>
+                      </div>
+                      <div className="battle-stat">
+                        <div className="stat-icon">🎯</div>
+                        <div className="stat-info">
+                          <div className="stat-number">
+                            {statsLoading ? '...' : (googleStats?.turretKills || '0')}
+                          </div>
+                          <div className="stat-name">Turret Kills</div>
                         </div>
                       </div>
                     </div>
