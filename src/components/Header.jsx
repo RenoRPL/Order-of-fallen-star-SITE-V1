@@ -11,6 +11,8 @@ export default function Header() {
   const [currentStatIndex, setCurrentStatIndex] = useState(0)
   const [userPatrolStats, setUserPatrolStats] = useState(null)
   const [formattedStats, setFormattedStats] = useState([])
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [displayText, setDisplayText] = useState('')
 
   // Fetch user patrol stats when user is available
   useEffect(() => {
@@ -29,19 +31,45 @@ export default function Header() {
     }
   }, [user])
 
-  // Cycling logic: Show name for 15s, then cycle stats every 4s
+  // Initialize display text
+  useEffect(() => {
+    if (user) {
+      setDisplayText(userStats?.orgName || user.username)
+    }
+  }, [user, userStats])
+
+  // Cycling logic with fade transitions
   useEffect(() => {
     if (!isAuthenticated || !user || formattedStats.length === 0) return
 
     const initialTimer = setTimeout(() => {
       setShowingStats(true)
       
+      // Function to transition to next stat
+      const transitionToNext = () => {
+        setIsTransitioning(true)
+        
+        // Fade out current content
+        setTimeout(() => {
+          // Update content during fade
+          setCurrentStatIndex((prevIndex) => {
+            const nextIndex = (prevIndex + 1) % formattedStats.length
+            setDisplayText(`${formattedStats[nextIndex].label}: ${formattedStats[nextIndex].value}`)
+            return nextIndex
+          })
+          
+          // Fade back in
+          setTimeout(() => {
+            setIsTransitioning(false)
+          }, 50) // Brief moment to ensure content is updated
+        }, 250) // Half of transition duration
+      }
+
+      // Set initial stat
+      setDisplayText(`${formattedStats[0].label}: ${formattedStats[0].value}`)
+      
       // Start cycling through stats every 4 seconds
-      const interval = setInterval(() => {
-        setCurrentStatIndex((prevIndex) => 
-          (prevIndex + 1) % formattedStats.length
-        )
-      }, 4000)
+      const interval = setInterval(transitionToNext, 4000)
 
       return () => clearInterval(interval)
     }, 15000) // Show name for 15 seconds first
@@ -99,11 +127,8 @@ export default function Header() {
                 )}
               </div>
               <div className="profile-info">
-                <span className={`profile-name ${showingStats ? 'cycling-stats' : ''}`}>
-                  {showingStats && formattedStats.length > 0 
-                    ? `${formattedStats[currentStatIndex].label}: ${formattedStats[currentStatIndex].value}`
-                    : (userStats?.orgName || user.username)
-                  }
+                <span className={`profile-name ${showingStats ? 'cycling-stats' : ''} ${isTransitioning ? 'fade-out' : 'fade-in'}`}>
+                  {displayText}
                 </span>
                 <div className="profile-details">
                   <div className="profile-stat">

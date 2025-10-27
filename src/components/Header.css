@@ -289,26 +289,21 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: center;
-  transition: all 0.3s ease-in-out;
+  transition: opacity 0.5s ease-in-out, color 0.5s ease-in-out;
   min-width: 150px; /* Ensure consistent width for cycling stats */
 }
 
 .profile-name.cycling-stats {
   color: #39b9ff;
   text-shadow: 0 0 10px rgba(57, 185, 255, 0.3);
-  animation: statPulse 4s ease-in-out infinite;
 }
 
-@keyframes statPulse {
-  0%, 100% {
-    transform: scale(1);
-    color: #39b9ff;
-  }
-  50% {
-    transform: scale(1.02);
-    color: #ffd700;
-    text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-  }
+.profile-name.fade-out {
+  opacity: 0;
+}
+
+.profile-name.fade-in {
+  opacity: 1;
 }
 
 .profile-details {
