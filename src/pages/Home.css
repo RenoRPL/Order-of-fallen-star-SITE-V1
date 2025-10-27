@@ -345,6 +345,62 @@
   gap: 0;
   margin-top: 3rem;
   width: 100%;
+  position: relative;
+}
+
+/* Connecting line container */
+.destiny-cards::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 6px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(57, 185, 255, 0.4) 10%,
+    rgba(57, 185, 255, 1) 50%,
+    rgba(57, 185, 255, 0.4) 90%,
+    transparent 100%
+  );
+  border-radius: 3px;
+  z-index: 0;
+  transform: translateY(-50%);
+  box-shadow: 
+    0 0 20px rgba(57, 185, 255, 1),
+    0 0 40px rgba(57, 185, 255, 0.8),
+    0 0 60px rgba(57, 185, 255, 0.6),
+    0 0 80px rgba(57, 185, 255, 0.4);
+  animation: interstellarGlow 3s ease-in-out infinite alternate;
+}
+
+/* Animated traveling light effect */
+.destiny-cards::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 80px;
+  height: 20px;
+  background: radial-gradient(
+    ellipse 80px 20px,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.3) 25%,
+    rgba(57, 185, 255, 0.5) 45%,
+    rgba(57, 185, 255, 0.3) 65%,
+    rgba(57, 185, 255, 0.1) 85%,
+    transparent 100%
+  );
+  border-radius: 40px;
+  z-index: 1;
+  transform: translateY(-50%);
+  box-shadow: 
+    0 0 40px rgba(255, 255, 255, 0.2),
+    0 0 80px rgba(57, 185, 255, 0.15),
+    0 0 120px rgba(57, 185, 255, 0.1);
+  filter: blur(2px);
+  animation: travelingLight 12s linear infinite;
 }
 
 .destiny-card {
@@ -357,10 +413,33 @@
   backdrop-filter: blur(10px);
   aspect-ratio: 3/4;
   min-height: 300px;
+  border-radius: 12px;
+  z-index: 2;
+  animation: cardLightSync 12s linear infinite;
+}
+
+.destiny-card:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.destiny-card:nth-child(2) {
+  animation-delay: 2.4s;
+}
+
+.destiny-card:nth-child(3) {
+  animation-delay: 4.8s;
+}
+
+.destiny-card:nth-child(4) {
+  animation-delay: 7.2s;
+}
+
+.destiny-card:nth-child(5) {
+  animation-delay: 9.6s;
 }
 
 .destiny-card:hover {
-  transform: scale(1.02);
+  transform: scale(1.12);
   z-index: 5;
   box-shadow: 0 10px 30px rgba(57, 185, 255, 0.3);
 }
@@ -375,7 +454,6 @@
 }
 
 .destiny-card:hover .destiny-image {
-  transform: scale(1.05);
   filter: brightness(1.2) saturate(1.2);
 }
 
@@ -429,6 +507,20 @@
   .destiny-card {
     aspect-ratio: 4/5;
   }
+  
+  /* Adjust connecting line for 3-column layout */
+  .destiny-cards::before {
+    left: 15%;
+    right: 15%;
+    height: 3px;
+  }
+  
+  .destiny-cards::after {
+    left: 15%;
+    width: 60px;
+    height: 6px;
+    animation: travelingLight 3.5s linear infinite;
+  }
 }
 
 /* Ultra-wide screen optimizations */
@@ -479,6 +571,20 @@
   .card-overlay {
     padding: 1.5rem 1rem 1rem;
   }
+  
+  /* Adjust connecting line for 2-column layout */
+  .destiny-cards::before {
+    left: 20%;
+    right: 20%;
+    height: 2px;
+  }
+  
+  .destiny-cards::after {
+    left: 20%;
+    width: 40px;
+    height: 4px;
+    animation: travelingLight 3s linear infinite;
+  }
 }
 
 @media (max-width: 480px) {
@@ -489,6 +595,12 @@
   .destiny-card {
     aspect-ratio: 4/3;
     min-height: 300px;
+  }
+  
+  /* Hide connecting line on mobile single column */
+  .destiny-cards::before,
+  .destiny-cards::after {
+    display: none;
   }
 }
 
@@ -836,5 +948,77 @@
   .benefit {
     justify-content: center;
     font-size: 1rem;
+  }
+}
+
+/* Keyframe Animations for Interstellar Connecting Line */
+@keyframes interstellarGlow {
+  0% {
+    box-shadow: 
+      0 0 20px rgba(57, 185, 255, 1),
+      0 0 40px rgba(57, 185, 255, 0.8),
+      0 0 60px rgba(57, 185, 255, 0.6),
+      0 0 80px rgba(57, 185, 255, 0.4);
+    opacity: 0.9;
+  }
+  50% {
+    box-shadow: 
+      0 0 30px rgba(57, 185, 255, 1),
+      0 0 60px rgba(57, 185, 255, 0.9),
+      0 0 90px rgba(57, 185, 255, 0.7),
+      0 0 120px rgba(57, 185, 255, 0.5),
+      0 0 150px rgba(57, 185, 255, 0.3);
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 
+      0 0 40px rgba(57, 185, 255, 1),
+      0 0 80px rgba(57, 185, 255, 0.9),
+      0 0 120px rgba(57, 185, 255, 0.7),
+      0 0 160px rgba(57, 185, 255, 0.5),
+      0 0 200px rgba(57, 185, 255, 0.3);
+    opacity: 0.95;
+  }
+}
+
+@keyframes travelingLight {
+  0% {
+    left: 10%;
+    opacity: 0;
+    transform: translateY(-50%) scale(0.5);
+  }
+  8% {
+    opacity: 0.8;
+    transform: translateY(-50%) scale(1);
+  }
+  92% {
+    opacity: 0.8;
+    transform: translateY(-50%) scale(1);
+  }
+  100% {
+    left: calc(90% - 80px);
+    opacity: 0;
+    transform: translateY(-50%) scale(0.5);
+  }
+}
+
+@keyframes cardLightSync {
+  0%, 90%, 100% {
+    filter: brightness(1);
+  }
+  10% {
+    filter: brightness(1.2);
+  }
+  15% {
+    filter: brightness(1.35);
+  }
+  20% {
+    filter: brightness(1.5);
+  }
+  25% {
+    filter: brightness(1.35);
+  }
+  30% {
+    filter: brightness(1.2);
   }
 }
