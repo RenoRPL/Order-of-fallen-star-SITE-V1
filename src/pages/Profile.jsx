@@ -125,16 +125,39 @@ export default function Profile() {
           
           {/* Welcome Section - Top of Page */}
           <div className="profile-welcome">
-            <h2 className="welcome-title">
-              Welcome, {memberData?.Username || user?.username || 'Warrior'}
-            </h2>
-            <p className="welcome-subtitle">
-              Order of the Fallen Star • {OFSDataService.calculateTimeInService(memberData?.['Join Date']) || 'New Recruit'}
-            </p>
-            <div className="welcome-rank-info">
-              <span className="rank-badge">{memberData?.Rank || 'Unranked'}</span>
-              <span className="role-badge">{memberData?.Role || 'Member'}</span>
-              <span className="path-badge">{memberData?.['Role Path'] || 'Unassigned'}</span>
+            <div className="welcome-layout">
+              {/* Left: Rank Icon and Path */}
+              <div className="welcome-rank-section">
+                {rankData?.['Rank Icon'] && (
+                  <div className="welcome-rank-icon-container">
+                    <img 
+                      src={rankData['Rank Icon'].replace('view?usp=drive_link', 'preview')} 
+                      alt={`${memberData?.Rank} Rank`}
+                      className="welcome-rank-icon"
+                      onError={(e) => {
+                        e.target.style.display = 'none'
+                      }}
+                    />
+                  </div>
+                )}
+                <span className="path-badge">{memberData?.['Role Path'] || 'Unassigned'}</span>
+              </div>
+              
+              {/* Center: Welcome Text */}
+              <div className="welcome-content">
+                <h2 className="welcome-title">
+                  Welcome, {memberData?.Username || user?.username || 'Warrior'}
+                </h2>
+                <p className="welcome-subtitle">
+                  Order of the Fallen Star • {OFSDataService.calculateTimeInService(memberData?.['Join Date']) || 'New Recruit'}
+                </p>
+              </div>
+              
+              {/* Right: Rank and Role Badges */}
+              <div className="welcome-badges">
+                <span className="rank-badge">{memberData?.Rank || 'Unranked'}</span>
+                <span className="role-badge">{memberData?.Role || 'Member'}</span>
+              </div>
             </div>
           </div>
           
