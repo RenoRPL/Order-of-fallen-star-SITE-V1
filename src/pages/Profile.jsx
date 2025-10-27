@@ -146,7 +146,7 @@ export default function Profile() {
               {/* Center: Welcome Text */}
               <div className="welcome-content">
                 <h2 className="welcome-title">
-                  Welcome, {memberData?.Username || user?.username || 'Warrior'}
+                  {memberData?.Username || user?.username || 'Warrior'}
                 </h2>
                 <p className="welcome-subtitle">
                   Order of the Fallen Star • {OFSDataService.calculateTimeInService(memberData?.['Join Date']) || 'New Recruit'}
