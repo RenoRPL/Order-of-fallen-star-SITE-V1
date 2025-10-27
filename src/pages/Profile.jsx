@@ -146,13 +146,13 @@ export default function Profile() {
               
               <div className="rank-info">
                 <div className="rank-tier">
-                  {rankData?.Tier && `Tier ${rankData.Tier}`}
+                  {memberData?.Rank || 'Unranked'}
                 </div>
                 <h1 className="rank-title">
-                  {memberData?.Rank || 'Unranked'}
+                  {memberData?.Role || 'Member'}
                 </h1>
                 <div className="member-title">
-                  Member
+                  {memberData?.['Role Path'] || 'Unassigned'}
                 </div>
               </div>
             </div>
