@@ -124,7 +124,14 @@ export default function Profile() {
         <div className="profile-container">
           
           {/* Epic Profile Header with Rank Display - Compact */}
-          <div className="profile-hero">
+          <div className="profile-hero" style={{
+            backgroundImage: memberData?.['Role Path'] 
+              ? `url('/Role Path/${memberData['Role Path']} - Hero.png')` 
+              : 'none',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}>
             <div className="nebula-background"></div>
             <div className="stars-overlay"></div>
             
