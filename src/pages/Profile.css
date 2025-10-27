@@ -123,10 +123,10 @@
   font-weight: 300;
 }
 
-/* Epic Profile Hero Section - Compact */
+/* Epic Profile Hero Section - Taller with Right-side Stats */
 .profile-hero {
   position: relative;
-  padding: 2rem;
+  padding: 3rem 2rem;
   text-align: left;
   margin-bottom: 1.5rem;
   border-radius: 20px;
@@ -137,9 +137,10 @@
     0 0 50px rgba(57, 185, 255, 0.2),
     inset 0 0 50px rgba(0, 0, 0, 0.5);
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 2rem;
+  min-height: 300px;
 }
 
 .nebula-background {
@@ -306,7 +307,7 @@
   margin: 0;
 }
 
-/* Stats Overview Crystals - Small Squares */
+/* Stats Overview Crystals - Small Squares on Right */
 .profile-stats-overview {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -314,6 +315,9 @@
   position: relative;
   z-index: 3;
   max-width: 200px;
+  justify-self: end;
+  align-self: start;
+  margin-top: 1rem;
 }
 
 .stat-crystal {
