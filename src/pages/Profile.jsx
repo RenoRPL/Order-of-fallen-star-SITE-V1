@@ -126,7 +126,7 @@ export default function Profile() {
           {/* Welcome Section - Top of Page */}
           <div className="profile-welcome">
             <div className="welcome-layout">
-              {/* Left: Rank Icon and Path */}
+              {/* Left: Rank Icon and Rank */}
               <div className="welcome-rank-section">
                 {memberData?.Rank && (
                   <div className="welcome-rank-icon-container">
@@ -140,7 +140,7 @@ export default function Profile() {
                     />
                   </div>
                 )}
-                <span className="path-badge">{memberData?.['Role Path'] || 'Unassigned'}</span>
+                <span className="rank-badge">{memberData?.Rank || 'Unranked'}</span>
               </div>
               
               {/* Center: Welcome Text */}
@@ -155,7 +155,7 @@ export default function Profile() {
               
               {/* Right: Path and Role Badges */}
               <div className="welcome-badges">
-                <span className="rank-badge">{memberData?.['Role Path'] || 'Unassigned'}</span>
+                <span className="path-badge">{memberData?.['Role Path'] || 'Unassigned'}</span>
                 <span className="role-badge">{memberData?.Role || 'Member'}</span>
               </div>
             </div>
