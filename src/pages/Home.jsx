@@ -6,12 +6,33 @@ import './Home.css'
 
 export default function Home() {
   const [selectedPath, setSelectedPath] = useState(null);
-  const [content, setContent] = useState(contentService.getContent());
+  const [content, setContent] = useState(null);
 
   useEffect(() => {
     // Listen for content updates
     const updateContent = () => {
-      setContent(contentService.getContent());
+      try {
+        const newContent = contentService.getContent();
+        setContent(newContent);
+      } catch (error) {
+        console.error('Error getting content:', error);
+        // Set minimal fallback content
+        setContent({
+          hero: {
+            title: "Welcome to Order of the Fallen Star",
+            subtitle: "Elite Star Citizen Organization - Forging Legends Among the Stars",
+            description: "Under the light of the Fallen Star, we bind our blades, our names, and our futures. This Codex governs all from Serf to Primarch.",
+            stats: { members: "150+", quests: "50+", systems: "2" },
+            buttons: { primary: "Join Our Ranks", secondary: "Explore Our Fleet" }
+          },
+          features: { title: "What We Offer", cards: [] },
+          destiny: { title: "Choose Your Path", subtitle: "Select your role and define your legacy among the stars", paths: [] },
+          socialLinks: {
+            discord: { url: "https://discord.gg/orderofthefallenstar", enabled: true },
+            spectrum: { url: "https://robertsspaceindustries.com/orgs/OOFS", enabled: true }
+          }
+        });
+      }
     };
 
     // Update content when component mounts
@@ -47,6 +68,28 @@ export default function Home() {
     await contentService.refreshPaths();
   };
 
+  // Show loading state if content is not available
+  if (!content) {
+    return (
+      <div className="home-page">
+        <Header />
+        <main className="home-content">
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: '50vh',
+            color: '#39b9ff',
+            fontSize: '1.2rem'
+          }}>
+            Loading...
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="home-page">
       <Header />
@@ -54,41 +97,41 @@ export default function Home() {
       <main className="home-content">
         <section className="hero-section">
           <div className="hero-container">
-            <h1 className="hero-title">{content.hero.title}</h1>
+            <h1 className="hero-title">{content?.hero?.title || "Welcome to Order of the Fallen Star"}</h1>
             <p className="hero-subtitle">
-              {content.hero.subtitle}
+              {content?.hero?.subtitle || "Elite Star Citizen Organization"}
             </p>
             <p className="hero-description">
-              {content.hero.description}
+              {content?.hero?.description || "Join our ranks and forge your legend among the stars."}
             </p>
             
             <div className="hero-stats">
               <div className="stat">
-                <div className="stat-number">{content.hero.stats.members}</div>
+                <div className="stat-number">{content?.hero?.stats?.members || "150+"}</div>
                 <div className="stat-label">Active Members</div>
               </div>
               <div className="stat">
-                <div className="stat-number">{content.hero.stats.quests}</div>
+                <div className="stat-number">{content?.hero?.stats?.quests || "50+"}</div>
                 <div className="stat-label">Total Quests Completed</div>
               </div>
               <div className="stat">
-                <div className="stat-number">{content.hero.stats.systems}</div>
+                <div className="stat-number">{content?.hero?.stats?.systems || "2"}</div>
                 <div className="stat-label">Systems Held</div>
               </div>
             </div>
             
             <div className="hero-buttons">
-              <a href={content.socialLinks.discord.url} target="_blank" rel="noopener noreferrer" className="btn primary">{content.hero.buttons.primary}</a>
-              <a href={content.socialLinks.spectrum.url} target="_blank" rel="noopener noreferrer" className="btn secondary">{content.hero.buttons.secondary}</a>
+              <a href={content?.socialLinks?.discord?.url || "https://discord.gg/orderofthefallenstar"} target="_blank" rel="noopener noreferrer" className="btn primary">{content?.hero?.buttons?.primary || "Join Our Ranks"}</a>
+              <a href={content?.socialLinks?.spectrum?.url || "https://robertsspaceindustries.com/orgs/OOFS"} target="_blank" rel="noopener noreferrer" className="btn secondary">{content?.hero?.buttons?.secondary || "Explore Our Fleet"}</a>
             </div>
           </div>
         </section>
         
         <section className="features-section">
           <div className="features-container">
-            <h2>{content.features.title}</h2>
+            <h2>{content?.features?.title || "What We Offer"}</h2>
             <div className="features-grid">
-              {content.features.cards.map((card, index) => (
+              {(content?.features?.cards || []).map((card, index) => (
                 <div key={index} className="feature-card">
                   <div className="feature-icon">{card.icon}</div>
                   <h3>{card.title}</h3>
@@ -101,11 +144,11 @@ export default function Home() {
 
         <section className="destiny-section">
           <div className="destiny-container">
-            <h2>{content.destiny.title}</h2>
-            <p className="destiny-subtitle">{content.destiny.subtitle}</p>
+            <h2>{content?.destiny?.title || "Choose Your Path"}</h2>
+            <p className="destiny-subtitle">{content?.destiny?.subtitle || "Select your role and define your legacy among the stars"}</p>
             
             <div className="destiny-cards">
-              {content.destiny.paths.map((path, index) => (
+              {(content?.destiny?.paths || []).map((path, index) => (
                 <div key={index} className="destiny-card" 
                      onClick={() => handleCardClick(index)}>
                   <img 
@@ -124,7 +167,7 @@ export default function Home() {
           </div>
 
           {/* Path Modal */}
-          {selectedPath !== null && (
+          {selectedPath !== null && content?.destiny?.paths?.[selectedPath] && (
             <div className={`path-modal-overlay ${selectedPath !== null ? 'visible' : ''}`} 
                  onClick={closeModal}>
               <div className="path-modal" onClick={(e) => e.stopPropagation()}>
@@ -134,16 +177,16 @@ export default function Home() {
                 <div className="path-modal-content">
                   <div className="path-modal-image">
                     <img 
-                      src={content.destiny.paths[selectedPath].heroImage || content.destiny.paths[selectedPath].image}
-                      alt={content.destiny.paths[selectedPath].title}
+                      src={content?.destiny?.paths?.[selectedPath]?.heroImage || content?.destiny?.paths?.[selectedPath]?.image || '/Role Path/The Explorer.jpg'}
+                      alt={content?.destiny?.paths?.[selectedPath]?.title || 'Path Image'}
                     />
                   </div>
                   <div className="path-modal-info">
-                    <h3 className="path-modal-title">{content.destiny.paths[selectedPath].title}</h3>
-                    <h4 className="path-modal-subtitle">{content.destiny.paths[selectedPath].subtitle}</h4>
+                    <h3 className="path-modal-title">{content?.destiny?.paths?.[selectedPath]?.title || 'Path Title'}</h3>
+                    <h4 className="path-modal-subtitle">{content?.destiny?.paths?.[selectedPath]?.subtitle || 'Path Subtitle'}</h4>
                     
                     <div className="path-modal-description">
-                      <p>{content.destiny.paths[selectedPath].description}</p>
+                      <p>{content?.destiny?.paths?.[selectedPath]?.description || 'Path description loading...'}</p>
                     </div>
                   </div>
                 </div>
