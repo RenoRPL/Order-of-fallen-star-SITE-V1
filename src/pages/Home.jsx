@@ -5,8 +5,7 @@ import { contentService } from '../services/contentService'
 import './Home.css'
 
 export default function Home() {
-  const videoRefs = useRef([]);
-  const [expandedCard, setExpandedCard] = useState(null);
+  const [selectedPath, setSelectedPath] = useState(null);
   const [content, setContent] = useState(contentService.getContent());
 
   useEffect(() => {
@@ -21,27 +20,31 @@ export default function Home() {
     // Optional: Add event listener for real-time updates
     window.addEventListener('contentUpdated', updateContent);
     
+    // Handle escape key to close modal
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setSelectedPath(null);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    
     return () => {
       window.removeEventListener('contentUpdated', updateContent);
+      document.removeEventListener('keydown', handleEscape);
     };
   }, []);
 
-  const handleMouseEnter = (index) => {
-    if (videoRefs.current[index]) {
-      videoRefs.current[index].currentTime = 0;
-      videoRefs.current[index].play();
-    }
-  };
-
-  const handleMouseLeave = (index) => {
-    if (videoRefs.current[index]) {
-      videoRefs.current[index].pause();
-      videoRefs.current[index].currentTime = 0;
-    }
-  };
-
   const handleCardClick = (index) => {
-    setExpandedCard(expandedCard === index ? null : index);
+    setSelectedPath(index);
+  };
+
+  const closeModal = () => {
+    setSelectedPath(null);
+  };
+
+  const refreshPaths = async () => {
+    await contentService.refreshPaths();
   };
 
   return (
@@ -102,52 +105,51 @@ export default function Home() {
             <p className="destiny-subtitle">{content.destiny.subtitle}</p>
             
             <div className="destiny-cards">
-              {content.destiny.ranks.map((rank, index) => (
-                <div key={index} className={`destiny-card ${expandedCard === index ? 'expanded' : ''}`} 
-                     onMouseEnter={() => handleMouseEnter(index)}
-                     onMouseLeave={() => handleMouseLeave(index)}
+              {content.destiny.paths.map((path, index) => (
+                <div key={index} className="destiny-card" 
                      onClick={() => handleCardClick(index)}>
-                  <video 
-                    ref={(el) => videoRefs.current[index] = el}
-                    className="destiny-video" 
-                    muted 
-                    loop 
-                    playsInline
-                    preload="metadata">
-                    <source src={`/video cards/Card ${index + 1}.mp4`} type="video/mp4" />
-                  </video>
+                  <img 
+                    src={path.image}
+                    alt={path.title}
+                    className="destiny-image"
+                  />
                   
-                  <div className={`card-overlay ${expandedCard === index ? 'hidden' : ''}`}>
-                    <h3>{rank.title}</h3>
-                    <p>{rank.subtitle}</p>
-                  </div>
-
-                  <div className={`card-details ${expandedCard === index ? 'visible' : ''}`}>
-                    <button className="details-close" onClick={(e) => {e.stopPropagation(); setExpandedCard(null);}}>
-                      &times;
-                    </button>
-                    <div className="details-content">
-                      <h3 className="details-title">{rank.title}</h3>
-                      <h4 className="details-subtitle">{rank.subtitle}</h4>
-                      
-                      <div className="details-description">
-                        <p>{rank.description}</p>
-                      </div>
-
-                      <div className="details-responsibilities">
-                        <h5>Key Responsibilities:</h5>
-                        <ul>
-                          {rank.responsibilities.map((responsibility, respIndex) => (
-                            <li key={respIndex}>{responsibility}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
+                  <div className="card-overlay">
+                    <h3>{path.title}</h3>
+                    <p>{path.subtitle}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Path Modal */}
+          {selectedPath !== null && (
+            <div className={`path-modal-overlay ${selectedPath !== null ? 'visible' : ''}`} 
+                 onClick={closeModal}>
+              <div className="path-modal" onClick={(e) => e.stopPropagation()}>
+                <button className="path-modal-close" onClick={closeModal}>
+                  &times;
+                </button>
+                <div className="path-modal-content">
+                  <div className="path-modal-image">
+                    <img 
+                      src={content.destiny.paths[selectedPath].heroImage || content.destiny.paths[selectedPath].image}
+                      alt={content.destiny.paths[selectedPath].title}
+                    />
+                  </div>
+                  <div className="path-modal-info">
+                    <h3 className="path-modal-title">{content.destiny.paths[selectedPath].title}</h3>
+                    <h4 className="path-modal-subtitle">{content.destiny.paths[selectedPath].subtitle}</h4>
+                    
+                    <div className="path-modal-description">
+                      <p>{content.destiny.paths[selectedPath].description}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
         
         <section className="join-section">

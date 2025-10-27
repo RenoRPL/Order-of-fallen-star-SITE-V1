@@ -1,5 +1,6 @@
 // Content Service for managing home page content
 import matter from 'gray-matter';
+import OFSDataService from './ofsDataService.js';
 
 // Default content structure
 const defaultContent = {
@@ -43,52 +44,16 @@ const defaultContent = {
     ]
   },
   destiny: {
-    title: "Pick Your Destiny",
-    subtitle: "Progress through our ranks and forge your legend among the stars",
-    ranks: [
+    title: "Choose Your Path",
+    subtitle: "Select your role and define your legacy among the stars",
+    paths: [
+      // This will be populated dynamically from the spreadsheet
       {
-        title: "Recruit",
-        subtitle: "Begin your journey among the stars",
-        description: "Welcome to Order of the Fallen Star! As a Recruit, you'll undergo comprehensive training in starship operations, combat protocols, and organizational values. Learn the fundamentals of space exploration, participate in training missions, and begin forging bonds with your fellow pilots. This is where legends are born and futures are shaped among the infinite cosmos.",
-        responsibilities: [
-          "Complete basic flight training certification",
-          "Participate in simulated combat exercises", 
-          "Learn organizational protocols and chain of command",
-          "Assist experienced pilots on routine missions"
-        ]
-      },
-      {
-        title: "Pilot",
-        subtitle: "Master the art of stellar navigation",
-        description: "Having proven yourself as a capable Recruit, you now hold the rank of Pilot. Navigate through dangerous asteroid fields, escort valuable cargo shipments, and participate in reconnaissance missions across uncharted systems. Your skills in combat and exploration are developing, making you a valuable asset to our operations.",
-        responsibilities: [
-          "Lead small squadron formations",
-          "Execute independent patrol missions",
-          "Mentor new Recruits in basic operations",
-          "Participate in medium-risk combat operations"
-        ]
-      },
-      {
-        title: "Commander", 
-        subtitle: "Lead missions across the galaxy",
-        description: "As a Commander, you've demonstrated exceptional leadership and tactical prowess. Coordinate multi-ship operations, plan strategic missions, and oversee critical organizational objectives. Your decisions impact the success of entire campaigns and the safety of your subordinates. The galaxy looks to you for guidance and protection.",
-        responsibilities: [
-          "Plan and execute large-scale operations",
-          "Coordinate with other organizational divisions",
-          "Oversee training programs for junior members",
-          "Lead high-risk strategic missions"
-        ]
-      },
-      {
-        title: "Admiral",
-        subtitle: "Command fleets and shape the future", 
-        description: "The pinnacle of achievement within Order of the Fallen Star. As an Admiral, you shape the destiny of our organization and influence the balance of power across the galaxy. Command massive fleets, negotiate with other factions, and make decisions that echo through the stars for generations to come.",
-        responsibilities: [
-          "Command entire battle fleets",
-          "Establish strategic partnerships and alliances",
-          "Shape organizational policy and direction",
-          "Represent the Order in galactic politics"
-        ]
+        title: "Loading...",
+        subtitle: "Loading path information...",
+        description: "Please wait while we load the path information from our database.",
+        image: "/Role Path/The Explorer.jpg",
+        heroImage: "/Role Path/The Explorer - Hero.png"
       }
     ]
   },
@@ -130,6 +95,7 @@ class ContentService {
   constructor() {
     this.content = { ...defaultContent };
     this.loadContent();
+    this.loadPaths(); // Load dynamic paths from spreadsheet
   }
 
   loadContent() {
@@ -141,6 +107,25 @@ class ContentService {
     } catch (error) {
       console.error('Error loading content:', error);
       this.content = { ...defaultContent };
+    }
+  }
+
+  async loadPaths() {
+    try {
+      console.log('Loading paths from spreadsheet...');
+      const paths = await OFSDataService.getAllPaths();
+      console.log('Paths loaded:', paths);
+      if (paths && paths.length > 0) {
+        this.content.destiny.paths = paths;
+        // Trigger content update event
+        window.dispatchEvent(new CustomEvent('contentUpdated'));
+        console.log('Paths updated successfully');
+      } else {
+        console.log('No paths found in spreadsheet');
+      }
+    } catch (error) {
+      console.error('Error loading paths from spreadsheet:', error);
+      // Keep default paths if spreadsheet fails
     }
   }
 
@@ -162,6 +147,12 @@ class ContentService {
   resetToDefault() {
     this.content = { ...defaultContent };
     localStorage.removeItem('homePageContent');
+    this.loadPaths(); // Reload paths from spreadsheet
+    return this.content;
+  }
+
+  async refreshPaths() {
+    await this.loadPaths();
     return this.content;
   }
 }

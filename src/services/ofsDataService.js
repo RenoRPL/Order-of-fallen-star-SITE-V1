@@ -3,6 +3,7 @@ const MEMBER_LOG_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0Qn
 const PATROLS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1963239464&single=true&output=csv'
 const RANKS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1671642684&single=true&output=csv'
 const PATROL_STATS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1245860458&single=true&output=csv'
+const PATHS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1288322893&single=true&output=csv'
 
 class OFSDataService {
   static async fetchCSV(url) {
@@ -128,6 +129,24 @@ class OFSDataService {
       return await this.fetchCSV(RANKS_URL)
     } catch (error) {
       console.error('Error fetching all ranks:', error)
+      return []
+    }
+  }
+
+  static async getAllPaths() {
+    try {
+      const pathsData = await this.fetchCSV(PATHS_URL)
+      
+      // Transform the data to match our expected format
+      return pathsData.map(path => ({
+        title: path['Path Name'] || path.A || '',
+        subtitle: path['Path Info'] || path.C || '',
+        description: path['Path Body'] || path.D || '',
+        image: `/Role Path/${path['Path Name'] || path.A || 'default'}.jpg`,
+        heroImage: `/Role Path/${path['Path Name'] || path.A || 'default'} - Hero.png`
+      })).filter(path => path.title) // Filter out empty rows
+    } catch (error) {
+      console.error('Error fetching paths:', error)
       return []
     }
   }
