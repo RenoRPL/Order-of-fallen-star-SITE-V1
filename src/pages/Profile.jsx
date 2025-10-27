@@ -166,9 +166,9 @@ export default function Profile() {
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {statsLoading ? '...' : (googleStats?.crusades || '0')}
+                  {statsLoading ? '...' : (googleStats?.totalLength || '0')}
                 </div>
-                <div className="stat-label">Crusades</div>
+                <div className="stat-label">Total Hours</div>
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
