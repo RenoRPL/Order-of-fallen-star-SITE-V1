@@ -179,13 +179,19 @@ export default function Profile() {
                 <div className="stat-value">
                   {statsLoading ? '...' : (googleStats?.ledQuests || '0')}
                 </div>
-                <div className="stat-label">Led</div>
+                <div className="stat-label">Led Quests</div>
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
                   {statsLoading ? '...' : (googleStats?.crusades || '0')}
                 </div>
-                <div className="stat-label">Crusades Total</div>
+                <div className="stat-label">Crusades</div>
+              </div>
+              <div className="stat-crystal">
+                <div className="stat-value">
+                  {statsLoading ? '...' : (googleStats?.ledCrusades || '0')}
+                </div>
+                <div className="stat-label">Led Crusades</div>
               </div>
             </div>
           </div>
