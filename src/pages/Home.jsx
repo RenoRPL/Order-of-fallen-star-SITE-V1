@@ -29,7 +29,7 @@ export default function Home() {
           destiny: { title: "Choose Your Path", subtitle: "Select your role and define your legacy among the stars", paths: [] },
           socialLinks: {
             discord: { url: "https://discord.gg/3dhZ38nbNZ", enabled: true },
-            spectrum: { url: "https://robertsspaceindustries.com/orgs/OOFS", enabled: true }
+            spectrum: { url: "https://robertsspaceindustries.com/en/orgs/FALLSTR", enabled: true }
           }
         });
       }
@@ -122,7 +122,7 @@ export default function Home() {
             
             <div className="hero-buttons">
               <a href={content?.socialLinks?.discord?.url || "https://discord.gg/3dhZ38nbNZ"} target="_blank" rel="noopener noreferrer" className="btn primary">{content?.hero?.buttons?.primary || "Join Our Ranks"}</a>
-              <a href={content?.socialLinks?.spectrum?.url || "https://robertsspaceindustries.com/orgs/OOFS"} target="_blank" rel="noopener noreferrer" className="btn secondary">{content?.hero?.buttons?.secondary || "RSI Page"}</a>
+              <a href={content?.socialLinks?.spectrum?.url || "https://robertsspaceindustries.com/en/orgs/FALLSTR"} target="_blank" rel="noopener noreferrer" className="btn secondary">{content?.hero?.buttons?.secondary || "RSI Page"}</a>
             </div>
           </div>
         </section>
@@ -133,7 +133,6 @@ export default function Home() {
             <div className="features-grid">
               {(content?.features?.cards || []).map((card, index) => (
                 <div key={index} className="feature-card">
-                  <div className="feature-icon">{card.icon}</div>
                   <h3>{card.title}</h3>
                   <p>{card.description}</p>
                 </div>

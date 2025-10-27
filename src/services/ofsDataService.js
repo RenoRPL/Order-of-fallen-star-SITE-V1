@@ -4,6 +4,7 @@ const PATROLS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7y
 const RANKS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1671642684&single=true&output=csv'
 const PATROL_STATS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1245860458&single=true&output=csv'
 const PATHS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1288322893&single=true&output=csv'
+const WHAT_WE_OFFER_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1449801333&single=true&output=csv'
 
 class OFSDataService {
   static async fetchCSV(url) {
@@ -270,6 +271,30 @@ class OFSDataService {
     } catch (error) {
       console.error('Error fetching active member count:', error)
       return 0
+    }
+  }
+
+  static async getWhatWeOffer() {
+    try {
+      const offerData = await this.fetchCSV(WHAT_WE_OFFER_URL)
+      const features = []
+      
+      offerData.forEach(item => {
+        const name = item.Name || ''
+        const info = item.Info || ''
+        
+        if (name.trim() !== '' && info.trim() !== '') {
+          features.push({
+            title: name,
+            description: info
+          })
+        }
+      })
+      
+      return features
+    } catch (error) {
+      console.error('Error fetching What We Offer data:', error)
+      return []
     }
   }
 }

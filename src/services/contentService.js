@@ -4,7 +4,7 @@ import OFSDataService from './ofsDataService.js';
 
 // Default content structure
 const defaultContent = {
-  version: "1.2.0", // Added version for cache busting
+  version: "1.3.1", // Updated version to remove emojis
   hero: {
     title: "Welcome to Order of the Fallen Star",
     subtitle: "Elite Star Citizen Organization - Forging Legends Among the Stars",
@@ -23,22 +23,18 @@ const defaultContent = {
     title: "What We Offer",
     cards: [
       {
-        icon: "🚀",
         title: "Exploration",
         description: "Venture into uncharted territories and discover new worlds"
       },
       {
-        icon: "⚔️",
         title: "Combat Operations", 
         description: "Engage in strategic battles and protect our interests"
       },
       {
-        icon: "🏭",
         title: "Trade & Industry",
         description: "Build economic prosperity through commerce and manufacturing"
       },
       {
-        icon: "🤝",
         title: "Community",
         description: "Join a brotherhood of elite pilots and lifelong friends"
       }
@@ -77,7 +73,7 @@ const defaultContent = {
       enabled: true
     },
     spectrum: {
-      url: "https://robertsspaceindustries.com/orgs/OOFS",
+      url: "https://robertsspaceindustries.com/en/orgs/FALLSTR",
       enabled: true
     },
     website: {
@@ -106,7 +102,8 @@ class ContentService {
       // Load paths and stats in parallel with error handling
       await Promise.allSettled([
         this.loadPaths(),
-        this.loadDynamicStats()
+        this.loadDynamicStats(),
+        this.loadWhatWeOffer()
       ]);
     } catch (error) {
       console.error('Error loading dynamic data:', error);
@@ -191,6 +188,27 @@ class ContentService {
     }
   }
 
+  async loadWhatWeOffer() {
+    try {
+      console.log('Loading What We Offer from spreadsheet...');
+      const features = await OFSDataService.getWhatWeOffer();
+      console.log('Features loaded:', features);
+      
+      if (features && features.length > 0) {
+        this.content.features.cards = features;
+        // Trigger content update event
+        window.dispatchEvent(new CustomEvent('contentUpdated'));
+        console.log('What We Offer updated successfully');
+      } else {
+        console.log('No features found in spreadsheet, keeping defaults');
+      }
+    } catch (error) {
+      console.error('Error loading What We Offer from spreadsheet:', error);
+      // Keep default features if spreadsheet fails
+      console.log('Using default features due to error');
+    }
+  }
+
   saveContent(newContent) {
     try {
       this.content = { ...newContent };
@@ -228,8 +246,14 @@ class ContentService {
   async refreshAll() {
     await Promise.all([
       this.loadPaths(),
-      this.loadDynamicStats()
+      this.loadDynamicStats(),
+      this.loadWhatWeOffer()
     ]);
+    return this.content;
+  }
+
+  async refreshFeatures() {
+    await this.loadWhatWeOffer();
     return this.content;
   }
 
