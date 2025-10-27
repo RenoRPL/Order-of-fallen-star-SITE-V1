@@ -1,10 +1,12 @@
 // Google Sheets service for fetching user patrol stats
 export class GoogleSheetsService {
   constructor() {
-    // Use CSV export URL instead of gviz API to avoid CORS issues
+    // Use CSV export URL - requires sheet to be publicly accessible
     this.spreadsheetId = '12OiRHpEALj1hzXRxaXgBOWjHtmUT5hg2ztxIgr4J4y8';
     this.sheetGid = '1245860458'; // Patrols_User_Totals
     this.csvUrl = `https://docs.google.com/spreadsheets/d/${this.spreadsheetId}/export?format=csv&gid=${this.sheetGid}`;
+    // Alternative public sharing URL format
+    this.publicCsvUrl = `https://docs.google.com/spreadsheets/d/${this.spreadsheetId}/gviz/tq?tqx=out:csv&gid=${this.sheetGid}`;
   }
 
   /**
@@ -15,51 +17,85 @@ export class GoogleSheetsService {
   async fetchUserStats(userId) {
     try {
       console.log('Fetching stats for Discord User ID:', userId);
-      console.log('CSV URL:', this.csvUrl);
       
-      const response = await fetch(this.csvUrl);
+      // Try multiple URL formats to work around CORS
+      const urlsToTry = [
+        this.csvUrl,
+        this.publicCsvUrl,
+        // Add CORS proxy as fallback
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(this.csvUrl)}`,
+      ];
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      for (let i = 0; i < urlsToTry.length; i++) {
+        const url = urlsToTry[i];
+        console.log(`Attempt ${i + 1}: Trying URL:`, url);
+        
+        try {
+          const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+              'Accept': 'text/csv, text/plain, */*'
+            }
+          });
+          
+          if (response.ok) {
+            const csvText = await response.text();
+            console.log('CSV Response received successfully, length:', csvText.length);
+            console.log('First 500 chars:', csvText.substring(0, 500));
+            
+            // Parse CSV data
+            const rows = this.parseCSV(csvText);
+            console.log('Parsed CSV rows:', rows.length);
+            
+            if (rows.length > 0) {
+              console.log('Header row:', rows[0]);
+              
+              // Find user by UserID in column A (index 0)
+              const userRow = rows.find(row => row[0] && row[0].toString() === userId.toString());
+              
+              if (userRow) {
+                console.log('Found user row:', userRow);
+                
+                const stats = {
+                  patrolCount: userRow[2] || '0', // Column C - PatrolCount
+                  totalLength: userRow[3] || '0', // Column D - TotalLength
+                  fpsKills: userRow[4] || '0', // Column E - FPS_Kills_Total
+                  shipKills: userRow[5] || '0', // Column F - Ship_Kills_Total
+                  crusades: userRow[6] || '0', // Column G - Crusades_Total
+                  turretKills: userRow[7] || '0', // Column H - Turret_Kills_Total
+                  quests: userRow[8] || '0', // Column I - Quest_Total
+                  ledQuests: userRow[9] || '0', // Column J - Led_Completed_Quests
+                  ledCrusades: userRow[10] || '0', // Column K - Led_Completed_Crusades
+                };
+                
+                console.log('Extracted stats:', stats);
+                return stats;
+              } else {
+                console.log('User not found in spreadsheet, UserID:', userId);
+                console.log('Available UserIDs (first 10):', rows.slice(1, 11).map(row => row[0]));
+              }
+            }
+            
+            // If we got a response but no data, continue to next URL
+            break;
+          }
+        } catch (fetchError) {
+          console.log(`Attempt ${i + 1} failed:`, fetchError.message);
+          if (i === urlsToTry.length - 1) {
+            throw fetchError;
+          }
+          // Continue to next URL
+        }
       }
       
-      const csvText = await response.text();
-      console.log('CSV Response received, length:', csvText.length);
-      console.log('First 500 chars:', csvText.substring(0, 500));
-      
-      // Parse CSV data
-      const rows = this.parseCSV(csvText);
-      console.log('Parsed CSV rows:', rows.length);
-      console.log('Header row:', rows[0]);
-      
-      // Find user by UserID in column A (index 0)
-      const userRow = rows.find(row => row[0] === userId);
-      
-      if (userRow) {
-        console.log('Found user row:', userRow);
-        
-        const stats = {
-          patrolCount: userRow[2] || '0', // Column C - PatrolCount
-          totalLength: userRow[3] || '0', // Column D - TotalLength
-          fpsKills: userRow[4] || '0', // Column E - FPS_Kills_Total
-          shipKills: userRow[5] || '0', // Column F - Ship_Kills_Total
-          crusades: userRow[6] || '0', // Column G - Crusades_Total
-          turretKills: userRow[7] || '0', // Column H - Turret_Kills_Total
-          quests: userRow[8] || '0', // Column I - Quest_Total
-          ledQuests: userRow[9] || '0', // Column J - Led_Completed_Quests
-          ledCrusades: userRow[10] || '0', // Column K - Led_Completed_Crusades
-        };
-        
-        console.log('Extracted stats:', stats);
-        return stats;
-      } else {
-        console.log('User not found in spreadsheet, UserID:', userId);
-        console.log('Available UserIDs:', rows.slice(1).map(row => row[0]));
-        return this.getDefaultStats();
-      }
+      console.log('All attempts failed, returning default stats');
+      return this.getDefaultStats();
       
     } catch (error) {
       console.error('Error fetching user stats from Google Sheets:', error);
+      console.log('IMPORTANT: Make sure the Google Sheet is publicly accessible!');
+      console.log('Share settings should be: Anyone with the link can view');
       return this.getDefaultStats();
     }
   }
