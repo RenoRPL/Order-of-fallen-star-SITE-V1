@@ -1,4 +1,9 @@
 /* Home Page Styles */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px; /* Account for fixed header + spacing */
+}
+
 .home-page {
   min-height: 100vh;
   background: 
@@ -180,6 +185,10 @@
 }
 
 /* Features Section */
+#what-we-offer {
+  scroll-margin-top: 100px; /* Extra margin for better positioning */
+}
+
 .features-section {
   padding: 3rem 0;
   margin: 3rem 0;
