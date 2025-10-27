@@ -95,8 +95,22 @@ class ContentService {
   constructor() {
     this.content = { ...defaultContent };
     this.loadContent();
-    this.loadPaths(); // Load dynamic paths from spreadsheet
-    this.loadDynamicStats(); // Load dynamic member count
+    
+    // Load dynamic data with error handling
+    this.loadDynamicData();
+  }
+
+  async loadDynamicData() {
+    try {
+      // Load paths and stats in parallel with error handling
+      await Promise.allSettled([
+        this.loadPaths(),
+        this.loadDynamicStats()
+      ]);
+    } catch (error) {
+      console.error('Error loading dynamic data:', error);
+      // Ensure the site still works with default content
+    }
   }
 
   loadContent() {
@@ -122,11 +136,12 @@ class ContentService {
         window.dispatchEvent(new CustomEvent('contentUpdated'));
         console.log('Paths updated successfully');
       } else {
-        console.log('No paths found in spreadsheet');
+        console.log('No paths found in spreadsheet, keeping defaults');
       }
     } catch (error) {
       console.error('Error loading paths from spreadsheet:', error);
       // Keep default paths if spreadsheet fails
+      console.log('Using default paths due to error');
     }
   }
 
@@ -145,10 +160,14 @@ class ContentService {
       // Update stats if data is available
       if (activeMemberCount > 0) {
         this.content.hero.stats.members = `${activeMemberCount}`;
+      } else {
+        console.log('No active member data, keeping default');
       }
       
       if (totalPatrols > 0) {
         this.content.hero.stats.quests = `${totalPatrols}+`;
+      } else {
+        console.log('No patrol data, keeping default');
       }
       
       // Trigger content update event
@@ -157,6 +176,7 @@ class ContentService {
     } catch (error) {
       console.error('Error loading dynamic stats from spreadsheet:', error);
       // Keep default stats if spreadsheet fails
+      console.log('Using default stats due to error');
     }
   }
 
