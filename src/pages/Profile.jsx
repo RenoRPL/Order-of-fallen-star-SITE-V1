@@ -123,6 +123,16 @@ export default function Profile() {
       <main className="profile-main">
         <div className="profile-container">
           
+          {/* Welcome Section - Top of Page */}
+          <div className="profile-welcome">
+            <h2 className="welcome-title">
+              Welcome, {memberData?.Username || user?.username || 'Warrior'}
+            </h2>
+            <p className="welcome-subtitle">
+              Order of the Fallen Star • {OFSDataService.calculateTimeInService(memberData?.['Join Date']) || 'New Recruit'}
+            </p>
+          </div>
+          
           {/* Epic Profile Header with Rank Display - Compact */}
           <div className="profile-hero" style={{
             backgroundImage: memberData?.['Role Path'] 
@@ -162,16 +172,6 @@ export default function Profile() {
                   {memberData?.['Role Path'] || 'Unassigned'}
                 </div>
               </div>
-            </div>
-
-            {/* Center: Welcome Info */}
-            <div className="hero-info">
-              <h2 className="hero-welcome">
-                Welcome, {memberData?.Username || user?.username || 'Warrior'}
-              </h2>
-              <p className="hero-subtitle">
-                Order of the Fallen Star • {OFSDataService.calculateTimeInService(memberData?.['Join Date']) || 'New Recruit'}
-              </p>
             </div>
 
             {/* Right: Stats Overview */}

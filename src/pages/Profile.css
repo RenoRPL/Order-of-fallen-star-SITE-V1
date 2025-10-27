@@ -96,6 +96,33 @@
   padding: 1rem;
 }
 
+/* Profile Welcome Section - Top of Page */
+.profile-welcome {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 26, 46, 0.5) 100%);
+  border-radius: 15px;
+  border: 1px solid rgba(57, 185, 255, 0.2);
+  box-shadow: 0 0 30px rgba(57, 185, 255, 0.1);
+}
+
+.welcome-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #39b9ff;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 0 20px rgba(57, 185, 255, 0.5);
+  letter-spacing: 1px;
+}
+
+.welcome-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  font-weight: 300;
+}
+
 /* Epic Profile Hero Section - Compact */
 .profile-hero {
   position: relative;
@@ -110,7 +137,7 @@
     0 0 50px rgba(57, 185, 255, 0.2),
     inset 0 0 50px rgba(0, 0, 0, 0.5);
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   align-items: center;
   gap: 2rem;
 }
