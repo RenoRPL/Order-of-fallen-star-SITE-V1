@@ -213,84 +213,49 @@ export default function Profile() {
               </div>
             )}
             
-            {/* Knight's Codex - Member Information */}
+            {/* Battle Record */}
             <div className="codex-panel">
               <h2 className="panel-title">
-                <span className="title-icon">📖</span>
-                Knight's Codex
+                Battle Record
               </h2>
               {isLoading ? (
-                <div className="loading-state">Accessing Order records...</div>
-              ) : memberData ? (
-                <div className="codex-content">
-                  <div className="codex-section">
-                    <h3>Order Allegiance</h3>
-                    <div className="codex-grid">
-                      <div className="codex-item">
-                        <label>Rank</label>
-                        <span className="codex-value rank">{memberData.Rank || 'Initiate'}</span>
-                      </div>
-                      <div className="codex-item">
-                        <label>Path</label>
-                        <span className="codex-value path">{memberData['Role Path'] || 'Unassigned'}</span>
-                      </div>
-                      <div className="codex-item">
-                        <label>Chapter</label>
-                        <span className="codex-value">{memberData['Current Chapter'] || 'General'}</span>
-                      </div>
-                      <div className="codex-item">
-                        <label>Sworn</label>
-                        <span className="codex-value">{memberData['Join Date'] || 'Unknown'}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="codex-section">
-                    <h3>Battle Record</h3>
-                    <div className="battle-stats">
-                      <div className="battle-stat">
-                        <div className="stat-icon"></div>
-                        <div className="stat-info">
-                          <div className="stat-number">
-                            {statsLoading ? '...' : (googleStats?.fpsKills || '0')}
-                          </div>
-                          <div className="stat-name">Ground Kills</div>
-                        </div>
-                      </div>
-                      <div className="battle-stat">
-                        <div className="stat-icon"></div>
-                        <div className="stat-info">
-                          <div className="stat-number">
-                            {statsLoading ? '...' : (googleStats?.shipKills || '0')}
-                          </div>
-                          <div className="stat-name">Pilot Kills</div>
-                        </div>
-                      </div>
-                      <div className="battle-stat">
-                        <div className="stat-icon"></div>
-                        <div className="stat-info">
-                          <div className="stat-number">
-                            {statsLoading ? '...' : (googleStats?.crusades || '0')}
-                          </div>
-                          <div className="stat-name">Crusades</div>
-                        </div>
-                      </div>
-                      <div className="battle-stat">
-                        <div className="stat-icon"></div>
-                        <div className="stat-info">
-                          <div className="stat-number">
-                            {statsLoading ? '...' : (googleStats?.turretKills || '0')}
-                          </div>
-                          <div className="stat-name">Turret Kills</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div className="loading-state">Loading battle statistics...</div>
               ) : (
-                <div className="no-data-state">
-                  <p>Records not found in the Order's archives.</p>
-                  <p>Contact your Chapter Master to register your oath.</p>
+                <div className="codex-content">
+                  <div className="battle-stats">
+                    <div className="battle-stat">
+                      <div className="stat-info">
+                        <div className="stat-number">
+                          {statsLoading ? '...' : (googleStats?.fpsKills || '0')}
+                        </div>
+                        <div className="stat-name">Ground Kills</div>
+                      </div>
+                    </div>
+                    <div className="battle-stat">
+                      <div className="stat-info">
+                        <div className="stat-number">
+                          {statsLoading ? '...' : (googleStats?.shipKills || '0')}
+                        </div>
+                        <div className="stat-name">Pilot Kills</div>
+                      </div>
+                    </div>
+                    <div className="battle-stat">
+                      <div className="stat-info">
+                        <div className="stat-number">
+                          {statsLoading ? '...' : (googleStats?.crusades || '0')}
+                        </div>
+                        <div className="stat-name">Crusades</div>
+                      </div>
+                    </div>
+                    <div className="battle-stat">
+                      <div className="stat-info">
+                        <div className="stat-number">
+                          {statsLoading ? '...' : (googleStats?.turretKills || '0')}
+                        </div>
+                        <div className="stat-name">Turret Kills</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
