@@ -142,13 +142,18 @@ export default function Profile() {
           <div className="profile-hero" style={{
             backgroundImage: memberData?.['Role Path'] 
               ? `url('/Role Path/${memberData['Role Path']} - Hero.png')` 
-              : 'none',
+              : 'linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 46, 0.6) 100%), url("/Nebula BG.jpeg")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
           }}>
-            <div className="nebula-background"></div>
-            <div className="stars-overlay"></div>
+            {/* Remove nebula and stars overlays when Role Path image exists */}
+            {!memberData?.['Role Path'] && (
+              <>
+                <div className="nebula-background"></div>
+                <div className="stars-overlay"></div>
+              </>
+            )}
             
             {/* Left: Battle Record Stats */}
             <div className="battle-stats-overview">
