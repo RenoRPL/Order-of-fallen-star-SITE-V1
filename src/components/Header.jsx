@@ -1,11 +1,53 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { googleSheetsService } from '../services/googleSheetsService'
 import './Header.css'
 import LoginButton from './LoginButton'
 
 export default function Header() {
   const { user, userStats, isAuthenticated } = useAuth()
+  const [showingStats, setShowingStats] = useState(false)
+  const [currentStatIndex, setCurrentStatIndex] = useState(0)
+  const [userPatrolStats, setUserPatrolStats] = useState(null)
+  const [formattedStats, setFormattedStats] = useState([])
+
+  // Fetch user patrol stats when user is available
+  useEffect(() => {
+    if (user && user.id) {
+      const fetchStats = async () => {
+        try {
+          const stats = await googleSheetsService.fetchUserStats(user.id)
+          setUserPatrolStats(stats)
+          setFormattedStats(googleSheetsService.getFormattedStats(stats))
+        } catch (error) {
+          console.error('Error fetching patrol stats:', error)
+        }
+      }
+      
+      fetchStats()
+    }
+  }, [user])
+
+  // Cycling logic: Show name for 15s, then cycle stats every 4s
+  useEffect(() => {
+    if (!isAuthenticated || !user || formattedStats.length === 0) return
+
+    const initialTimer = setTimeout(() => {
+      setShowingStats(true)
+      
+      // Start cycling through stats every 4 seconds
+      const interval = setInterval(() => {
+        setCurrentStatIndex((prevIndex) => 
+          (prevIndex + 1) % formattedStats.length
+        )
+      }, 4000)
+
+      return () => clearInterval(interval)
+    }, 15000) // Show name for 15 seconds first
+
+    return () => clearTimeout(initialTimer)
+  }, [isAuthenticated, user, formattedStats])
 
   const getAvatarUrl = (userId, avatarHash) => {
     if (!avatarHash) {
@@ -57,7 +99,12 @@ export default function Header() {
                 )}
               </div>
               <div className="profile-info">
-                <span className="profile-name">{userStats?.orgName || user.username}</span>
+                <span className={`profile-name ${showingStats ? 'cycling-stats' : ''}`}>
+                  {showingStats && formattedStats.length > 0 
+                    ? `${formattedStats[currentStatIndex].label}: ${formattedStats[currentStatIndex].value}`
+                    : (userStats?.orgName || user.username)
+                  }
+                </span>
                 <div className="profile-details">
                   <div className="profile-stat">
                     <span className="profile-rank">{userStats?.rank || 'Loading...'}</span>
