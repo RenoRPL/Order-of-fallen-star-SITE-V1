@@ -173,9 +173,9 @@
 }
 
 .rank-badge {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.1) 100%);
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  color: #ffd700;
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.2) 0%, rgba(138, 43, 226, 0.1) 100%);
+  border: 1px solid rgba(138, 43, 226, 0.3);
+  color: #8a2be2;
 }
 
 .role-badge {

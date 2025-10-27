@@ -128,11 +128,11 @@ export default function Profile() {
             <div className="welcome-layout">
               {/* Left: Rank Icon and Path */}
               <div className="welcome-rank-section">
-                {rankData?.['Rank Icon'] && (
+                {memberData?.Rank && (
                   <div className="welcome-rank-icon-container">
                     <img 
-                      src={rankData['Rank Icon'].replace('view?usp=drive_link', 'preview')} 
-                      alt={`${memberData?.Rank} Rank`}
+                      src={`/Ranks/${memberData.Rank}.png`}
+                      alt={`${memberData.Rank} Rank`}
                       className="welcome-rank-icon"
                       onError={(e) => {
                         e.target.style.display = 'none'
@@ -153,9 +153,9 @@ export default function Profile() {
                 </p>
               </div>
               
-              {/* Right: Rank and Role Badges */}
+              {/* Right: Path and Role Badges */}
               <div className="welcome-badges">
-                <span className="rank-badge">{memberData?.Rank || 'Unranked'}</span>
+                <span className="rank-badge">{memberData?.['Role Path'] || 'Unassigned'}</span>
                 <span className="role-badge">{memberData?.Role || 'Member'}</span>
               </div>
             </div>
