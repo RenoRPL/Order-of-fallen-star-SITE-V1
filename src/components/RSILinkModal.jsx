@@ -24,23 +24,39 @@ const RSILinkModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
         
         <div className="modal-body">
           <div className="benefits-section">
-            <h3>🌟 Benefits of Linking Your RSI Account</h3>
+            <h3>🌟 RSI Account Verification Requirements</h3>
+            <div className="verification-requirements">
+              <div className="requirement-item">
+                <span className="req-icon">✅</span>
+                <strong>Discord Member:</strong> You must be a verified member of Order of the Fallen Star Discord
+              </div>
+              <div className="requirement-item">
+                <span className="req-icon">🏛️</span>
+                <strong>RSI Organization:</strong> Your main organization must be "Order of the Fallen Star"
+              </div>
+              <div className="requirement-item">
+                <span className="req-icon">🔗</span>
+                <strong>Public Profile:</strong> Your RSI citizen profile must be publicly visible
+              </div>
+            </div>
+            
+            <h3>🎁 Verified Citizen Benefits</h3>
             <ul className="benefits-list">
               <li>
                 <span className="benefit-icon">🚀</span>
-                <strong>Fleet Integration:</strong> Display your ships in our fleet registry
+                <strong>Fleet Integration:</strong> Display your real RSI ships in our fleet registry
               </li>
               <li>
                 <span className="benefit-icon">🎖️</span>
-                <strong>Verification Badge:</strong> Get a verified citizen badge on your profile
+                <strong>Verification Badge:</strong> Get a verified OFS citizen badge on your profile
               </li>
               <li>
                 <span className="benefit-icon">📊</span>
-                <strong>Enhanced Stats:</strong> Track UEC earnings and mission progress
+                <strong>Enhanced Stats:</strong> Track real UEC earnings and mission progress
               </li>
               <li>
                 <span className="benefit-icon">🏆</span>
-                <strong>Leaderboards:</strong> Compete in org-wide rankings and achievements
+                <strong>Leaderboards:</strong> Compete in org-wide rankings with verified data
               </li>
               <li>
                 <span className="benefit-icon">🎁</span>
@@ -48,7 +64,7 @@ const RSILinkModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
               </li>
               <li>
                 <span className="benefit-icon">⚡</span>
-                <strong>Auto-Sync:</strong> Automatic updates from your RSI profile
+                <strong>Real-time Sync:</strong> Live updates from your RSI organization status
               </li>
             </ul>
           </div>
@@ -61,12 +77,12 @@ const RSILinkModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
                 id="rsiHandle"
                 value={rsiHandle}
                 onChange={(e) => setRsiHandle(e.target.value)}
-                placeholder="Enter your RSI handle (e.g., StarCitizen123)"
+                placeholder="Enter your RSI handle (e.g., RenoTG)"
                 className="rsi-input"
                 disabled={isLoading}
               />
               <div className="input-help">
-                Your RSI handle is your unique identifier in Star Citizen
+                We'll verify this handle is a member of Order of the Fallen Star organization
               </div>
             </div>
 
@@ -79,7 +95,7 @@ const RSILinkModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
                   disabled={isLoading}
                 />
                 <span className="checkmark"></span>
-                I agree to sync my RSI profile data with Order of the Fallen Star
+                I confirm this is my RSI account and I'm a member of Order of the Fallen Star
               </label>
             </div>
 
@@ -100,12 +116,12 @@ const RSILinkModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
                 {isLoading ? (
                   <>
                     <span className="loading-spinner"></span>
-                    Linking Account...
+                    Verifying Account...
                   </>
                 ) : (
                   <>
-                    <span className="btn-icon">🔗</span>
-                    Link RSI Account
+                    <span className="btn-icon">�</span>
+                    Verify RSI Account
                   </>
                 )}
               </button>

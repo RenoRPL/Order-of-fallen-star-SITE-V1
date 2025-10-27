@@ -108,51 +108,72 @@ export default function Profile() {
   const handleRsiLink = async (rsiHandle) => {
     setRsiLoading(true)
     try {
-      // For demonstration, we'll simulate a successful link
-      // In production, you would integrate with RSI API or verification system
-      await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate API call
-      
-      const mockRsiInfo = {
-        handle: rsiHandle,
-        verified: true,
-        citizen_record: Math.floor(Math.random() * 1000000) + 1000000,
-        enlisted: new Date().toISOString(),
-        organization: {
-          name: "Order of the Fallen Star",
-          rank: "Member"
+      // Call our real RSI verification service
+      const response = await fetch('/.netlify/functions/verify-rsi', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        ships: [
-          { name: "Aurora MR", type: "Starter" },
-          { name: "Cutlass Black", type: "Medium Fighter" }
-        ]
+        body: JSON.stringify({
+          rsiHandle: rsiHandle,
+          discordId: user.id // User's Discord ID from auth context
+        })
+      })
+
+      const result = await response.json()
+
+      if (response.ok && result.verified) {
+        // Success - Real RSI account verified!
+        setRsiData(result.rsiProfile)
+        
+        // Update local member data with real RSI info
+        setMemberData(prev => ({
+          ...prev,
+          RSI_Handle: rsiHandle,
+          RSI_Verified: true,
+          RSI_Data: result.rsiProfile,
+          RSI_Organization: result.rsiProfile.mainOrganization,
+          RSI_Rank: result.rsiProfile.organizationRank
+        }))
+        
+        setShowRsiModal(false)
+        setNotification({
+          type: 'success',
+          message: `✅ RSI Account Verified! Welcome ${rsiHandle}, ${result.rsiProfile.organizationRank} of Order of the Fallen Star!`
+        })
+        
+        console.log('RSI Verification Success:', result)
+        
+      } else {
+        // Verification failed
+        throw new Error(result.error || 'RSI verification failed')
       }
       
-      setRsiData(mockRsiInfo)
-      
-      // Update local member data
-      setMemberData(prev => ({
-        ...prev,
-        RSI_Handle: rsiHandle,
-        RSI_Verified: true,
-        RSI_Data: mockRsiInfo
-      }))
-      
-      setShowRsiModal(false)
-      setNotification({
-        type: 'success',
-        message: `Successfully linked RSI account: ${rsiHandle}! You can now access fleet features and verified citizen benefits.`
-      })
-      
-      // Clear notification after 5 seconds
-      setTimeout(() => setNotification(null), 5000)
+      // Clear notification after 7 seconds for success
+      setTimeout(() => setNotification(null), 7000)
       
     } catch (error) {
-      console.error('Error linking RSI account:', error)
+      console.error('Error verifying RSI account:', error)
+      
+      let errorMessage = 'Failed to verify RSI account. '
+      
+      if (error.message.includes('not found')) {
+        errorMessage += 'Please check that your RSI handle is spelled correctly.'
+      } else if (error.message.includes('not a member')) {
+        errorMessage += 'Your RSI account must be a member of Order of the Fallen Star organization.'
+      } else if (error.message.includes('Discord member not found')) {
+        errorMessage += 'You must be a verified Discord member of Order of the Fallen Star.'
+      } else {
+        errorMessage += 'Please try again later or contact support.'
+      }
+      
       setNotification({
         type: 'error',
-        message: 'Failed to link RSI account. Please check the handle and try again.'
+        message: errorMessage
       })
-      setTimeout(() => setNotification(null), 5000)
+      
+      // Clear error notification after 10 seconds
+      setTimeout(() => setNotification(null), 10000)
     } finally {
       setRsiLoading(false)
     }

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSI Verification Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-form {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #00ffff;
+        }
+        input {
+            background: #0a0a1a;
+            color: white;
+            width: 200px;
+        }
+        button {
+            background: #00ffff;
+            color: black;
+            cursor: pointer;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+        .success { background: #0d4f0d; border: 1px solid #00ff00; }
+        .error { background: #4f0d0d; border: 1px solid #ff0000; }
+        .loading { background: #4f4f0d; border: 1px solid #ffff00; }
+    </style>
+</head>
+<body>
+    <h1>🚀 RSI Account Verification Test</h1>
+    <p>Test the real RSI verification system for Order of the Fallen Star</p>
+    
+    <div class="test-form">
+        <h3>Test RSI Handle Verification</h3>
+        <input type="text" id="rsiHandle" placeholder="Enter RSI Handle (e.g., RenoTG)" value="RenoTG">
+        <input type="text" id="discordId" placeholder="Discord ID" value="test-discord-id">
+        <button onclick="testVerification()">🔍 Test Verification</button>
+    </div>
+    
+    <div id="result"></div>
+
+    <script>
+        async function testVerification() {
+            const rsiHandle = document.getElementById('rsiHandle').value;
+            const discordId = document.getElementById('discordId').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!rsiHandle || !discordId) {
+                showResult('Please enter both RSI handle and Discord ID', 'error');
+                return;
+            }
+            
+            showResult('🔄 Testing verification...', 'loading');
+            
+            try {
+                const response = await fetch('/.netlify/functions/verify-rsi', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        rsiHandle: rsiHandle,
+                        discordId: discordId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.verified) {
+                    showResult(`✅ VERIFICATION SUCCESS!
+                    
+Handle: ${result.rsiProfile.handle}
+Organization: ${result.rsiProfile.mainOrganization}
+Rank: ${result.rsiProfile.organizationRank}
+Citizen Record: ${result.rsiProfile.citizenRecord || 'N/A'}
+Enlisted: ${result.rsiProfile.enlisted || 'N/A'}
+Location: ${result.rsiProfile.location || 'N/A'}
+
+${result.message}`, 'success');
+                } else {
+                    showResult(`❌ VERIFICATION FAILED
+                    
+Error: ${result.error}
+
+${result.rsiProfile ? 'RSI Profile Found:' + JSON.stringify(result.rsiProfile, null, 2) : 'No RSI profile data'}`, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`💥 SYSTEM ERROR
+                
+${error.message}
+
+This could mean:
+- Netlify functions not running
+- Network connection issue
+- Backend service error`, 'error');
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+        }
+        
+        // Test known handles
+        function loadTestHandle(handle) {
+            document.getElementById('rsiHandle').value = handle;
+        }
+    </script>
+    
+    <div class="test-form">
+        <h3>Quick Test Handles</h3>
+        <button onclick="loadTestHandle('RenoTG')">Test RenoTG</button>
+        <button onclick="loadTestHandle('nonexistent')">Test Invalid Handle</button>
+        <button onclick="loadTestHandle('example')">Test Non-OFS Member</button>
+    </div>
+    
+    <div class="test-form">
+        <h3>ℹ️ How It Works</h3>
+        <p>1. <strong>Discord Check:</strong> Verifies user exists in OFS Discord member database</p>
+        <p>2. <strong>RSI Scraping:</strong> Fetches citizen profile from robertsspaceindustries.com</p>
+        <p>3. <strong>Organization Check:</strong> Confirms main organization is "Order of the Fallen Star"</p>
+        <p>4. <strong>Success:</strong> Returns verified profile data for authenticated member</p>
+    </div>
+</body>
+</html>
