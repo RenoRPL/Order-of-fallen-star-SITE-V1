@@ -131,6 +131,11 @@ export default function Profile() {
             <p className="welcome-subtitle">
               Order of the Fallen Star • {OFSDataService.calculateTimeInService(memberData?.['Join Date']) || 'New Recruit'}
             </p>
+            <div className="welcome-rank-info">
+              <span className="rank-badge">{memberData?.Rank || 'Unranked'}</span>
+              <span className="role-badge">{memberData?.Role || 'Member'}</span>
+              <span className="path-badge">{memberData?.['Role Path'] || 'Unassigned'}</span>
+            </div>
           </div>
           
           {/* Epic Profile Header with Rank Display - Compact */}
@@ -145,36 +150,35 @@ export default function Profile() {
             <div className="nebula-background"></div>
             <div className="stars-overlay"></div>
             
-            {/* Left: Rank Display */}
-            <div className="rank-display">
-              {rankData?.['Rank Icon'] && (
-                <div className="rank-icon-container">
-                  <img 
-                    src={rankData['Rank Icon'].replace('view?usp=drive_link', 'preview')} 
-                    alt={`${memberData?.Rank} Rank`}
-                    className="rank-icon"
-                    onError={(e) => {
-                      e.target.style.display = 'none'
-                    }}
-                  />
-                  <div className="rank-glow"></div>
+            {/* Left: Battle Record Stats */}
+            <div className="battle-stats-overview">
+              <div className="stat-crystal">
+                <div className="stat-value">
+                  {statsLoading ? '...' : (googleStats?.fpsKills || '0')}
                 </div>
-              )}
-              
-              <div className="rank-info">
-                <div className="rank-tier">
-                  {memberData?.Rank || 'Unranked'}
+                <div className="stat-label">Ground Kills</div>
+              </div>
+              <div className="stat-crystal">
+                <div className="stat-value">
+                  {statsLoading ? '...' : (googleStats?.shipKills || '0')}
                 </div>
-                <h1 className="rank-title">
-                  {memberData?.Role || 'Member'}
-                </h1>
-                <div className="member-title">
-                  {memberData?.['Role Path'] || 'Unassigned'}
+                <div className="stat-label">Pilot Kills</div>
+              </div>
+              <div className="stat-crystal">
+                <div className="stat-value">
+                  {statsLoading ? '...' : (googleStats?.crusades || '0')}
                 </div>
+                <div className="stat-label">Crusades</div>
+              </div>
+              <div className="stat-crystal">
+                <div className="stat-value">
+                  {statsLoading ? '...' : (googleStats?.turretKills || '0')}
+                </div>
+                <div className="stat-label">Turret Kills</div>
               </div>
             </div>
 
-            {/* Right: Stats Overview */}
+            {/* Right: Quest Stats */}
             <div className="profile-stats-overview">
               <div className="stat-crystal">
                 <div className="stat-value">
@@ -213,53 +217,6 @@ export default function Profile() {
               </div>
             )}
             
-            {/* Battle Record */}
-            <div className="codex-panel">
-              <h2 className="panel-title">
-                Battle Record
-              </h2>
-              {isLoading ? (
-                <div className="loading-state">Loading battle statistics...</div>
-              ) : (
-                <div className="codex-content">
-                  <div className="battle-stats">
-                    <div className="battle-stat">
-                      <div className="stat-info">
-                        <div className="stat-number">
-                          {statsLoading ? '...' : (googleStats?.fpsKills || '0')}
-                        </div>
-                        <div className="stat-name">Ground Kills</div>
-                      </div>
-                    </div>
-                    <div className="battle-stat">
-                      <div className="stat-info">
-                        <div className="stat-number">
-                          {statsLoading ? '...' : (googleStats?.shipKills || '0')}
-                        </div>
-                        <div className="stat-name">Pilot Kills</div>
-                      </div>
-                    </div>
-                    <div className="battle-stat">
-                      <div className="stat-info">
-                        <div className="stat-number">
-                          {statsLoading ? '...' : (googleStats?.crusades || '0')}
-                        </div>
-                        <div className="stat-name">Crusades</div>
-                      </div>
-                    </div>
-                    <div className="battle-stat">
-                      <div className="stat-info">
-                        <div className="stat-number">
-                          {statsLoading ? '...' : (googleStats?.turretKills || '0')}
-                        </div>
-                        <div className="stat-name">Turret Kills</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
             {/* Command Center */}
             <div className="command-panel">
               <h2 className="panel-title">

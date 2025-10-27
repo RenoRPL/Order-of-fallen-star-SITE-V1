@@ -119,11 +119,47 @@
 .welcome-subtitle {
   font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.8);
-  margin: 0;
+  margin: 0 0 1rem 0;
   font-weight: 300;
 }
 
-/* Epic Profile Hero Section - Taller with Right-side Stats */
+.welcome-rank-info {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rank-badge,
+.role-badge,
+.path-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rank-badge {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.1) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd700;
+}
+
+.role-badge {
+  background: linear-gradient(135deg, rgba(57, 185, 255, 0.2) 0%, rgba(57, 185, 255, 0.1) 100%);
+  border: 1px solid rgba(57, 185, 255, 0.3);
+  color: #39b9ff;
+}
+
+.path-badge {
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.2) 0%, rgba(138, 43, 226, 0.1) 100%);
+  border: 1px solid rgba(138, 43, 226, 0.3);
+  color: #8a2be2;
+}
+
+/* Epic Profile Hero Section - Taller with Left and Right Stats */
 .profile-hero {
   position: relative;
   padding: 3rem 2rem;
@@ -141,6 +177,19 @@
   align-items: center;
   gap: 2rem;
   min-height: 300px;
+}
+
+/* Battle Stats Overview - Left Side */
+.battle-stats-overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  position: relative;
+  z-index: 3;
+  max-width: 200px;
+  justify-self: start;
+  align-self: start;
+  margin-top: 1rem;
 }
 
 .nebula-background {
@@ -324,7 +373,7 @@
   background: linear-gradient(135deg, rgba(57, 185, 255, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
   border: 2px solid rgba(57, 185, 255, 0.3);
   border-radius: 8px;
-  padding: 0.8rem 0.5rem;
+  padding: 0.8rem 0.4rem;
   text-align: center;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
@@ -333,6 +382,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  min-width: 80px;
+  min-height: 80px;
 }
 
 .stat-crystal:hover {
