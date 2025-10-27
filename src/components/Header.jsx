@@ -42,21 +42,48 @@ export default function Header() {
   useEffect(() => {
     if (!isAuthenticated || !user || formattedStats.length === 0) return
 
-    const initialTimer = setTimeout(() => {
-      setShowingStats(true)
-      
-      // Function to transition to next stat
+    let cycleTimer
+    let isInNamePhase = true
+    let currentIndex = 0
+
+    const startCycle = () => {
+      // Function to transition to next content
       const transitionToNext = () => {
         setIsTransitioning(true)
         
         // Fade out current content
         setTimeout(() => {
-          // Update content during fade
-          setCurrentStatIndex((prevIndex) => {
-            const nextIndex = (prevIndex + 1) % formattedStats.length
-            setDisplayText(`${formattedStats[nextIndex].label}: ${formattedStats[nextIndex].value}`)
-            return nextIndex
-          })
+          if (isInNamePhase) {
+            // Switch to stats phase
+            isInNamePhase = false
+            setShowingStats(true)
+            currentIndex = 0
+            setDisplayText(`${formattedStats[currentIndex].label}: ${formattedStats[currentIndex].value}`)
+            setCurrentStatIndex(currentIndex)
+            
+            // Schedule next stat in 4 seconds
+            cycleTimer = setTimeout(transitionToNext, 4000)
+          } else {
+            // Currently showing stats
+            currentIndex++
+            
+            if (currentIndex >= formattedStats.length) {
+              // Finished all stats, go back to name
+              isInNamePhase = true
+              setShowingStats(false)
+              setDisplayText(userStats?.orgName || user.username)
+              
+              // Schedule name phase for 15 seconds
+              cycleTimer = setTimeout(transitionToNext, 15000)
+            } else {
+              // Show next stat
+              setDisplayText(`${formattedStats[currentIndex].label}: ${formattedStats[currentIndex].value}`)
+              setCurrentStatIndex(currentIndex)
+              
+              // Schedule next stat in 4 seconds
+              cycleTimer = setTimeout(transitionToNext, 4000)
+            }
+          }
           
           // Fade back in
           setTimeout(() => {
@@ -65,17 +92,22 @@ export default function Header() {
         }, 250) // Half of transition duration
       }
 
-      // Set initial stat
-      setDisplayText(`${formattedStats[0].label}: ${formattedStats[0].value}`)
+      // Start with name for 15 seconds
+      setDisplayText(userStats?.orgName || user.username)
+      setShowingStats(false)
       
-      // Start cycling through stats every 4 seconds
-      const interval = setInterval(transitionToNext, 4000)
+      // Schedule first transition to stats after 15 seconds
+      cycleTimer = setTimeout(transitionToNext, 15000)
+    }
 
-      return () => clearInterval(interval)
-    }, 15000) // Show name for 15 seconds first
+    startCycle()
 
-    return () => clearTimeout(initialTimer)
-  }, [isAuthenticated, user, formattedStats])
+    return () => {
+      if (cycleTimer) {
+        clearTimeout(cycleTimer)
+      }
+    }
+  }, [isAuthenticated, user, formattedStats, userStats])
 
   const getAvatarUrl = (userId, avatarHash) => {
     if (!avatarHash) {
