@@ -78,8 +78,8 @@ export default function Home() {
             </div>
             
             <div className="hero-buttons">
-              <a href="/join" className="btn primary">{content.hero.buttons.primary}</a>
-              <a href="/fleet" className="btn secondary">{content.hero.buttons.secondary}</a>
+              <a href={content.socialLinks.discord.url} target="_blank" rel="noopener noreferrer" className="btn primary">{content.hero.buttons.primary}</a>
+              <a href={content.socialLinks.spectrum.url} target="_blank" rel="noopener noreferrer" className="btn secondary">{content.hero.buttons.secondary}</a>
             </div>
           </div>
         </section>

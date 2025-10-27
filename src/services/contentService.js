@@ -72,7 +72,7 @@ const defaultContent = {
   },
   socialLinks: {
     discord: {
-      url: "https://discord.gg/your-server-code",
+      url: "https://discord.gg/orderofthefallenstar",
       enabled: true
     },
     spectrum: {
