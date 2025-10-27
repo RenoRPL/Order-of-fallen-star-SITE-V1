@@ -127,7 +127,7 @@ export default function Home() {
           </div>
         </section>
         
-        <section className="features-section">
+        <section className="features-section" id="what-we-offer">
           <div className="features-container">
             <h2>{content?.features?.title || "What We Offer"}</h2>
             <div className="features-grid">

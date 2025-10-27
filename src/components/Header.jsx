@@ -26,7 +26,7 @@ export default function Header() {
         </div>
         
         <nav className="main-nav">
-          <a href="/about" className="nav-link">About</a>
+          <a href="/#what-we-offer" className="nav-link">About</a>
           <a href="/fleet" className="nav-link">Fleet</a>
           <a href="/primarchs" className="nav-link">Primarchs</a>
           <a href="/codex" className="nav-link">Codex</a>

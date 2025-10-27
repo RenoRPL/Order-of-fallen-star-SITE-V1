@@ -1,12 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { contentService } from '../services/contentService';
 import './Footer.css';
 
 export default function Footer() {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [adminCode, setAdminCode] = useState('');
+  const [content, setContent] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Listen for content updates
+    const updateContent = () => {
+      try {
+        const newContent = contentService.getContent();
+        setContent(newContent);
+      } catch (error) {
+        console.error('Error getting content in footer:', error);
+        // Set minimal fallback content
+        setContent({
+          hero: {
+            stats: { members: "150+", quests: "50+", systems: "2" }
+          }
+        });
+      }
+    };
+
+    // Update content when component mounts
+    updateContent();
+
+    // Optional: Add event listener for real-time updates
+    window.addEventListener('contentUpdated', updateContent);
+    
+    return () => {
+      window.removeEventListener('contentUpdated', updateContent);
+    };
+  }, []);
 
   const toggleDropdown = (dropdown) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown)
@@ -48,10 +78,10 @@ export default function Footer() {
               </h4>
               <ul className={`footer-links ${openDropdown === 'links' ? 'open' : ''}`}>
                 <li><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
+                <li><a href="/#what-we-offer">About</a></li>
                 <li><a href="/fleet">Fleet</a></li>
-                <li><a href="/join">Join Us</a></li>
-                <li><a href="/progress">Progress</a></li>
+                <li><a href="/primarchs">Primarchs</a></li>
+                <li><a href="/codex">Codex</a></li>
               </ul>
             </div>
             
@@ -79,8 +109,9 @@ export default function Footer() {
               </h4>
               <div className={`footer-info ${openDropdown === 'org' ? 'open' : ''}`}>
                 <p>Founded: 2024</p>
-                <p>Members: 150+</p>
-                <p>Fleet: 50+ Ships</p>
+                <p>Active Members: {content?.hero?.stats?.members || "150+"}</p>
+                <p>Total Quests Completed: {content?.hero?.stats?.quests || "50+"}</p>
+                <p>Systems Held: {content?.hero?.stats?.systems || "2"}</p>
                 <p>Focus: Multi-Discipline</p>
               </div>
             </div>
