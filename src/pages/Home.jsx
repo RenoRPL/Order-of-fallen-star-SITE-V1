@@ -23,12 +23,12 @@ export default function Home() {
             subtitle: "Elite Star Citizen Organization - Forging Legends Among the Stars",
             description: "Under the light of the Fallen Star, we bind our blades, our names, and our futures. This Codex governs all from Serf to Primarch.",
             stats: { members: "150+", quests: "50+", systems: "2" },
-            buttons: { primary: "Join Our Ranks", secondary: "Explore Our Fleet" }
+            buttons: { primary: "Join Our Ranks", secondary: "RSI Page" }
           },
           features: { title: "What We Offer", cards: [] },
           destiny: { title: "Choose Your Path", subtitle: "Select your role and define your legacy among the stars", paths: [] },
           socialLinks: {
-            discord: { url: "https://discord.gg/orderofthefallenstar", enabled: true },
+            discord: { url: "https://discord.gg/3dhZ38nbNZ", enabled: true },
             spectrum: { url: "https://robertsspaceindustries.com/orgs/OOFS", enabled: true }
           }
         });
@@ -121,8 +121,8 @@ export default function Home() {
             </div>
             
             <div className="hero-buttons">
-              <a href={content?.socialLinks?.discord?.url || "https://discord.gg/orderofthefallenstar"} target="_blank" rel="noopener noreferrer" className="btn primary">{content?.hero?.buttons?.primary || "Join Our Ranks"}</a>
-              <a href={content?.socialLinks?.spectrum?.url || "https://robertsspaceindustries.com/orgs/OOFS"} target="_blank" rel="noopener noreferrer" className="btn secondary">{content?.hero?.buttons?.secondary || "Explore Our Fleet"}</a>
+              <a href={content?.socialLinks?.discord?.url || "https://discord.gg/3dhZ38nbNZ"} target="_blank" rel="noopener noreferrer" className="btn primary">{content?.hero?.buttons?.primary || "Join Our Ranks"}</a>
+              <a href={content?.socialLinks?.spectrum?.url || "https://robertsspaceindustries.com/orgs/OOFS"} target="_blank" rel="noopener noreferrer" className="btn secondary">{content?.hero?.buttons?.secondary || "RSI Page"}</a>
             </div>
           </div>
         </section>

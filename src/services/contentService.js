@@ -15,7 +15,7 @@ const defaultContent = {
     },
     buttons: {
       primary: "Join Our Ranks",
-      secondary: "Explore Our Fleet"
+      secondary: "RSI Page"
     }
   },
   features: {
@@ -72,7 +72,7 @@ const defaultContent = {
   },
   socialLinks: {
     discord: {
-      url: "https://discord.gg/orderofthefallenstar",
+      url: "https://discord.gg/3dhZ38nbNZ",
       enabled: true
     },
     spectrum: {
