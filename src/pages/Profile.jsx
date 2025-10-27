@@ -155,8 +155,20 @@ export default function Profile() {
                 <span className="path-badge">{memberData?.['Role Path'] || 'Unassigned'}</span>
               </div>
               
-              {/* Right: Role Badge */}
+              {/* Right: Rank Icon and Role Badge */}
               <div className="welcome-badges">
+                {memberData?.Rank && (
+                  <div className="welcome-rank-icon-container">
+                    <img 
+                      src={`/Ranks/${memberData.Rank}.png`}
+                      alt={`${memberData.Rank} Rank`}
+                      className="welcome-rank-icon"
+                      onError={(e) => {
+                        e.target.style.display = 'none'
+                      }}
+                    />
+                  </div>
+                )}
                 <span className="role-badge">{memberData?.Role || 'Member'}</span>
               </div>
             </div>
