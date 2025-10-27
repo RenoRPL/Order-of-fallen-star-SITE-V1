@@ -3,6 +3,9 @@ export class GoogleSheetsService {
   constructor() {
     this.baseUrl = 'https://docs.google.com/spreadsheets/d/12OiRHpEALj1hzXRxaXgBOWjHtmUT5hg2ztxIgr4J4y8/gviz/tq?';
     this.sheetGid = '1245860458'; // Patrols_User_Totals
+    this.headers = {
+      'Accept': 'text/plain',
+    };
   }
 
   /**
@@ -12,17 +15,17 @@ export class GoogleSheetsService {
    */
   async fetchUserStats(userId) {
     try {
-      // Query to find user by Discord ID (Column A) or DisplayName (Column B)
-      const query = `SELECT * WHERE A = '${userId}' OR B CONTAINS '${userId}'`;
+      // Query to find user by exact Discord ID in Column A (UserID)
+      const query = `SELECT * WHERE A = '${userId}'`;
       const url = `${this.baseUrl}gid=${this.sheetGid}&tq=${encodeURIComponent(query)}`;
       
-      console.log('Fetching stats for user:', userId);
+      console.log('Fetching stats for Discord User ID:', userId);
       console.log('Query URL:', url);
       
       const response = await fetch(url);
       const text = await response.text();
       
-      console.log('Response text:', text);
+      console.log('Raw response text:', text.substring(0, 500) + '...');
       
       // Parse Google Sheets response (JSON-P format)
       const jsonData = this.parseGoogleSheetsResponse(text);
@@ -32,7 +35,9 @@ export class GoogleSheetsService {
         const row = jsonData.table.rows[0];
         const cols = row.c;
         
-        console.log('Row data:', cols);
+        console.log('Found matching row, raw columns:', cols);
+        console.log('Column A (UserID):', this.getCellValue(cols[0]));
+        console.log('Column B (DisplayName):', this.getCellValue(cols[1]));
         
         const stats = {
           patrolCount: this.getCellValue(cols[2]) || '0', // Column C - PatrolCount
@@ -48,9 +53,44 @@ export class GoogleSheetsService {
         
         console.log('Extracted stats:', stats);
         return stats;
+      } else {
+        console.log('No matching rows found for UserID:', userId);
+        console.log('Available data structure:', jsonData);
+        
+        // Try alternative query with string conversion
+        const altQuery = `SELECT * WHERE A = "${userId}"`;
+        const altUrl = `${this.baseUrl}gid=${this.sheetGid}&tq=${encodeURIComponent(altQuery)}`;
+        
+        console.log('Trying alternative query:', altUrl);
+        
+        const altResponse = await fetch(altUrl);
+        const altText = await altResponse.text();
+        const altJsonData = this.parseGoogleSheetsResponse(altText);
+        
+        console.log('Alternative query result:', altJsonData);
+        
+        if (altJsonData && altJsonData.table && altJsonData.table.rows && altJsonData.table.rows.length > 0) {
+          const row = altJsonData.table.rows[0];
+          const cols = row.c;
+          
+          const stats = {
+            patrolCount: this.getCellValue(cols[2]) || '0',
+            totalLength: this.getCellValue(cols[3]) || '0',
+            fpsKills: this.getCellValue(cols[4]) || '0',
+            shipKills: this.getCellValue(cols[5]) || '0',
+            crusades: this.getCellValue(cols[6]) || '0',
+            turretKills: this.getCellValue(cols[7]) || '0',
+            quests: this.getCellValue(cols[8]) || '0',
+            ledQuests: this.getCellValue(cols[9]) || '0',
+            ledCrusades: this.getCellValue(cols[10]) || '0',
+          };
+          
+          console.log('Alternative query extracted stats:', stats);
+          return stats;
+        }
       }
       
-      console.log('No matching rows found, returning default stats');
+      console.log('No matching data found, returning default stats');
       return this.getDefaultStats();
     } catch (error) {
       console.error('Error fetching user stats from Google Sheets:', error);
