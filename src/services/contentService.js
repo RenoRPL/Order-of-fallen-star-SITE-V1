@@ -7,11 +7,11 @@ const defaultContent = {
   hero: {
     title: "Welcome to Order of the Fallen Star",
     subtitle: "Elite Star Citizen Organization - Forging Legends Among the Stars",
-    description: "Join our ranks as we explore the vast universe, engage in epic battles, and build a legacy that will echo through the cosmos.",
+    description: "Under the light of the Fallen Star, we bind our blades, our names, and our futures. This Codex governs all from Serf to Primarch.",
     stats: {
       members: "150+",
-      ships: "50+", 
-      systems: "5+"
+      quests: "50+", 
+      systems: "2"
     },
     buttons: {
       primary: "Join Our Ranks",
@@ -96,6 +96,7 @@ class ContentService {
     this.content = { ...defaultContent };
     this.loadContent();
     this.loadPaths(); // Load dynamic paths from spreadsheet
+    this.loadDynamicStats(); // Load dynamic member count
   }
 
   loadContent() {
@@ -129,6 +130,36 @@ class ContentService {
     }
   }
 
+  async loadDynamicStats() {
+    try {
+      console.log('Loading dynamic stats from spreadsheet...');
+      
+      // Load active member count from Member Log
+      const activeMemberCount = await OFSDataService.getActiveMemberCount();
+      console.log('Active member count:', activeMemberCount);
+      
+      // Load total patrol count for quests completed
+      const totalPatrols = await OFSDataService.getTotalPatrolCount();
+      console.log('Total patrol count:', totalPatrols);
+      
+      // Update stats if data is available
+      if (activeMemberCount > 0) {
+        this.content.hero.stats.members = `${activeMemberCount}`;
+      }
+      
+      if (totalPatrols > 0) {
+        this.content.hero.stats.quests = `${totalPatrols}+`;
+      }
+      
+      // Trigger content update event
+      window.dispatchEvent(new CustomEvent('contentUpdated'));
+      console.log('Dynamic stats updated successfully');
+    } catch (error) {
+      console.error('Error loading dynamic stats from spreadsheet:', error);
+      // Keep default stats if spreadsheet fails
+    }
+  }
+
   saveContent(newContent) {
     try {
       this.content = { ...newContent };
@@ -153,6 +184,19 @@ class ContentService {
 
   async refreshPaths() {
     await this.loadPaths();
+    return this.content;
+  }
+
+  async refreshStats() {
+    await this.loadDynamicStats();
+    return this.content;
+  }
+
+  async refreshAll() {
+    await Promise.all([
+      this.loadPaths(),
+      this.loadDynamicStats()
+    ]);
     return this.content;
   }
 }

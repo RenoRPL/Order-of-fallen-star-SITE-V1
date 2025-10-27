@@ -68,12 +68,12 @@ export default function Home() {
                 <div className="stat-label">Active Members</div>
               </div>
               <div className="stat">
-                <div className="stat-number">{content.hero.stats.ships}</div>
-                <div className="stat-label">Fleet Ships</div>
+                <div className="stat-number">{content.hero.stats.quests}</div>
+                <div className="stat-label">Total Quests Completed</div>
               </div>
               <div className="stat">
                 <div className="stat-number">{content.hero.stats.systems}</div>
-                <div className="stat-label">Systems Explored</div>
+                <div className="stat-label">Systems Held</div>
               </div>
             </div>
             

@@ -235,6 +235,43 @@ class OFSDataService {
 
     return stats
   }
+
+  static async getTotalPatrolCount() {
+    try {
+      const patrolStats = await this.fetchCSV(PATROL_STATS_URL)
+      let totalCount = 0
+      
+      patrolStats.forEach(user => {
+        const patrolCount = parseInt(user.PatrolCount) || 0
+        totalCount += patrolCount
+      })
+      
+      return totalCount
+    } catch (error) {
+      console.error('Error fetching total patrol count:', error)
+      return 0
+    }
+  }
+
+  static async getActiveMemberCount() {
+    try {
+      const memberLog = await this.fetchCSV(MEMBER_LOG_URL)
+      let activeCount = 0
+      
+      memberLog.forEach(member => {
+        // Check if member has a rank (not empty/null)
+        const rank = member.RankC || member.Rank || ''
+        if (rank.trim() !== '') {
+          activeCount++
+        }
+      })
+      
+      return activeCount
+    } catch (error) {
+      console.error('Error fetching active member count:', error)
+      return 0
+    }
+  }
 }
 
 export default OFSDataService
