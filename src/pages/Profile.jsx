@@ -151,11 +151,12 @@ export default function Profile() {
                 <p className="welcome-subtitle">
                   Order of the Fallen Star • {OFSDataService.calculateTimeInService(memberData?.['Join Date']) || 'New Recruit'}
                 </p>
+                {/* Path badge moved to bottom center */}
+                <span className="path-badge">{memberData?.['Role Path'] || 'Unassigned'}</span>
               </div>
               
-              {/* Right: Path and Role Badges */}
+              {/* Right: Role Badge */}
               <div className="welcome-badges">
-                <span className="path-badge">{memberData?.['Role Path'] || 'Unassigned'}</span>
                 <span className="role-badge">{memberData?.Role || 'Member'}</span>
               </div>
             </div>

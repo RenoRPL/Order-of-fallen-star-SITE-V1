@@ -137,6 +137,10 @@
 
 .welcome-content {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .welcome-title {
@@ -158,6 +162,7 @@
 .welcome-badges {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
 }
 
@@ -185,9 +190,9 @@
 }
 
 .path-badge {
-  background: linear-gradient(135deg, rgba(138, 43, 226, 0.2) 0%, rgba(138, 43, 226, 0.1) 100%);
-  border: 1px solid rgba(138, 43, 226, 0.3);
-  color: #8a2be2;
+  background: linear-gradient(135deg, rgba(0, 255, 127, 0.2) 0%, rgba(0, 255, 127, 0.1) 100%);
+  border: 1px solid rgba(0, 255, 127, 0.3);
+  color: #00ff7f;
 }
 
 /* Epic Profile Hero Section - Taller with Left and Right Stats */
