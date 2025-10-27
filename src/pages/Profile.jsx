@@ -183,15 +183,9 @@ export default function Profile() {
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {statsLoading ? '...' : (googleStats?.fpsKills || '0')}
+                  {statsLoading ? '...' : (googleStats?.crusades || '0')}
                 </div>
-                <div className="stat-label">Kills</div>
-              </div>
-              <div className="stat-crystal">
-                <div className="stat-value">
-                  {statsLoading ? '...' : (googleStats?.patrolCount || '0')}
-                </div>
-                <div className="stat-label">Patrols</div>
+                <div className="stat-label">Crusades Total</div>
               </div>
             </div>
           </div>
@@ -242,25 +236,25 @@ export default function Profile() {
                     <h3>Battle Record</h3>
                     <div className="battle-stats">
                       <div className="battle-stat">
-                        <div className="stat-icon">⚔️</div>
+                        <div className="stat-icon"></div>
                         <div className="stat-info">
                           <div className="stat-number">
                             {statsLoading ? '...' : (googleStats?.fpsKills || '0')}
                           </div>
-                          <div className="stat-name">Combat Victories</div>
+                          <div className="stat-name">Ground Kills</div>
                         </div>
                       </div>
                       <div className="battle-stat">
-                        <div className="stat-icon">🚀</div>
+                        <div className="stat-icon"></div>
                         <div className="stat-info">
                           <div className="stat-number">
                             {statsLoading ? '...' : (googleStats?.shipKills || '0')}
                           </div>
-                          <div className="stat-name">Ships Defeated</div>
+                          <div className="stat-name">Pilot Kills</div>
                         </div>
                       </div>
                       <div className="battle-stat">
-                        <div className="stat-icon">🎖️</div>
+                        <div className="stat-icon"></div>
                         <div className="stat-info">
                           <div className="stat-number">
                             {statsLoading ? '...' : (googleStats?.crusades || '0')}
@@ -269,7 +263,7 @@ export default function Profile() {
                         </div>
                       </div>
                       <div className="battle-stat">
-                        <div className="stat-icon">🎯</div>
+                        <div className="stat-icon"></div>
                         <div className="stat-info">
                           <div className="stat-number">
                             {statsLoading ? '...' : (googleStats?.turretKills || '0')}

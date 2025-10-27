@@ -84,6 +84,7 @@
 
 .profile-main {
   padding: 2rem 0;
+  margin-top: 120px; /* Add space for header */
   min-height: calc(100vh - 140px);
   position: relative;
   z-index: 1;
