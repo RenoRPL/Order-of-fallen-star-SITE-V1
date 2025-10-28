@@ -32,6 +32,17 @@ export default function Profile() {
 
   // Player search state
   const [selectedPlayer, setSelectedPlayer] = useState(null)
+  const [selectedPlayerData, setSelectedPlayerData] = useState(null)
+  const [selectedPlayerPatrolData, setSelectedPlayerPatrolData] = useState([])
+  const [selectedPlayerStats, setSelectedPlayerStats] = useState(null)
+  const [selectedPlayerGoogleStats, setSelectedPlayerGoogleStats] = useState(null)
+  const [isViewingOtherPlayer, setIsViewingOtherPlayer] = useState(false)
+
+  // Get current displayed data (either logged-in user or selected player)
+  const currentDisplayData = isViewingOtherPlayer && selectedPlayerData ? selectedPlayerData : memberData
+  const currentPatrolData = isViewingOtherPlayer && selectedPlayerPatrolData ? selectedPlayerPatrolData : patrolData
+  const currentPatrolStats = isViewingOtherPlayer && selectedPlayerStats ? selectedPlayerStats : patrolStats
+  const currentGoogleStats = isViewingOtherPlayer && selectedPlayerGoogleStats ? selectedPlayerGoogleStats : googleStats
 
   // Fetch member and patrol data
   useEffect(() => {
@@ -225,21 +236,80 @@ export default function Profile() {
     setShowRsiModal(true)
   }
 
-  const handlePlayerSelect = (player) => {
+  const handlePlayerSelect = async (player) => {
     setSelectedPlayer(player)
+    
     if (player) {
       console.log('Selected player:', player)
-      // Show notification about selected player
-      setNotification({
-        type: 'success',
-        message: `Selected: ${player.Username} (${player.Rank}) - ${player.Role || 'No Role'}`
-      })
       
-      // Clear notification after 3 seconds
-      setTimeout(() => setNotification(null), 3000)
+      try {
+        // Fetch detailed data for the selected player
+        const playerDiscordId = player['User ID']
+        
+        // Show immediate feedback
+        setNotification({
+          type: 'success',
+          message: `Loading profile for ${player.Username}...`
+        })
+
+        // Fetch selected player's patrol data
+        const playerPatrols = await OFSDataService.getPatrolData(playerDiscordId)
+        setSelectedPlayerPatrolData(playerPatrols)
+        
+        // Calculate selected player's patrol stats
+        const playerStats = OFSDataService.formatPatrolStats(playerPatrols)
+        setSelectedPlayerStats(playerStats)
+        
+        // Set the selected player data (this is already from getMemberData)
+        setSelectedPlayerData(player)
+        
+        // Fetch selected player's Google Sheets stats
+        try {
+          const playerGoogleStats = await googleSheetsService.getUserStats(playerDiscordId)
+          setSelectedPlayerGoogleStats(playerGoogleStats)
+        } catch (error) {
+          console.log('No Google Sheets stats found for selected player:', error)
+          setSelectedPlayerGoogleStats(null)
+        }
+        
+        // Switch to viewing the other player
+        setIsViewingOtherPlayer(true)
+        
+        // Update notification to show success
+        setNotification({
+          type: 'success',
+          message: `Now viewing ${player.Username}'s profile (${player.Rank}) - ${player.Role || 'No Role'}`
+        })
+        
+        // Clear notification after 3 seconds
+        setTimeout(() => setNotification(null), 3000)
+        
+      } catch (error) {
+        console.error('Error fetching selected player data:', error)
+        setNotification({
+          type: 'error',
+          message: `Failed to load profile for ${player.Username}`
+        })
+        setTimeout(() => setNotification(null), 3000)
+      }
     } else {
+      // Deselect player - go back to own profile
       setSelectedPlayer(null)
+      setSelectedPlayerData(null)
+      setSelectedPlayerPatrolData([])
+      setSelectedPlayerStats(null)
+      setSelectedPlayerGoogleStats(null)
+      setIsViewingOtherPlayer(false)
     }
+  }
+
+  const switchBackToOwnProfile = () => {
+    setIsViewingOtherPlayer(false)
+    setNotification({
+      type: 'success',
+      message: 'Switched back to your profile'
+    })
+    setTimeout(() => setNotification(null), 2000)
   }
 
   const formatJoinDate = (timestamp) => {
@@ -286,14 +356,29 @@ export default function Profile() {
           
           {/* Welcome Section - Top of Page */}
           <div className="profile-welcome">
+            {/* Profile Switch Banner */}
+            {isViewingOtherPlayer && selectedPlayer && (
+              <div className="profile-switch-banner">
+                <span className="switch-text">
+                  Viewing {selectedPlayer.Username}'s Profile
+                </span>
+                <button 
+                  className="switch-back-button"
+                  onClick={switchBackToOwnProfile}
+                >
+                  ← Back to My Profile
+                </button>
+              </div>
+            )}
+            
             <div className="welcome-layout">
               {/* Left: Rank Icon and Rank */}
               <div className="welcome-rank-section">
-                {memberData?.Rank && (
+                {currentDisplayData?.Rank && (
                   <div className="welcome-rank-icon-container">
                     <img 
-                      src={`/Ranks/${memberData.Rank}.png`}
-                      alt={`${memberData.Rank} Rank`}
+                      src={`/Ranks/${currentDisplayData.Rank}.png`}
+                      alt={`${currentDisplayData.Rank} Rank`}
                       className="welcome-rank-icon"
                       onError={(e) => {
                         e.target.style.display = 'none'
@@ -301,28 +386,28 @@ export default function Profile() {
                     />
                   </div>
                 )}
-                <span className="rank-badge">{memberData?.Rank || 'Unranked'}</span>
+                <span className="rank-badge">{currentDisplayData?.Rank || 'Unranked'}</span>
               </div>
               
               {/* Center: Welcome Text */}
               <div className="welcome-content">
                 <h2 className="welcome-title">
-                  {memberData?.Username || user?.username || 'Warrior'}
+                  {currentDisplayData?.Username || user?.username || 'Warrior'}
                 </h2>
                 <p className="welcome-subtitle">
-                  Order of the Fallen Star • {OFSDataService.calculateTimeInService(memberData?.['Join Date']) || 'New Recruit'}
+                  Order of the Fallen Star • {OFSDataService.calculateTimeInService(currentDisplayData?.['Join Date']) || 'New Recruit'}
                 </p>
                 {/* Path badge moved to bottom center */}
-                <span className="path-badge">{memberData?.['Role Path'] || 'Unassigned'}</span>
+                <span className="path-badge">{currentDisplayData?.['Role Path'] || 'Unassigned'}</span>
               </div>
               
               {/* Right: Rank Icon and Role Badge */}
               <div className="welcome-badges">
-                {memberData?.Rank && (
+                {currentDisplayData?.Rank && (
                   <div className="welcome-rank-icon-container">
                     <img 
-                      src={`/Ranks/${memberData.Rank}.png`}
-                      alt={`${memberData.Rank} Rank`}
+                      src={`/Ranks/${currentDisplayData.Rank}.png`}
+                      alt={`${currentDisplayData.Rank} Rank`}
                       className="welcome-rank-icon"
                       onError={(e) => {
                         e.target.style.display = 'none'
@@ -330,22 +415,22 @@ export default function Profile() {
                     />
                   </div>
                 )}
-                <span className="role-badge">{memberData?.Role || 'Member'}</span>
+                <span className="role-badge">{currentDisplayData?.Role || 'Member'}</span>
               </div>
             </div>
           </div>
           
           {/* Epic Profile Header with Rank Display - Compact */}
           <div className="profile-hero" style={{
-            backgroundImage: memberData?.['Role Path'] 
-              ? `url('/Role Path/${memberData['Role Path']} - Hero.png')` 
+            backgroundImage: currentDisplayData?.['Role Path'] 
+              ? `url('/Role Path/${currentDisplayData['Role Path']} - Hero.png')` 
               : 'linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 46, 0.6) 100%), url("/Nebula BG.jpeg")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
           }}>
             {/* Remove nebula and stars overlays when Role Path image exists */}
-            {!memberData?.['Role Path'] && (
+            {!currentDisplayData?.['Role Path'] && (
               <>
                 <div className="nebula-background"></div>
                 <div className="stars-overlay"></div>
@@ -356,25 +441,25 @@ export default function Profile() {
             <div className="battle-stats-overview">
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {statsLoading ? '...' : (googleStats?.fpsKills || '0')}
+                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.fpsKills || '0')}
                 </div>
                 <div className="stat-label">Ground Kills</div>
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {statsLoading ? '...' : (googleStats?.shipKills || '0')}
+                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.shipKills || '0')}
                 </div>
                 <div className="stat-label">Pilot Kills</div>
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {statsLoading ? '...' : (googleStats?.totalLength || '0')}
+                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.totalLength || '0')}
                 </div>
                 <div className="stat-label">Total Hours</div>
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {statsLoading ? '...' : (googleStats?.turretKills || '0')}
+                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.turretKills || '0')}
                 </div>
                 <div className="stat-label">Turret Kills</div>
               </div>
@@ -384,13 +469,13 @@ export default function Profile() {
             <div className="profile-stats-overview">
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {statsLoading ? '...' : (googleStats?.quests || '0')}
+                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.quests || '0')}
                 </div>
                 <div className="stat-label">Quests</div>
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {statsLoading ? '...' : (googleStats?.ledQuests || '0')}
+                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.ledQuests || '0')}
                 </div>
                 <div className="stat-label">Led Quests</div>
               </div>
@@ -412,72 +497,76 @@ export default function Profile() {
           {/* Content Grid - Compact Layout */}
           <div className="profile-content">
             
-            {/* Command Center Tab */}
-            <div className="command-center-section">
-              <div className="command-center-header">
-                <h3>Command Center</h3>
-              </div>
-              <div className="command-actions">
-                {(memberData?.RSI_Verified === true || rsiData) ? (
-                  <div className="command-action success">
-                    <span className="action-icon">✓</span>
-                    <span className="action-text">RSI Verified</span>
-                  </div>
-                ) : (
-                  <button className="command-action primary" onClick={openRsiModal}>
-                    <span className="action-icon">🔗</span>
-                    <span className="action-text">Link RSI</span>
+            {/* Command Center Tab - Only show for own profile */}
+            {!isViewingOtherPlayer && (
+              <div className="command-center-section">
+                <div className="command-center-header">
+                  <h3>Command Center</h3>
+                </div>
+                <div className="command-actions">
+                  {(memberData?.RSI_Verified === true || rsiData) ? (
+                    <div className="command-action success">
+                      <span className="action-icon">✓</span>
+                      <span className="action-text">RSI Verified</span>
+                    </div>
+                  ) : (
+                    <button className="command-action primary" onClick={openRsiModal}>
+                      <span className="action-icon">🔗</span>
+                      <span className="action-text">Link RSI</span>
+                    </button>
+                  )}
+                  <button className="command-action secondary">
+                    <span className="action-icon">✏️</span>
+                    <span className="action-text">Edit Profile</span>
                   </button>
-                )}
-                <button className="command-action secondary">
-                  <span className="action-icon">✏️</span>
-                  <span className="action-text">Edit Profile</span>
-                </button>
-                <button className="command-action danger" onClick={handleLogout}>
-                  <span className="action-icon">🚪</span>
-                  <span className="action-text">Logout</span>
-                </button>
-              </div>
-            </div>
-            
-            {/* Player Search Section */}
-            <PlayerSearch onPlayerSelect={handlePlayerSelect} />
-            
-            {/* Selected Player Display */}
-            {selectedPlayer && (
-              <div className="selected-player-section">
-                <div className="selected-player-header">
-                  <h3>Selected Player</h3>
-                  <button 
-                    className="clear-selection-button"
-                    onClick={() => handlePlayerSelect(null)}
-                  >
-                    ×
+                  <button className="command-action danger" onClick={handleLogout}>
+                    <span className="action-icon">🚪</span>
+                    <span className="action-text">Logout</span>
                   </button>
                 </div>
-                <div className="selected-player-info">
-                  <div className="player-main-info">
-                    <div className="player-name-rank">
-                      <span className="player-name">{selectedPlayer.Username}</span>
-                      <span className="player-rank">{selectedPlayer.Rank}</span>
-                    </div>
-                    <div className="player-details">
-                      <span className="player-role">{selectedPlayer.Role || 'No Role'}</span>
-                      <span className="player-path">{selectedPlayer['Role Path'] || 'No Path'}</span>
-                    </div>
+              </div>
+            )}
+            
+            {/* Player Search Section - Only show for own profile */}
+            {!isViewingOtherPlayer && (
+              <PlayerSearch onPlayerSelect={handlePlayerSelect} />
+            )}
+            
+            {/* Player Profile Info Section - Show when viewing another player */}
+            {isViewingOtherPlayer && selectedPlayer && (
+              <div className="viewed-player-info-section">
+                <div className="viewed-player-header">
+                  <h3>Player Information</h3>
+                </div>
+                <div className="viewed-player-details">
+                  <div className="player-detail-row">
+                    <span className="detail-label">Discord ID:</span>
+                    <span className="detail-value">{selectedPlayer['User ID'] || 'Unknown'}</span>
                   </div>
-                  <div className="player-stats">
-                    <div className="player-stat">
-                      <span className="stat-label">Join Date</span>
-                      <span className="stat-value">{selectedPlayer['Join Date'] || 'Unknown'}</span>
-                    </div>
-                    <div className="player-stat">
-                      <span className="stat-label">Time in Service</span>
-                      <span className="stat-value">
-                        {OFSDataService.calculateTimeInService(selectedPlayer['Join Date'])}
-                      </span>
-                    </div>
+                  <div className="player-detail-row">
+                    <span className="detail-label">Join Date:</span>
+                    <span className="detail-value">{selectedPlayer['Join Date'] || 'Unknown'}</span>
                   </div>
+                  <div className="player-detail-row">
+                    <span className="detail-label">Time in Service:</span>
+                    <span className="detail-value">
+                      {OFSDataService.calculateTimeInService(selectedPlayer['Join Date'])}
+                    </span>
+                  </div>
+                  <div className="player-detail-row">
+                    <span className="detail-label">Total Patrols:</span>
+                    <span className="detail-value">{currentPatrolStats?.totalPatrols || 0}</span>
+                  </div>
+                  <div className="player-detail-row">
+                    <span className="detail-label">Patrols Led:</span>
+                    <span className="detail-value">{currentPatrolStats?.patrolsLed || 0}</span>
+                  </div>
+                  {selectedPlayerData?.['RSI User Name'] && (
+                    <div className="player-detail-row">
+                      <span className="detail-label">RSI Handle:</span>
+                      <span className="detail-value">{selectedPlayerData['RSI User Name']}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
