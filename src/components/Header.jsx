@@ -5,7 +5,7 @@ import { googleSheetsService } from '../services/googleSheetsService'
 import './Header.css'
 import LoginButton from './LoginButton'
 
-export default function Header() {
+export default function Header({ commandCenterProps }) {
   const { user, userStats, isAuthenticated } = useAuth()
   const [showingStats, setShowingStats] = useState(false)
   const [currentStatIndex, setCurrentStatIndex] = useState(0)
@@ -13,6 +13,16 @@ export default function Header() {
   const [formattedStats, setFormattedStats] = useState([])
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [displayText, setDisplayText] = useState('')
+
+  // Extract command center props if available
+  const {
+    isCommandCenterOpen,
+    setIsCommandCenterOpen,
+    memberData,
+    rsiData,
+    openRsiModal,
+    handleLogout
+  } = commandCenterProps || {}
 
   // Fetch user patrol stats when user is available
   useEffect(() => {
@@ -136,50 +146,90 @@ export default function Header() {
         
         <div className="header-actions">
           {isAuthenticated && user ? (
-            <Link to="/profile" className="profile-link">
-              <div className="avatar-container">
-                <img 
-                  src={getAvatarUrl(user.id, user.avatar)} 
-                  alt="Profile"
-                  className="profile-avatar"
-                />
-                {userStats?.rankIcon && (
+            <>
+              <Link to="/profile" className="profile-link">
+                <div className="avatar-container">
                   <img 
-                    src={userStats.rankIcon} 
-                    alt="Rank Icon" 
-                    className="rank-icon-large rank-overlay"
-                    onError={(e) => {
-                      console.error('Failed to load rank icon:', userStats.rankIcon)
-                      e.target.style.display = 'none'
-                    }}
-                    onLoad={() => {
-                      console.log('Rank icon loaded successfully:', userStats.rankIcon)
-                    }}
+                    src={getAvatarUrl(user.id, user.avatar)} 
+                    alt="Profile"
+                    className="profile-avatar"
                   />
-                )}
-              </div>
-              <div className="profile-info">
-                <span className={`profile-name ${showingStats ? 'cycling-stats' : ''} ${isTransitioning ? 'fade-out' : 'fade-in'}`}>
-                  {displayText}
-                </span>
-                <div className="profile-details">
-                  <div className="profile-stat">
-                    <span className="profile-rank">{userStats?.rank || 'Loading...'}</span>
-                    <span className="profile-label">Rank</span>
-                  </div>
-                  <span className="profile-separator">•</span>
-                  <div className="profile-stat">
-                    <span className="profile-role">{userStats?.role || 'Loading...'}</span>
-                    <span className="profile-label">Role</span>
-                  </div>
-                  <span className="profile-separator">•</span>
-                  <div className="profile-stat">
-                    <span className="profile-path">{userStats?.path || 'Loading...'}</span>
-                    <span className="profile-label">Path</span>
+                  {userStats?.rankIcon && (
+                    <img 
+                      src={userStats.rankIcon} 
+                      alt="Rank Icon" 
+                      className="rank-icon-large rank-overlay"
+                      onError={(e) => {
+                        console.error('Failed to load rank icon:', userStats.rankIcon)
+                        e.target.style.display = 'none'
+                      }}
+                      onLoad={() => {
+                        console.log('Rank icon loaded successfully:', userStats.rankIcon)
+                      }}
+                    />
+                  )}
+                </div>
+                <div className="profile-info">
+                  <span className={`profile-name ${showingStats ? 'cycling-stats' : ''} ${isTransitioning ? 'fade-out' : 'fade-in'}`}>
+                    {displayText}
+                  </span>
+                  <div className="profile-details">
+                    <div className="profile-stat">
+                      <span className="profile-rank">{userStats?.rank || 'Loading...'}</span>
+                      <span className="profile-label">Rank</span>
+                    </div>
+                    <span className="profile-separator">•</span>
+                    <div className="profile-stat">
+                      <span className="profile-role">{userStats?.role || 'Loading...'}</span>
+                      <span className="profile-label">Role</span>
+                    </div>
+                    <span className="profile-separator">•</span>
+                    <div className="profile-stat">
+                      <span className="profile-path">{userStats?.path || 'Loading...'}</span>
+                      <span className="profile-label">Path</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+              
+              {/* Command Center Tab - Only show if props are provided */}
+              {commandCenterProps && (
+                <div className="header-command-center">
+                  <div 
+                    className={`header-command-tab ${isCommandCenterOpen ? 'open' : ''}`}
+                    onClick={() => setIsCommandCenterOpen(!isCommandCenterOpen)}
+                  >
+                    <span className="command-tab-title">Command Center</span>
+                    <span className={`command-tab-arrow ${isCommandCenterOpen ? 'rotated' : ''}`}>
+                      ▼
+                    </span>
+                  </div>
+                  
+                  <div className={`header-command-content ${isCommandCenterOpen ? 'expanded' : 'collapsed'}`}>
+                    <div className="command-grid">
+                      {memberData?.RSI_Verified || rsiData ? (
+                        <button className="command-btn success">
+                          <span className="btn-text">RSI Linked: {memberData?.RSI_Handle || rsiData?.handle}</span>
+                        </button>
+                      ) : (
+                        <button className="command-btn primary" onClick={openRsiModal}>
+                          <span className="btn-text">Link RSI Account</span>
+                        </button>
+                      )}
+                      <button className="command-btn secondary">
+                        <span className="btn-text">Update Profile</span>
+                      </button>
+                      <button className="command-btn secondary">
+                        <span className="btn-text">Privacy Settings</span>
+                      </button>
+                      <button className="command-btn danger" onClick={handleLogout}>
+                        <span className="btn-text">End Session</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <LoginButton />
           )}
