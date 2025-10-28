@@ -5,7 +5,7 @@ import { googleSheetsService } from '../services/googleSheetsService'
 import './Header.css'
 import LoginButton from './LoginButton'
 
-export default function Header({ commandCenterProps }) {
+export default function Header() {
   const { user, userStats, isAuthenticated } = useAuth()
   const [showingStats, setShowingStats] = useState(false)
   const [currentStatIndex, setCurrentStatIndex] = useState(0)
@@ -137,43 +137,6 @@ export default function Header({ commandCenterProps }) {
         <div className="header-actions">
           {isAuthenticated && user ? (
             <>
-              {/* Command Center Pill - Position behind profile pill */}
-              {commandCenterProps && (
-                <div className="command-pill-container">
-                  <div 
-                    className={`command-pill ${commandCenterProps.isCommandCenterOpen ? 'expanded' : 'collapsed'}`}
-                    onClick={() => commandCenterProps.setIsCommandCenterOpen(!commandCenterProps.isCommandCenterOpen)}
-                  >
-                    <div className="command-pill-tab">
-                      <span className="command-pill-text">CMD</span>
-                    </div>
-                    
-                    <div className="command-pill-content">
-                      <div className="command-pill-buttons">
-                        {commandCenterProps.memberData?.RSI_Verified || commandCenterProps.rsiData ? (
-                          <button className="pill-btn success">
-                            <span className="pill-btn-text">RSI ✓</span>
-                          </button>
-                        ) : (
-                          <button className="pill-btn primary" onClick={(e) => {e.stopPropagation(); commandCenterProps.openRsiModal();}}>
-                            <span className="pill-btn-text">Link RSI</span>
-                          </button>
-                        )}
-                        <button className="pill-btn secondary">
-                          <span className="pill-btn-text">Profile</span>
-                        </button>
-                        <button className="pill-btn secondary">
-                          <span className="pill-btn-text">Privacy</span>
-                        </button>
-                        <button className="pill-btn danger" onClick={(e) => {e.stopPropagation(); commandCenterProps.handleLogout();}}>
-                          <span className="pill-btn-text">Logout</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               <Link to="/profile" className="profile-link">
                 <div className="avatar-container">
                   <img 

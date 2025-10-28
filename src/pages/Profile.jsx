@@ -29,9 +29,6 @@ export default function Profile() {
   const [showRsiModal, setShowRsiModal] = useState(false)
   const [notification, setNotification] = useState(null)
 
-  // Command center visibility
-  const [isCommandCenterOpen, setIsCommandCenterOpen] = useState(false)
-
   // Fetch member and patrol data
   useEffect(() => {
     const fetchData = async () => {
@@ -207,16 +204,7 @@ export default function Profile() {
 
   return (
     <div className="profile-page">
-      <Header 
-        commandCenterProps={{
-          isCommandCenterOpen,
-          setIsCommandCenterOpen,
-          memberData,
-          rsiData,
-          openRsiModal,
-          handleLogout
-        }}
-      />
+      <Header />
       
       {/* Notification */}
       {notification && (
@@ -364,6 +352,30 @@ export default function Profile() {
 
           {/* Content Grid - Compact Layout */}
           <div className="profile-content">
+            
+            {/* Command Center Tab */}
+            <div className="command-center-section">
+              <div className="command-center-header">
+                <h3>Command Center</h3>
+              </div>
+              <div className="command-actions">
+                {memberData?.RSI_Verified || rsiData ? (
+                  <div className="command-action success">
+                    <span className="action-icon">✓</span>
+                    <span className="action-text">RSI Account Linked: {memberData?.RSI_Handle || rsiData?.handle}</span>
+                  </div>
+                ) : (
+                  <button className="command-action primary" onClick={openRsiModal}>
+                    <span className="action-icon">🔗</span>
+                    <span className="action-text">Link RSI Account</span>
+                  </button>
+                )}
+                <button className="command-action secondary" onClick={handleLogout}>
+                  <span className="action-icon">🚪</span>
+                  <span className="action-text">Logout</span>
+                </button>
+              </div>
+            </div>
             
             {/* Error Display */}
             {error && (
