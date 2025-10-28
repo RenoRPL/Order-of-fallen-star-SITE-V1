@@ -39,10 +39,26 @@ export class GoogleSheetsWriteService {
       if (privateKey) {
         // Replace literal \n with actual newlines
         privateKey = privateKey.replace(/\\n/g, '\n')
-        // Ensure proper formatting
-        if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+        
+        // Clean up any extra whitespace
+        privateKey = privateKey.trim()
+        
+        // Ensure proper formatting with correct line breaks
+        if (!privateKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
           throw new Error('Private key format is invalid - missing BEGIN marker')
         }
+        
+        if (!privateKey.endsWith('-----END PRIVATE KEY-----')) {
+          throw new Error('Private key format is invalid - missing END marker')
+        }
+        
+        // Split into lines and rejoin with proper newlines to ensure clean formatting
+        const lines = privateKey.split('\n').map(line => line.trim()).filter(line => line)
+        privateKey = lines.join('\n')
+        
+        console.log('Private key processed, length:', privateKey.length)
+        console.log('Private key starts with:', privateKey.substring(0, 50))
+        console.log('Private key ends with:', privateKey.substring(privateKey.length - 50))
       }
 
       // Create auth instance with service account credentials

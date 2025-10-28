@@ -35,6 +35,15 @@ export async function handler(event, context) {
       }
     }
 
+    // Log environment variables for debugging (without exposing sensitive data)
+    console.log('Environment check:', {
+      hasProjectId: !!process.env.GOOGLE_SHEETS_PROJECT_ID,
+      hasClientEmail: !!process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
+      hasPrivateKey: !!process.env.GOOGLE_SHEETS_PRIVATE_KEY,
+      privateKeyLength: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.length,
+      privateKeyStart: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.substring(0, 30)
+    })
+
     const writeService = new GoogleSheetsWriteService()
 
     // Handle different actions
