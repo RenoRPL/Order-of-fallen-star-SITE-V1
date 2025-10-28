@@ -40,7 +40,22 @@ export default function Profile() {
       try {
         // Fetch member data
         const member = await OFSDataService.getMemberData(user.id)
-        setMemberData(member)
+        
+        // Preserve local RSI verification state if it exists
+        setMemberData(prevMemberData => {
+          const newMemberData = { ...member }
+          
+          // If we have local RSI verification data, preserve it
+          if (prevMemberData?.RSI_Verified === true) {
+            newMemberData.RSI_Verified = prevMemberData.RSI_Verified
+            newMemberData.RSI_Handle = prevMemberData.RSI_Handle
+            newMemberData.RSI_Data = prevMemberData.RSI_Data
+            newMemberData.RSI_Organization = prevMemberData.RSI_Organization
+            newMemberData.RSI_Rank = prevMemberData.RSI_Rank
+          }
+          
+          return newMemberData
+        })
         
         // Fetch rank data if member exists
         if (member?.Rank) {
@@ -359,10 +374,10 @@ export default function Profile() {
                 <h3>Command Center</h3>
               </div>
               <div className="command-actions">
-                {memberData?.RSI_Verified || rsiData ? (
+                {(memberData?.RSI_Verified === true || rsiData) ? (
                   <div className="command-action success">
                     <span className="action-icon">✓</span>
-                    <span className="action-text">RSI Linked</span>
+                    <span className="action-text">RSI Verified</span>
                   </div>
                 ) : (
                   <button className="command-action primary" onClick={openRsiModal}>
