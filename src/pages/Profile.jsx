@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import RSILinkModal from '../components/RSILinkModal'
+import PlayerSearch from '../components/PlayerSearch'
 import OFSDataService from '../services/ofsDataService'
 import { GoogleSheetsService } from '../services/googleSheetsService'
 import './Profile.css'
@@ -28,6 +29,9 @@ export default function Profile() {
   const [rsiLoading, setRsiLoading] = useState(false)
   const [showRsiModal, setShowRsiModal] = useState(false)
   const [notification, setNotification] = useState(null)
+
+  // Player search state
+  const [selectedPlayer, setSelectedPlayer] = useState(null)
 
   // Fetch member and patrol data
   useEffect(() => {
@@ -219,6 +223,23 @@ export default function Profile() {
 
   const openRsiModal = () => {
     setShowRsiModal(true)
+  }
+
+  const handlePlayerSelect = (player) => {
+    setSelectedPlayer(player)
+    if (player) {
+      console.log('Selected player:', player)
+      // Show notification about selected player
+      setNotification({
+        type: 'success',
+        message: `Selected: ${player.Username} (${player.Rank}) - ${player.Role || 'No Role'}`
+      })
+      
+      // Clear notification after 3 seconds
+      setTimeout(() => setNotification(null), 3000)
+    } else {
+      setSelectedPlayer(null)
+    }
   }
 
   const formatJoinDate = (timestamp) => {
@@ -418,6 +439,48 @@ export default function Profile() {
                 </button>
               </div>
             </div>
+            
+            {/* Player Search Section */}
+            <PlayerSearch onPlayerSelect={handlePlayerSelect} />
+            
+            {/* Selected Player Display */}
+            {selectedPlayer && (
+              <div className="selected-player-section">
+                <div className="selected-player-header">
+                  <h3>Selected Player</h3>
+                  <button 
+                    className="clear-selection-button"
+                    onClick={() => handlePlayerSelect(null)}
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="selected-player-info">
+                  <div className="player-main-info">
+                    <div className="player-name-rank">
+                      <span className="player-name">{selectedPlayer.Username}</span>
+                      <span className="player-rank">{selectedPlayer.Rank}</span>
+                    </div>
+                    <div className="player-details">
+                      <span className="player-role">{selectedPlayer.Role || 'No Role'}</span>
+                      <span className="player-path">{selectedPlayer['Role Path'] || 'No Path'}</span>
+                    </div>
+                  </div>
+                  <div className="player-stats">
+                    <div className="player-stat">
+                      <span className="stat-label">Join Date</span>
+                      <span className="stat-value">{selectedPlayer['Join Date'] || 'Unknown'}</span>
+                    </div>
+                    <div className="player-stat">
+                      <span className="stat-label">Time in Service</span>
+                      <span className="stat-value">
+                        {OFSDataService.calculateTimeInService(selectedPlayer['Join Date'])}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             
             {/* Error Display */}
             {error && (
