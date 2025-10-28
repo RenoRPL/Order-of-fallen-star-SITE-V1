@@ -18,13 +18,13 @@ const RSILinkModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>RSI Account Verification</h2>
+          <h2>Link Your RSI Account</h2>
           <button className="close-btn" onClick={onClose}>×</button>
         </div>
         
         <div className="modal-body">
           <div className="benefits-section">
-            <h3>Verification Requirements</h3>
+            <h3>🌟 RSI Account Verification Requirements</h3>
             <div className="verification-requirements">
               <div className="requirement-item">
                 <span className="req-icon">✅</span>
@@ -134,4 +134,3 @@ const RSILinkModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
 }
 
 export default RSILinkModal
-
