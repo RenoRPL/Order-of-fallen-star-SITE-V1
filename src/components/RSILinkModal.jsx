@@ -27,15 +27,15 @@ const RSILinkModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
             <h3>Verification Requirements</h3>
             <div className="verification-requirements">
               <div className="requirement-item">
-                <span className="req-icon">✅</span>
+                <span className="req-icon"></span>
                 <strong>Discord Member:</strong> You must be a verified member of Order of the Fallen Star Discord
               </div>
               <div className="requirement-item">
-                <span className="req-icon">🏛️</span>
+                <span className="req-icon"></span>
                 <strong>RSI Organization:</strong> Your main organization must be "Order of the Fallen Star"
               </div>
               <div className="requirement-item">
-                <span className="req-icon">🔗</span>
+                <span className="req-icon"></span>
                 <strong>Public Profile:</strong> Your RSI citizen profile must be publicly visible
               </div>
             </div>
