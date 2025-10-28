@@ -41,11 +41,34 @@ export default function Profile() {
         // Fetch member data
         const member = await OFSDataService.getMemberData(user.id)
         
+        console.log('Fetched member data:', member) // Debug log
+        
         // Preserve local RSI verification state if it exists
         setMemberData(prevMemberData => {
           const newMemberData = { ...member }
           
-          // If we have local RSI verification data, preserve it
+          // Check for RSI verification from Google Sheets (columns U and V)
+          // Column U should contain "Verified" and Column V should contain RSI handle
+          const hasSheetVerification = member && (
+            member['Verified'] === 'Verified' || // Column U
+            member['RSI User Name'] || // Column V  
+            member['RSI_Verified'] === true ||
+            member['RSI_Verified'] === 'true' ||
+            member['RSI_Verified'] === 'Verified'
+          )
+          
+          if (hasSheetVerification) {
+            console.log('Found RSI verification in sheets data:', {
+              verified: member['Verified'],
+              rsiUserName: member['RSI User Name'],
+              rsiVerified: member['RSI_Verified']
+            })
+            
+            newMemberData.RSI_Verified = true
+            newMemberData.RSI_Handle = member['RSI User Name'] || member['RSI_Handle']
+          }
+          
+          // If we have local RSI verification data, preserve it (this overrides sheets data)
           if (prevMemberData?.RSI_Verified === true) {
             newMemberData.RSI_Verified = prevMemberData.RSI_Verified
             newMemberData.RSI_Handle = prevMemberData.RSI_Handle
