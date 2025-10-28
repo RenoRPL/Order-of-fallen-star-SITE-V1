@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import RSILinkModal from '../components/RSILinkModal'
 import OFSDataService from '../services/ofsDataService'
 import { GoogleSheetsService } from '../services/googleSheetsService'
 import './Profile.css'
@@ -395,6 +396,14 @@ export default function Profile() {
           </div>
         </div>
       </main>
+
+      {/* RSI Link Modal */}
+      <RSILinkModal
+        isOpen={showRsiModal}
+        onClose={() => setShowRsiModal(false)}
+        onVerify={handleRsiLink}
+        isLoading={rsiLoading}
+      />
 
       <Footer />
     </div>
