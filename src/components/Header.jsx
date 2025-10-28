@@ -14,16 +14,6 @@ export default function Header({ commandCenterProps }) {
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [displayText, setDisplayText] = useState('')
 
-  // Extract command center props if available
-  const {
-    isCommandCenterOpen,
-    setIsCommandCenterOpen,
-    memberData,
-    rsiData,
-    openRsiModal,
-    handleLogout
-  } = commandCenterProps || {}
-
   // Fetch user patrol stats when user is available
   useEffect(() => {
     if (user && user.id) {
@@ -196,33 +186,33 @@ export default function Header({ commandCenterProps }) {
               {commandCenterProps && (
                 <div className="header-command-center">
                   <div 
-                    className={`header-command-tab ${isCommandCenterOpen ? 'open' : ''}`}
-                    onClick={() => setIsCommandCenterOpen(!isCommandCenterOpen)}
+                    className={`header-command-tab ${commandCenterProps.isCommandCenterOpen ? 'open' : ''}`}
+                    onClick={() => commandCenterProps.setIsCommandCenterOpen(!commandCenterProps.isCommandCenterOpen)}
                   >
-                    <span className="command-tab-title">Command Center</span>
-                    <span className={`command-tab-arrow ${isCommandCenterOpen ? 'rotated' : ''}`}>
+                    <span className="command-tab-title">Command</span>
+                    <span className={`command-tab-arrow ${commandCenterProps.isCommandCenterOpen ? 'rotated' : ''}`}>
                       ▼
                     </span>
                   </div>
                   
-                  <div className={`header-command-content ${isCommandCenterOpen ? 'expanded' : 'collapsed'}`}>
+                  <div className={`header-command-content ${commandCenterProps.isCommandCenterOpen ? 'expanded' : 'collapsed'}`}>
                     <div className="command-grid">
-                      {memberData?.RSI_Verified || rsiData ? (
+                      {commandCenterProps.memberData?.RSI_Verified || commandCenterProps.rsiData ? (
                         <button className="command-btn success">
-                          <span className="btn-text">RSI Linked: {memberData?.RSI_Handle || rsiData?.handle}</span>
+                          <span className="btn-text">RSI Linked</span>
                         </button>
                       ) : (
-                        <button className="command-btn primary" onClick={openRsiModal}>
-                          <span className="btn-text">Link RSI Account</span>
+                        <button className="command-btn primary" onClick={commandCenterProps.openRsiModal}>
+                          <span className="btn-text">Link RSI</span>
                         </button>
                       )}
                       <button className="command-btn secondary">
                         <span className="btn-text">Update Profile</span>
                       </button>
                       <button className="command-btn secondary">
-                        <span className="btn-text">Privacy Settings</span>
+                        <span className="btn-text">Privacy</span>
                       </button>
-                      <button className="command-btn danger" onClick={handleLogout}>
+                      <button className="command-btn danger" onClick={commandCenterProps.handleLogout}>
                         <span className="btn-text">End Session</span>
                       </button>
                     </div>
