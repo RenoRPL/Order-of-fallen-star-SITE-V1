@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets Write Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-form {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        input, button, select {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #00ffff;
+        }
+        input, select {
+            background: #0a0a1a;
+            color: white;
+            width: 200px;
+        }
+        button {
+            background: #00ffff;
+            color: black;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0080ff;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+        .success { background: #0d4f0d; border: 1px solid #00ff00; }
+        .error { background: #4f0d0d; border: 1px solid #ff0000; }
+        .loading { background: #4f4f0d; border: 1px solid #ffff00; }
+        .setup-box {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>📝 Google Sheets Write Permission Test</h1>
+    <p>Test the Google Sheets API write functionality for Order of the Fallen Star Member Log updates</p>
+    
+    <div class="setup-box">
+        <h3>⚠️ Setup Required</h3>
+        <p>Before this works, you need to configure Google Sheets API permissions:</p>
+        <ol>
+            <li>Set up Google Cloud project with Sheets API</li>
+            <li>Create service account and download JSON credentials</li>
+            <li>Share your spreadsheet with the service account email</li>
+            <li>Add environment variables to Netlify</li>
+        </ol>
+        <p><strong>See GOOGLE_SHEETS_SETUP.md for detailed instructions</strong></p>
+    </div>
+    
+    <div class="test-form">
+        <h3>Test Connection</h3>
+        <button onclick="testConnection()">🔌 Test Google Sheets Connection</button>
+    </div>
+    
+    <div class="test-form">
+        <h3>Get Member Verification Status</h3>
+        <input type="text" id="getDiscordId" placeholder="Discord ID" value="">
+        <button onclick="getVerificationStatus()">📋 Get Status</button>
+    </div>
+    
+    <div class="test-form">
+        <h3>Update Member Verification</h3>
+        <input type="text" id="updateDiscordId" placeholder="Discord ID" value="">
+        <input type="text" id="rsiHandle" placeholder="RSI Handle (optional)" value="">
+        <select id="verifiedStatus">
+            <option value="true">Verified: TRUE</option>
+            <option value="false">Verified: FALSE</option>
+        </select><br>
+        <button onclick="updateVerification()">✅ Update Verification</button>
+    </div>
+    
+    <div id="result"></div>
+
+    <script>
+        async function testConnection() {
+            showResult('🔄 Testing Google Sheets connection...', 'loading');
+            
+            try {
+                const response = await fetch('/.netlify/functions/update-member-verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'test',
+                        discordId: 'test' // Required but not used for test
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    showResult(`✅ CONNECTION SUCCESS!
+                    
+${result.message}
+
+Google Sheets API is properly configured and accessible.
+You can now update member verification status in real-time!`, 'success');
+                } else {
+                    showResult(`❌ CONNECTION FAILED
+                    
+Error: ${result.error}
+Details: ${result.details || 'No additional details'}
+
+Common issues:
+- Missing environment variables
+- Service account not configured  
+- Spreadsheet not shared with service account
+- Invalid credentials
+
+Check GOOGLE_SHEETS_SETUP.md for configuration steps.`, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`💥 SYSTEM ERROR
+                
+${error.message}
+
+This usually means:
+- Netlify function not deployed
+- Network connection issue
+- Environment variables not set`, 'error');
+            }
+        }
+        
+        async function getVerificationStatus() {
+            const discordId = document.getElementById('getDiscordId').value;
+            
+            if (!discordId) {
+                showResult('Please enter a Discord ID', 'error');
+                return;
+            }
+            
+            showResult('🔄 Getting verification status...', 'loading');
+            
+            try {
+                const response = await fetch('/.netlify/functions/update-member-verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'get',
+                        discordId: discordId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    const data = result.data;
+                    if (data) {
+                        showResult(`📋 MEMBER FOUND
+                        
+Discord ID: ${data.discordId}
+Username: ${data.username || 'Not available'}
+Verified: ${data.verified ? 'TRUE' : 'FALSE'}
+RSI Handle: ${data.rsiHandle || 'Not set'}
+Last Updated: ${data.verificationTimestamp || 'Never'}
+Row Index: ${data.rowIndex}`, 'success');
+                    } else {
+                        showResult(`❌ MEMBER NOT FOUND
+                        
+Discord ID "${discordId}" was not found in the Member Log.
+Make sure the ID exists in Column A of the Member Log sheet.`, 'error');
+                    }
+                } else {
+                    showResult(`❌ LOOKUP FAILED
+                    
+Error: ${result.error}
+Details: ${result.details || 'No additional details'}`, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`💥 SYSTEM ERROR
+                
+${error.message}`, 'error');
+            }
+        }
+        
+        async function updateVerification() {
+            const discordId = document.getElementById('updateDiscordId').value;
+            const rsiHandle = document.getElementById('rsiHandle').value;
+            const verified = document.getElementById('verifiedStatus').value === 'true';
+            
+            if (!discordId) {
+                showResult('Please enter a Discord ID', 'error');
+                return;
+            }
+            
+            showResult('🔄 Updating verification status...', 'loading');
+            
+            try {
+                const response = await fetch('/.netlify/functions/update-member-verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'update',
+                        discordId: discordId,
+                        verified: verified,
+                        rsiHandle: rsiHandle || null
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    showResult(`✅ UPDATE SUCCESS!
+                    
+${result.message}
+
+Updated Data:
+- Discord ID: ${result.data.discordId}
+- Verified: ${result.data.verified}
+- RSI Handle: ${result.data.rsiHandle || 'Not set'}
+- Timestamp: ${result.data.timestamp}
+
+Check your Google Sheet to see the changes!`, 'success');
+                } else {
+                    showResult(`❌ UPDATE FAILED
+                    
+Error: ${result.error}
+Details: ${result.details || 'No additional details'}`, 'error');
+                }
+                
+            } catch (error) {
+                showResult(`💥 SYSTEM ERROR
+                
+${error.message}`, 'error');
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+        }
+    </script>
+    
+    <div class="test-form">
+        <h3>📚 Environment Variables Needed</h3>
+        <p>Add these to your Netlify site settings:</p>
+        <pre style="background: #0a0a1a; padding: 10px; border-radius: 5px; overflow-x: auto;">
+GOOGLE_SHEETS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+GOOGLE_SHEETS_CLIENT_EMAIL=your-service-account@project.iam.gserviceaccount.com
+GOOGLE_SHEETS_PROJECT_ID=your-project-id
+GOOGLE_SPREADSHEET_ID=12OiRHpEALj1hzXRxaXgBOWjHtmUT5hg2ztxIgr4J4y8
+        </pre>
+    </div>
+    
+    <div class="test-form">
+        <h3>🔧 Spreadsheet Permissions</h3>
+        <p>Your Google Sheet must be shared with the service account email with <strong>Editor</strong> permissions.</p>
+        <p>The service account email looks like: <code>ofs-sheets-service@your-project.iam.gserviceaccount.com</code></p>
+    </div>
+</body>
+</html>

@@ -86,12 +86,27 @@ export async function handler(event, context) {
 
     // Success! Return verified profile data and update verification status
     try {
-      // Update the member's verification status in the spreadsheet
-      const memberService = new MemberVerificationService()
-      await memberService.updateVerificationStatus(discordId, true)
-      console.log('Updated member verification status to true')
+      // Update the member's verification status in the spreadsheet using the write service
+      const updateResponse = await fetch('/.netlify/functions/update-member-verification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          discordId: discordId,
+          verified: true,
+          rsiHandle: rsiData.profile.handle,
+          action: 'update'
+        })
+      })
+
+      if (updateResponse.ok) {
+        console.log('Successfully updated member verification status in Google Sheets')
+      } else {
+        console.warn('Failed to update Google Sheets, but RSI verification was successful')
+      }
     } catch (updateError) {
-      console.warn('Failed to update verification status:', updateError.message)
+      console.warn('Failed to update verification status in Google Sheets:', updateError.message)
       // Don't fail the whole process if we can't update the sheet
     }
 
