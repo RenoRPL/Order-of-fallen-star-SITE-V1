@@ -1588,7 +1588,7 @@
 .command-center-wrapper {
   position: fixed;
   top: 80px; /* Position it to hang from header */
-  right: 20px;
+  right: 280px; /* Move it left to be under profile area */
   z-index: 999;
   width: 180px;
 }
@@ -1739,7 +1739,7 @@
 /* Responsive Design for Command Center */
 @media (max-width: 768px) {
   .command-center-wrapper {
-    right: 10px;
+    right: 10px; /* On mobile, move back to right edge */
     width: 150px;
     top: 70px;
   }
@@ -1773,5 +1773,11 @@
     font-size: 11px;
     padding: 8px 10px;
     min-height: 32px;
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 769px) {
+  .command-center-wrapper {
+    right: 180px; /* Adjust for medium screens */
   }
 }
