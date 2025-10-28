@@ -18,7 +18,7 @@ const RSILinkModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>RSI Account Verification</h2>
+          <h2>Link Your RSI Account</h2>
           <button className="close-btn" onClick={onClose}>×</button>
         </div>
         
