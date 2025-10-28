@@ -1,4 +1,5 @@
 import { GoogleSheetsWriteService } from '../../src/services/googleSheetsWriteService.js'
+import { SimpleGoogleSheetsService } from '../../src/services/simpleGoogleSheetsService.js'
 
 const headers = {
   'Access-Control-Allow-Origin': '*',
@@ -49,15 +50,37 @@ export async function handler(event, context) {
     // Handle different actions
     switch (action) {
       case 'test':
-        // Test connection
-        await writeService.testConnection()
-        return {
-          statusCode: 200,
-          headers,
-          body: JSON.stringify({ 
-            success: true, 
-            message: 'Google Sheets connection successful' 
-          })
+        // Test connection - try main service first, then fallback
+        try {
+          await writeService.testConnection()
+          return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({ 
+              success: true, 
+              message: 'Google Sheets connection successful (googleapis)',
+              method: 'primary'
+            })
+          }
+        } catch (primaryError) {
+          console.log('Primary connection failed, trying simple method:', primaryError.message)
+          
+          try {
+            const simpleService = new SimpleGoogleSheetsService()
+            await simpleService.testConnection()
+            return {
+              statusCode: 200,
+              headers,
+              body: JSON.stringify({ 
+                success: true, 
+                message: 'Google Sheets connection successful (simple CSV method)',
+                method: 'fallback',
+                primaryError: primaryError.message
+              })
+            }
+          } catch (fallbackError) {
+            throw new Error(`Both methods failed. Primary: ${primaryError.message}, Fallback: ${fallbackError.message}`)
+          }
         }
 
       case 'get':

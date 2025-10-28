@@ -34,31 +34,62 @@ export class GoogleSheetsWriteService {
         throw new Error('Missing GOOGLE_SHEETS_PRIVATE_KEY environment variable')
       }
 
-      // Process private key - handle different newline formats
+      // Process private key - handle different formats and encoding issues
       let privateKey = process.env.GOOGLE_SHEETS_PRIVATE_KEY
       if (privateKey) {
-        // Replace literal \n with actual newlines
-        privateKey = privateKey.replace(/\\n/g, '\n')
+        console.log('Raw private key length:', privateKey.length)
+        console.log('Raw private key first 50 chars:', privateKey.substring(0, 50))
         
-        // Clean up any extra whitespace
-        privateKey = privateKey.trim()
-        
-        // Ensure proper formatting with correct line breaks
-        if (!privateKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
-          throw new Error('Private key format is invalid - missing BEGIN marker')
+        // Try different decoding approaches
+        try {
+          // Approach 1: Direct replacement of \n
+          privateKey = privateKey.replace(/\\n/g, '\n')
+          
+          // Approach 2: If it's base64 encoded, decode it
+          if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+            try {
+              privateKey = Buffer.from(privateKey, 'base64').toString('utf8')
+            } catch (e) {
+              console.log('Not base64 encoded, continuing with original')
+            }
+          }
+          
+          // Clean up the key
+          privateKey = privateKey.trim()
+          
+          // Ensure proper line breaks for PEM format
+          if (privateKey.includes('-----BEGIN PRIVATE KEY-----') && privateKey.includes('-----END PRIVATE KEY-----')) {
+            // Split and reconstruct with proper line breaks
+            const beginMarker = '-----BEGIN PRIVATE KEY-----'
+            const endMarker = '-----END PRIVATE KEY-----'
+            
+            const keyContent = privateKey
+              .replace(beginMarker, '')
+              .replace(endMarker, '')
+              .replace(/\s/g, '') // Remove all whitespace
+            
+            // Rebuild with proper 64-character lines
+            const lines = [beginMarker]
+            for (let i = 0; i < keyContent.length; i += 64) {
+              lines.push(keyContent.substr(i, 64))
+            }
+            lines.push(endMarker)
+            
+            privateKey = lines.join('\n')
+          }
+          
+          console.log('Processed private key format:')
+          console.log('- Length:', privateKey.length)
+          console.log('- Starts with BEGIN:', privateKey.startsWith('-----BEGIN PRIVATE KEY-----'))
+          console.log('- Ends with END:', privateKey.endsWith('-----END PRIVATE KEY-----'))
+          console.log('- Line count:', privateKey.split('\n').length)
+          
+        } catch (processingError) {
+          console.error('Error processing private key:', processingError)
+          throw new Error(`Private key processing failed: ${processingError.message}`)
         }
-        
-        if (!privateKey.endsWith('-----END PRIVATE KEY-----')) {
-          throw new Error('Private key format is invalid - missing END marker')
-        }
-        
-        // Split into lines and rejoin with proper newlines to ensure clean formatting
-        const lines = privateKey.split('\n').map(line => line.trim()).filter(line => line)
-        privateKey = lines.join('\n')
-        
-        console.log('Private key processed, length:', privateKey.length)
-        console.log('Private key starts with:', privateKey.substring(0, 50))
-        console.log('Private key ends with:', privateKey.substring(privateKey.length - 50))
+      } else {
+        throw new Error('GOOGLE_SHEETS_PRIVATE_KEY environment variable is empty')
       }
 
       // Create auth instance with service account credentials
