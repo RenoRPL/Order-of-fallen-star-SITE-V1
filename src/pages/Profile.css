@@ -1586,17 +1586,17 @@
 
 /* Command Center Section */
 .command-center-section {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 46, 0.6) 100%);
-  border: 1px solid rgba(201, 169, 110, 0.3);
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(51, 65, 85, 0.6);
   border-radius: 8px;
   padding: 0.8rem;
   margin-bottom: 1.5rem;
   backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .command-center-header h3 {
-  color: #c9a96e;
+  color: rgba(94, 234, 212, 1);
   font-family: 'Orbitron', sans-serif;
   font-size: 0.8rem;
   margin-bottom: 0.5rem;
@@ -1613,8 +1613,8 @@
 }
 
 .command-action {
-  background: linear-gradient(145deg, #2a2a4a, #1e1e3a);
-  border: 1px solid rgba(201, 169, 110, 0.3);
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(51, 65, 85, 0.6);
   border-radius: 6px;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
@@ -1628,57 +1628,64 @@
   font-weight: 500;
   text-decoration: none;
   min-height: 32px;
+  color: rgba(203, 213, 225, 0.9);
 }
 
 .command-action:hover {
-  border-color: rgba(201, 169, 110, 0.6);
+  border-color: rgba(94, 234, 212, 0.5);
+  background: rgba(30, 41, 59, 1);
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .command-action.primary {
-  background: linear-gradient(145deg, #c9a96e, #f1e5a2);
-  color: #1a1a2e;
-  border-color: #c9a96e;
+  background: rgba(14, 165, 233, 0.2);
+  color: rgba(56, 189, 248, 1);
+  border-color: rgba(14, 165, 233, 0.4);
 }
 
 .command-action.primary:hover {
-  background: linear-gradient(145deg, #d4b376, #f5eaa8);
+  background: rgba(14, 165, 233, 0.3);
+  border-color: rgba(56, 189, 248, 0.6);
 }
 
 .command-action.success {
-  background: linear-gradient(145deg, #22c55e, #16a34a);
-  color: #ffffff;
-  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.2);
+  color: rgba(74, 222, 128, 1);
+  border-color: rgba(34, 197, 94, 0.4);
   cursor: default;
 }
 
 .command-action.secondary {
-  background: linear-gradient(145deg, #6b7280, #9ca3af);
-  color: #ffffff;
-  border-color: #6b7280;
+  background: rgba(71, 85, 105, 0.3);
+  color: rgba(148, 163, 184, 1);
+  border-color: rgba(71, 85, 105, 0.5);
 }
 
 .command-action.secondary:hover {
-  background: linear-gradient(145deg, #7c3aed, #a855f7);
+  background: rgba(71, 85, 105, 0.5);
+  border-color: rgba(148, 163, 184, 0.6);
 }
 
 .command-action.danger {
-  background: linear-gradient(145deg, #ef4444, #dc2626);
-  color: #ffffff;
-  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.2);
+  color: rgba(248, 113, 113, 1);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .command-action.danger:hover {
-  background: linear-gradient(145deg, #dc2626, #b91c1c);
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(248, 113, 113, 0.6);
 }
 
 .action-icon {
   font-size: 0.8rem;
+  opacity: 0.8;
 }
 
 .action-text {
   font-size: 0.65rem;
   letter-spacing: 0.3px;
   font-weight: 500;
+  opacity: 0.9;
 }
