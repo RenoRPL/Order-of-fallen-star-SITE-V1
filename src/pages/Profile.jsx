@@ -139,7 +139,7 @@ export default function Profile() {
         setShowRsiModal(false)
         setNotification({
           type: 'success',
-          message: `✅ RSI Account Successfully Verified & Logged! Welcome ${rsiHandle}, ${result.rsiProfile.organizationRank || 'Member'} of Order of the Fallen Star! Your verification has been recorded in our Member Log.`
+          message: `RSI Account Successfully Verified & Logged! Welcome ${rsiHandle}, ${result.rsiProfile.organizationRank || 'Member'} of Order of the Fallen Star! Your verification has been recorded in our Member Log.`
         })
         
         console.log('RSI Verification Success:', result)
@@ -210,7 +210,7 @@ export default function Profile() {
       {notification && (
         <div className={`notification ${notification.type}`}>
           <span className="notification-icon">
-            {notification.type === 'success' ? '✅' : '❌'}
+            {notification.type === 'success' ? '' : ''}
           </span>
           <span className="notification-message">{notification.message}</span>
           <button 
@@ -363,31 +363,31 @@ export default function Profile() {
             {/* Command Center */}
             <div className="command-panel">
               <h2 className="panel-title">
-                <span className="title-icon">⚙️</span>
+                <span className="title-icon"></span>
                 Command Center
               </h2>
               <div className="command-grid">
                 {memberData?.RSI_Verified || rsiData ? (
                   <button className="command-btn success">
-                    <span className="btn-icon">✅</span>
+                    <span className="btn-icon"></span>
                     <span className="btn-text">RSI Linked: {memberData?.RSI_Handle || rsiData?.handle}</span>
                   </button>
                 ) : (
                   <button className="command-btn primary" onClick={openRsiModal}>
-                    <span className="btn-icon">🔗</span>
+                    <span className="btn-icon"></span>
                     <span className="btn-text">Link RSI Account</span>
                   </button>
                 )}
                 <button className="command-btn secondary">
-                  <span className="btn-icon">🛠️</span>
+                  <span className="btn-icon"></span>
                   <span className="btn-text">Update Profile</span>
                 </button>
                 <button className="command-btn secondary">
-                  <span className="btn-icon">🔒</span>
+                  <span className="btn-icon"></span>
                   <span className="btn-text">Privacy Settings</span>
                 </button>
                 <button className="command-btn danger" onClick={handleLogout}>
-                  <span className="btn-icon">🚪</span>
+                  <span className="btn-icon"></span>
                   <span className="btn-text">End Session</span>
                 </button>
               </div>
