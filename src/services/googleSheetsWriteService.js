@@ -14,12 +14,43 @@ export class GoogleSheetsWriteService {
    */
   async initialize() {
     try {
+      // Debug log environment variables (without exposing sensitive data)
+      console.log('Environment check:', {
+        hasProjectId: !!process.env.GOOGLE_SHEETS_PROJECT_ID,
+        hasClientEmail: !!process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
+        hasPrivateKey: !!process.env.GOOGLE_SHEETS_PRIVATE_KEY,
+        projectId: process.env.GOOGLE_SHEETS_PROJECT_ID,
+        clientEmail: process.env.GOOGLE_SHEETS_CLIENT_EMAIL
+      })
+
+      // Validate required environment variables
+      if (!process.env.GOOGLE_SHEETS_PROJECT_ID) {
+        throw new Error('Missing GOOGLE_SHEETS_PROJECT_ID environment variable')
+      }
+      if (!process.env.GOOGLE_SHEETS_CLIENT_EMAIL) {
+        throw new Error('Missing GOOGLE_SHEETS_CLIENT_EMAIL environment variable')
+      }
+      if (!process.env.GOOGLE_SHEETS_PRIVATE_KEY) {
+        throw new Error('Missing GOOGLE_SHEETS_PRIVATE_KEY environment variable')
+      }
+
+      // Process private key - handle different newline formats
+      let privateKey = process.env.GOOGLE_SHEETS_PRIVATE_KEY
+      if (privateKey) {
+        // Replace literal \n with actual newlines
+        privateKey = privateKey.replace(/\\n/g, '\n')
+        // Ensure proper formatting
+        if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+          throw new Error('Private key format is invalid - missing BEGIN marker')
+        }
+      }
+
       // Create auth instance with service account credentials
       this.auth = new GoogleAuth({
         credentials: {
           type: 'service_account',
           project_id: process.env.GOOGLE_SHEETS_PROJECT_ID,
-          private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+          private_key: privateKey,
           client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
         },
         scopes: ['https://www.googleapis.com/auth/spreadsheets']
@@ -32,7 +63,7 @@ export class GoogleSheetsWriteService {
       return true
     } catch (error) {
       console.error('Failed to initialize Google Sheets API:', error)
-      throw new Error('Google Sheets authentication failed')
+      throw new Error(`Google Sheets authentication failed: ${error.message}`)
     }
   }
 
