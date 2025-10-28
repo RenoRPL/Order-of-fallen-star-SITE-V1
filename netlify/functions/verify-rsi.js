@@ -1,4 +1,5 @@
 import { MemberVerificationService } from '../../src/services/memberVerificationService.js'
+import { GoogleSheetsWriteService } from '../../src/services/googleSheetsWriteService.js'
 
 // Headers for CORS and RSI scraping
 const headers = {
@@ -88,26 +89,12 @@ export async function handler(event, context) {
     try {
       console.log(`RSI verification successful for ${rsiData.profile.handle}, updating Member Log...`)
       
-      // Update the member's verification status in the spreadsheet with timestamp
-      const updateResponse = await fetch('/.netlify/functions/update-member-verification', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          discordId: discordId,
-          verified: true,
-          rsiHandle: rsiData.profile.handle,
-          action: 'update'
-        })
-      })
-
-      if (updateResponse.ok) {
-        console.log('✅ Successfully updated member verification status with timestamp in Google Sheets column U')
-      } else {
-        const errorText = await updateResponse.text()
-        console.warn('⚠️ Failed to update Google Sheets, but RSI verification was successful:', errorText)
-      }
+      // Update the member's verification status directly using Google Sheets service
+      const writeService = new GoogleSheetsWriteService()
+      await writeService.updateVerificationStatus(discordId, true, rsiData.profile.handle)
+      
+      console.log('✅ Successfully updated member verification status with timestamp in Google Sheets columns U and V')
+      
     } catch (updateError) {
       console.warn('⚠️ Failed to update verification status in Google Sheets:', updateError.message)
       // Don't fail the whole process if we can't update the sheet
