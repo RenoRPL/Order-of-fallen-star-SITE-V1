@@ -115,6 +115,8 @@
   display: flex;
   gap: 1rem;
   align-items: center;
+  position: relative;
+  overflow: visible;
 }
 
 .discord-btn, .spectrum-btn {
@@ -414,11 +416,11 @@
 
 /* Command Pill Styles - Behind Profile Design */
 .command-pill-container {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
+  position: relative;
+  margin-left: -25px; /* Overlap slightly with profile bar */
   z-index: 998; /* Behind the profile pill */
+  display: flex;
+  align-items: center;
 }
 
 .command-pill {
@@ -437,12 +439,12 @@
 
 .command-pill.collapsed {
   width: 60px;
-  transform: translateX(35px); /* Stick out slightly from behind profile */
+  transform: translateX(20px); /* Stick out slightly from behind profile */
 }
 
 .command-pill.expanded {
-  width: 300px;
-  transform: translateX(-150px); /* Slide out fully from behind */
+  width: 280px;
+  transform: translateX(-120px); /* Slide out from behind */
 }
 
 .command-pill-tab {
