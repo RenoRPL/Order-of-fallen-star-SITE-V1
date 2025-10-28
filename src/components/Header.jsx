@@ -137,6 +137,43 @@ export default function Header({ commandCenterProps }) {
         <div className="header-actions">
           {isAuthenticated && user ? (
             <>
+              {/* Command Center Pill - Position behind profile pill */}
+              {commandCenterProps && (
+                <div className="command-pill-container">
+                  <div 
+                    className={`command-pill ${commandCenterProps.isCommandCenterOpen ? 'expanded' : 'collapsed'}`}
+                    onClick={() => commandCenterProps.setIsCommandCenterOpen(!commandCenterProps.isCommandCenterOpen)}
+                  >
+                    <div className="command-pill-tab">
+                      <span className="command-pill-text">CMD</span>
+                    </div>
+                    
+                    <div className="command-pill-content">
+                      <div className="command-pill-buttons">
+                        {commandCenterProps.memberData?.RSI_Verified || commandCenterProps.rsiData ? (
+                          <button className="pill-btn success">
+                            <span className="pill-btn-text">RSI ✓</span>
+                          </button>
+                        ) : (
+                          <button className="pill-btn primary" onClick={(e) => {e.stopPropagation(); commandCenterProps.openRsiModal();}}>
+                            <span className="pill-btn-text">Link RSI</span>
+                          </button>
+                        )}
+                        <button className="pill-btn secondary">
+                          <span className="pill-btn-text">Profile</span>
+                        </button>
+                        <button className="pill-btn secondary">
+                          <span className="pill-btn-text">Privacy</span>
+                        </button>
+                        <button className="pill-btn danger" onClick={(e) => {e.stopPropagation(); commandCenterProps.handleLogout();}}>
+                          <span className="pill-btn-text">Logout</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <Link to="/profile" className="profile-link">
                 <div className="avatar-container">
                   <img 
@@ -181,44 +218,6 @@ export default function Header({ commandCenterProps }) {
                   </div>
                 </div>
               </Link>
-              
-              {/* Command Center Tab - Only show if props are provided */}
-              {commandCenterProps && (
-                <div className="header-command-center">
-                  <div 
-                    className={`header-command-tab ${commandCenterProps.isCommandCenterOpen ? 'open' : ''}`}
-                    onClick={() => commandCenterProps.setIsCommandCenterOpen(!commandCenterProps.isCommandCenterOpen)}
-                  >
-                    <span className="command-tab-title">Command</span>
-                    <span className={`command-tab-arrow ${commandCenterProps.isCommandCenterOpen ? 'rotated' : ''}`}>
-                      ▼
-                    </span>
-                  </div>
-                  
-                  <div className={`header-command-content ${commandCenterProps.isCommandCenterOpen ? 'expanded' : 'collapsed'}`}>
-                    <div className="command-grid">
-                      {commandCenterProps.memberData?.RSI_Verified || commandCenterProps.rsiData ? (
-                        <button className="command-btn success">
-                          <span className="btn-text">RSI Linked</span>
-                        </button>
-                      ) : (
-                        <button className="command-btn primary" onClick={commandCenterProps.openRsiModal}>
-                          <span className="btn-text">Link RSI</span>
-                        </button>
-                      )}
-                      <button className="command-btn secondary">
-                        <span className="btn-text">Update Profile</span>
-                      </button>
-                      <button className="command-btn secondary">
-                        <span className="btn-text">Privacy</span>
-                      </button>
-                      <button className="command-btn danger" onClick={commandCenterProps.handleLogout}>
-                        <span className="btn-text">End Session</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
             </>
           ) : (
             <LoginButton />
