@@ -3,7 +3,6 @@ import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import RSILinkModal from '../components/RSILinkModal'
 import OFSDataService from '../services/ofsDataService'
 import { GoogleSheetsService } from '../services/googleSheetsService'
 import './Profile.css'
@@ -378,10 +377,6 @@ export default function Profile() {
                     <span className="btn-text">Link RSI Account</span>
                   </button>
                 )}
-                <button className="command-btn primary" onClick={openRsiModal}>
-                  <span className="btn-icon">🧪</span>
-                  <span className="btn-text">Test Clean RSI Modal</span>
-                </button>
                 <button className="command-btn secondary">
                   <span className="btn-icon">🛠️</span>
                   <span className="btn-text">Update Profile</span>
@@ -402,14 +397,6 @@ export default function Profile() {
       </main>
 
       <Footer />
-      
-      {/* RSI Link Modal */}
-      <RSILinkModal
-        isOpen={showRsiModal}
-        onClose={() => setShowRsiModal(false)}
-        onSubmit={handleRsiLink}
-        isLoading={rsiLoading}
-      />
     </div>
   )
 }
