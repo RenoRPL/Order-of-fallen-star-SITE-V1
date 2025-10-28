@@ -167,27 +167,42 @@ export class GoogleSheetsWriteService {
       // Prepare updates
       const updates = []
 
-      // Update Column U (Verified) - column index 21 (U)
-      updates.push({
-        range: `${this.memberLogSheetName}!U${rowIndex}`,
-        values: [[verified ? 'TRUE' : 'FALSE']]
-      })
+      // Update Column U (Verified) with timestamp when verified
+      if (verified) {
+        // Log verification timestamp in column U as requested
+        const timestamp = new Date().toLocaleString('en-US', {
+          timeZone: 'America/New_York',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        })
+        
+        updates.push({
+          range: `${this.memberLogSheetName}!U${rowIndex}`,
+          values: [[timestamp]]
+        })
+        
+        console.log(`Setting verification timestamp: ${timestamp}`)
+      } else {
+        // Clear verification if not verified
+        updates.push({
+          range: `${this.memberLogSheetName}!U${rowIndex}`,
+          values: [['']]
+        })
+      }
 
-      // If RSI handle provided, update a specific column (adjust as needed)
+      // If RSI handle provided, update a specific column (column V for RSI Handle)
       if (rsiHandle) {
-        // Assuming column V is for RSI Handle - adjust as needed
         updates.push({
           range: `${this.memberLogSheetName}!V${rowIndex}`,
           values: [[rsiHandle]]
         })
+        console.log(`Setting RSI Handle: ${rsiHandle}`)
       }
-
-      // Add timestamp of verification
-      const timestamp = new Date().toISOString()
-      updates.push({
-        range: `${this.memberLogSheetName}!W${rowIndex}`, // Assuming column W for timestamp
-        values: [[timestamp]]
-      })
 
       // Batch update all changes
       await this.sheets.spreadsheets.values.batchUpdate({

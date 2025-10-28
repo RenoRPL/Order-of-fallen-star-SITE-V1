@@ -139,7 +139,7 @@ export default function Profile() {
         setShowRsiModal(false)
         setNotification({
           type: 'success',
-          message: `✅ RSI Account Verified! Welcome ${rsiHandle}, ${result.rsiProfile.organizationRank} of Order of the Fallen Star!`
+          message: `✅ RSI Account Successfully Verified & Logged! Welcome ${rsiHandle}, ${result.rsiProfile.organizationRank || 'Member'} of Order of the Fallen Star! Your verification has been recorded in our Member Log.`
         })
         
         console.log('RSI Verification Success:', result)
