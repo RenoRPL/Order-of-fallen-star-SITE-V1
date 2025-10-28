@@ -24,7 +24,7 @@ const RSILinkModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
         
         <div className="modal-body">
           <div className="benefits-section">
-            <h3>🌟 RSI Account Verification Requirements</h3>
+            <h3>Verification Requirements</h3>
             <div className="verification-requirements">
               <div className="requirement-item">
                 <span className="req-icon">✅</span>
@@ -134,3 +134,4 @@ const RSILinkModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
 }
 
 export default RSILinkModal
+
