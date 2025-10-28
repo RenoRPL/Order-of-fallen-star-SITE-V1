@@ -53,8 +53,11 @@
     <div class="test-form">
         <h3>Test RSI Handle Verification</h3>
         <input type="text" id="rsiHandle" placeholder="Enter RSI Handle (e.g., RenoTG)" value="RenoTG">
-        <input type="text" id="discordId" placeholder="Discord ID" value="test-discord-id">
+        <input type="text" id="discordId" placeholder="Discord ID (from Member Log)" value="">
         <button onclick="testVerification()">🔍 Test Verification</button>
+        <div style="margin-top: 10px; font-size: 0.9em; color: #ffff00;">
+            <strong>Note:</strong> Discord ID must exist in Member Log sheet (gid=2052923864, Column A: User ID)
+        </div>
     </div>
     
     <div id="result"></div>
@@ -137,11 +140,20 @@ This could mean:
     </div>
     
     <div class="test-form">
-        <h3>ℹ️ How It Works</h3>
-        <p>1. <strong>Discord Check:</strong> Verifies user exists in OFS Discord member database</p>
-        <p>2. <strong>RSI Scraping:</strong> Fetches citizen profile from robertsspaceindustries.com</p>
-        <p>3. <strong>Organization Check:</strong> Confirms main organization is "Order of the Fallen Star"</p>
-        <p>4. <strong>Success:</strong> Returns verified profile data for authenticated member</p>
+        <h3>ℹ️ How Real Verification Works</h3>
+        <p><strong>1. Member Log Check:</strong> Verifies Discord ID exists in Member Log sheet (gid=2052923864, Column A)</p>
+        <p><strong>2. RSI Profile Scraping:</strong> Fetches real citizen profile from robertsspaceindustries.com</p>
+        <p><strong>3. Organization Verification:</strong> Confirms main organization is "Order of the Fallen Star"</p>
+        <p><strong>4. Verification Update:</strong> Marks user as verified in Member Log (Column U: Verified)</p>
+        <p><strong>5. Success:</strong> Returns verified profile data for authenticated OFS member</p>
+        
+        <div style="margin-top: 15px; padding: 10px; background: rgba(0,255,255,0.1); border-radius: 5px;">
+            <strong>Required for Success:</strong><br>
+            ✅ Discord ID in Member Log sheet<br>
+            ✅ Valid RSI citizen profile<br>
+            ✅ Main org: "Order of the Fallen Star"<br>
+            ✅ Public RSI profile access
+        </div>
     </div>
 </body>
 </html>

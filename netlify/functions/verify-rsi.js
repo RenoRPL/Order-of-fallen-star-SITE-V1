@@ -1,4 +1,4 @@
-import { GoogleSheetsService } from '../../src/services/googleSheetsService.js'
+import { MemberVerificationService } from '../../src/services/memberVerificationService.js'
 
 // Headers for CORS and RSI scraping
 const headers = {
@@ -42,18 +42,20 @@ export async function handler(event, context) {
 
     console.log(`Verifying RSI handle: ${rsiHandle} for Discord ID: ${discordId}`)
 
-    // Step 1: Check if user exists in our Discord member database
+    // Step 1: Check if user exists in our Discord Member Log database
     const memberData = await verifyDiscordMember(discordId)
     if (!memberData) {
       return {
         statusCode: 400,
         headers,
         body: JSON.stringify({ 
-          error: 'Discord member not found in Order of the Fallen Star records',
+          error: 'Discord member not found in Order of the Fallen Star Member Log. Please ensure you are a registered Discord member.',
           verified: false 
         })
       }
     }
+
+    console.log('Discord member found:', memberData)
 
     // Step 2: Scrape RSI profile to verify organization membership
     const rsiData = await scrapeRSIProfile(rsiHandle)
@@ -82,7 +84,17 @@ export async function handler(event, context) {
       }
     }
 
-    // Success! Return verified profile data
+    // Success! Return verified profile data and update verification status
+    try {
+      // Update the member's verification status in the spreadsheet
+      const memberService = new MemberVerificationService()
+      await memberService.updateVerificationStatus(discordId, true)
+      console.log('Updated member verification status to true')
+    } catch (updateError) {
+      console.warn('Failed to update verification status:', updateError.message)
+      // Don't fail the whole process if we can't update the sheet
+    }
+
     return {
       statusCode: 200,
       headers,
@@ -90,7 +102,7 @@ export async function handler(event, context) {
         verified: true,
         rsiProfile: rsiData.profile,
         memberData: memberData,
-        message: 'RSI account successfully verified as Order of the Fallen Star member'
+        message: `RSI account successfully verified! Welcome ${rsiData.profile.handle}, ${rsiData.profile.organizationRank || 'Member'} of Order of the Fallen Star.`
       })
     }
 
@@ -107,18 +119,24 @@ export async function handler(event, context) {
   }
 }
 
-// Check if Discord user exists in our member database
+// Check if Discord user exists in our Member Log database
 async function verifyDiscordMember(discordId) {
   try {
-    // Use our existing Google Sheets service to check member data
-    const sheetsService = new GoogleSheetsService()
+    const memberService = new MemberVerificationService()
+    const memberData = await memberService.verifyDiscordMember(discordId)
     
-    // This would need to be implemented to check against our member spreadsheet
-    // For now, we'll return true if we have any data for this user
-    const memberStats = await sheetsService.fetchUserStats(discordId)
+    if (memberData) {
+      console.log('Discord member verification successful:', {
+        discordId: memberData.discordId,
+        username: memberData.username,
+        isVerified: memberData.isVerified,
+        rank: memberData.rank
+      })
+      return memberData
+    }
     
-    // If we found stats, they're in our system
-    return memberStats ? { discordId, verified: true } : null
+    console.log('Discord member not found in Member Log for ID:', discordId)
+    return null
     
   } catch (error) {
     console.error('Discord member verification error:', error)
