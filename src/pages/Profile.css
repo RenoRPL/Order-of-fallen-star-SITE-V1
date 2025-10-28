@@ -1587,55 +1587,56 @@
 /* Command Center Tab Styles */
 .command-center-wrapper {
   position: relative;
-  z-index: 1000; /* Increase z-index */
+  z-index: 1000;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 16px;
-  margin-top: 10px; /* Add some space from header */
-  background: rgba(255, 0, 0, 0.1); /* Temporary debug background */
-  min-height: 50px; /* Ensure it has height */
+  margin-top: 5px;
 }
 
 .command-center-tab {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
-  border: 2px solid #4a9eff; /* Make border more visible */
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid rgba(74, 158, 255, 0.3);
   border-bottom: none;
-  border-radius: 12px 12px 0 0;
-  padding: 16px 24px;
+  border-radius: 8px 8px 0 0;
+  padding: 8px 16px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   position: relative;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(74, 158, 255, 0.5); /* Add glow */
   margin: 0 auto;
-  max-width: 300px; /* Make it smaller and centered */
+  max-width: 160px;
+  backdrop-filter: blur(4px);
+  opacity: 0.7;
 }
 
 .command-center-tab:hover {
-  background: linear-gradient(135deg, #2a2a3e 0%, #26314e 50%, #1f2429 100%);
-  border-color: #4a9eff;
+  opacity: 1;
+  border-color: rgba(74, 158, 255, 0.6);
+  background: rgba(26, 26, 46, 0.9);
 }
 
 .command-center-tab.open {
-  background: linear-gradient(135deg, #2a2a3e 0%, #26314e 50%, #1f2429 100%);
-  border-color: #4a9eff;
+  opacity: 1;
+  border-color: rgba(74, 158, 255, 0.8);
+  background: rgba(26, 26, 46, 0.95);
 }
 
 .command-tab-title {
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .command-tab-arrow {
-  color: #4a9eff;
-  font-size: 14px;
-  transition: transform 0.3s ease;
-  margin-left: 16px;
+  color: rgba(74, 158, 255, 0.7);
+  font-size: 10px;
+  transition: transform 0.2s ease;
+  margin-left: 8px;
 }
 
 .command-tab-arrow.rotated {
@@ -1643,48 +1644,48 @@
 }
 
 .command-center-content {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
-  border: 2px solid #4a9eff;
+  background: rgba(26, 26, 46, 0.95);
+  border: 1px solid rgba(74, 158, 255, 0.3);
   border-top: none;
-  border-radius: 0 0 12px 12px;
+  border-radius: 0 0 8px 8px;
   overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
   margin: 0 auto;
-  max-width: 600px; /* Wider content area */
+  max-width: 500px;
 }
 
 .command-center-content.collapsed {
   max-height: 0;
-  padding: 0 24px;
+  padding: 0 16px;
   opacity: 0;
 }
 
 .command-center-content.expanded {
-  max-height: 200px;
-  padding: 20px 24px;
+  max-height: 150px;
+  padding: 16px;
   opacity: 1;
 }
 
 .command-center-content .command-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
   width: 100%;
 }
 
 .command-center-content .command-btn {
-  padding: 12px 20px;
+  padding: 8px 12px;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 6px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
+  min-height: 32px;
 }
 
 .command-center-content .command-btn.primary {
@@ -1731,24 +1732,31 @@
 /* Responsive Design for Command Center */
 @media (max-width: 768px) {
   .command-center-wrapper {
-    margin: 0 16px;
+    margin: 0 12px;
   }
   
   .command-center-tab {
-    padding: 10px 20px;
+    padding: 6px 12px;
+    max-width: 140px;
   }
   
   .command-tab-title {
-    font-size: 14px;
+    font-size: 11px;
   }
   
   .command-center-content .command-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
   }
   
   .command-center-content.expanded {
-    max-height: 280px;
-    padding: 16px 20px;
+    max-height: 120px;
+    padding: 12px;
+  }
+
+  .command-center-content .command-btn {
+    font-size: 11px;
+    padding: 6px 8px;
+    min-height: 28px;
   }
 }
