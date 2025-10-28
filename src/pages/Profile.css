@@ -1583,3 +1583,166 @@
     max-width: none;
   }
 }
+
+/* Command Center Tab Styles */
+.command-center-wrapper {
+  position: relative;
+  z-index: 100;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2px);
+}
+
+.command-center-tab {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+  border: 2px solid #3a4a5c;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  padding: 12px 24px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.command-center-tab:hover {
+  background: linear-gradient(135deg, #2a2a3e 0%, #26314e 50%, #1f2429 100%);
+  border-color: #4a9eff;
+}
+
+.command-center-tab.open {
+  background: linear-gradient(135deg, #2a2a3e 0%, #26314e 50%, #1f2429 100%);
+  border-color: #4a9eff;
+}
+
+.command-tab-title {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.command-tab-arrow {
+  color: #4a9eff;
+  font-size: 14px;
+  transition: transform 0.3s ease;
+  margin-left: 16px;
+}
+
+.command-tab-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.command-center-content {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+  border: 2px solid #4a9eff;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.command-center-content.collapsed {
+  max-height: 0;
+  padding: 0 24px;
+  opacity: 0;
+}
+
+.command-center-content.expanded {
+  max-height: 200px;
+  padding: 20px 24px;
+  opacity: 1;
+}
+
+.command-center-content .command-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.command-center-content .command-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.command-center-content .command-btn.primary {
+  background: linear-gradient(135deg, #4a9eff 0%, #357abd 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(74, 158, 255, 0.3);
+}
+
+.command-center-content .command-btn.primary:hover {
+  background: linear-gradient(135deg, #357abd 0%, #2a629a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 158, 255, 0.4);
+}
+
+.command-center-content .command-btn.success {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.command-center-content .command-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid #3a4a5c;
+}
+
+.command-center-content .command-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #4a9eff;
+}
+
+.command-center-content .command-btn.danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.command-center-content .command-btn.danger:hover {
+  background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+/* Responsive Design for Command Center */
+@media (max-width: 768px) {
+  .command-center-wrapper {
+    margin: 0 16px;
+  }
+  
+  .command-center-tab {
+    padding: 10px 20px;
+  }
+  
+  .command-tab-title {
+    font-size: 14px;
+  }
+  
+  .command-center-content .command-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .command-center-content.expanded {
+    max-height: 280px;
+    padding: 16px 20px;
+  }
+}

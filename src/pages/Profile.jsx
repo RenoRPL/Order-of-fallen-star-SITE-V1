@@ -29,6 +29,9 @@ export default function Profile() {
   const [showRsiModal, setShowRsiModal] = useState(false)
   const [notification, setNotification] = useState(null)
 
+  // Command center visibility
+  const [isCommandCenterOpen, setIsCommandCenterOpen] = useState(false)
+
   // Fetch member and patrol data
   useEffect(() => {
     const fetchData = async () => {
@@ -206,6 +209,42 @@ export default function Profile() {
     <div className="profile-page">
       <Header />
       
+      {/* Command Center Tab */}
+      <div className="command-center-wrapper">
+        <div 
+          className={`command-center-tab ${isCommandCenterOpen ? 'open' : ''}`}
+          onClick={() => setIsCommandCenterOpen(!isCommandCenterOpen)}
+        >
+          <span className="command-tab-title">Command Center</span>
+          <span className={`command-tab-arrow ${isCommandCenterOpen ? 'rotated' : ''}`}>
+            ▼
+          </span>
+        </div>
+        
+        <div className={`command-center-content ${isCommandCenterOpen ? 'expanded' : 'collapsed'}`}>
+          <div className="command-grid">
+            {memberData?.RSI_Verified || rsiData ? (
+              <button className="command-btn success">
+                <span className="btn-text">RSI Linked: {memberData?.RSI_Handle || rsiData?.handle}</span>
+              </button>
+            ) : (
+              <button className="command-btn primary" onClick={openRsiModal}>
+                <span className="btn-text">Link RSI Account</span>
+              </button>
+            )}
+            <button className="command-btn secondary">
+              <span className="btn-text">Update Profile</span>
+            </button>
+            <button className="command-btn secondary">
+              <span className="btn-text">Privacy Settings</span>
+            </button>
+            <button className="command-btn danger" onClick={handleLogout}>
+              <span className="btn-text">End Session</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
       {/* Notification */}
       {notification && (
         <div className={`notification ${notification.type}`}>
@@ -359,39 +398,6 @@ export default function Profile() {
                 <p className="error-message">⚠️ {error}</p>
               </div>
             )}
-            
-            {/* Command Center */}
-            <div className="command-panel">
-              <h2 className="panel-title">
-                <span className="title-icon"></span>
-                Command Center
-              </h2>
-              <div className="command-grid">
-                {memberData?.RSI_Verified || rsiData ? (
-                  <button className="command-btn success">
-                    <span className="btn-icon"></span>
-                    <span className="btn-text">RSI Linked: {memberData?.RSI_Handle || rsiData?.handle}</span>
-                  </button>
-                ) : (
-                  <button className="command-btn primary" onClick={openRsiModal}>
-                    <span className="btn-icon"></span>
-                    <span className="btn-text">Link RSI Account</span>
-                  </button>
-                )}
-                <button className="command-btn secondary">
-                  <span className="btn-icon"></span>
-                  <span className="btn-text">Update Profile</span>
-                </button>
-                <button className="command-btn secondary">
-                  <span className="btn-icon"></span>
-                  <span className="btn-text">Privacy Settings</span>
-                </button>
-                <button className="command-btn danger" onClick={handleLogout}>
-                  <span className="btn-icon"></span>
-                  <span className="btn-text">End Session</span>
-                </button>
-              </div>
-            </div>
 
           </div>
         </div>
