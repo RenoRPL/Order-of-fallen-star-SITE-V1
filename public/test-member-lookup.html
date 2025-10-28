@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Member Log Lookup</title>
+</head>
+<body>
+    <h1>Member Log Test</h1>
+    <button onclick="testMemberLookup()">Test Discord ID: 527694877773922324</button>
+    <div id="results"></div>
+
+    <script>
+        async function testMemberLookup() {
+            const results = document.getElementById('results');
+            results.innerHTML = 'Testing...';
+            
+            try {
+                const discordId = '527694877773922324';
+                const spreadsheetId = '12OiRHpEALj1hzXRxaXgBOWjHtmUT5hg2ztxIgr4J4y8';
+                const memberLogGid = '2052923864';
+                const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${memberLogGid}`;
+                
+                console.log('Testing CSV URL:', csvUrl);
+                
+                const response = await fetch(csvUrl);
+                const csvText = await response.text();
+                
+                console.log('CSV Response length:', csvText.length);
+                console.log('First 500 chars:', csvText.substring(0, 500));
+                
+                // Parse CSV
+                const rows = csvText.split('\n').map(row => {
+                    const cells = [];
+                    let inQuotes = false;
+                    let currentCell = '';
+                    
+                    for (let i = 0; i < row.length; i++) {
+                        const char = row[i];
+                        if (char === '"') {
+                            inQuotes = !inQuotes;
+                        } else if (char === ',' && !inQuotes) {
+                            cells.push(currentCell.trim());
+                            currentCell = '';
+                        } else {
+                            currentCell += char;
+                        }
+                    }
+                    cells.push(currentCell.trim());
+                    return cells;
+                });
+                
+                console.log('Total rows:', rows.length);
+                console.log('Header row:', rows[0]);
+                
+                // Look for the specific Discord ID
+                let foundUser = null;
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (row[0] && row[0].toString() === discordId) {
+                        foundUser = {
+                            rowNumber: i + 1,
+                            discordId: row[0],
+                            username: row[1],
+                            verified: row[20], // Column U
+                            rsiHandle: row[21] // Column V
+                        };
+                        break;
+                    }
+                }
+                
+                if (foundUser) {
+                    results.innerHTML = `
+                        <h3>✅ User Found!</h3>
+                        <p><strong>Row:</strong> ${foundUser.rowNumber}</p>
+                        <p><strong>Discord ID:</strong> ${foundUser.discordId}</p>
+                        <p><strong>Username:</strong> ${foundUser.username}</p>
+                        <p><strong>Verified (Column U):</strong> "${foundUser.verified}"</p>
+                        <p><strong>RSI Handle (Column V):</strong> "${foundUser.rsiHandle}"</p>
+                    `;
+                } else {
+                    results.innerHTML = `
+                        <h3>❌ User NOT Found</h3>
+                        <p>Discord ID ${discordId} was not found in column A of the Member Log</p>
+                        <p>Total rows searched: ${rows.length}</p>
+                        <p>First few Discord IDs found:</p>
+                        <ul>
+                            ${rows.slice(1, 6).map(row => `<li>${row[0] || 'empty'}</li>`).join('')}
+                        </ul>
+                    `;
+                }
+                
+            } catch (error) {
+                results.innerHTML = `<h3>❌ Error:</h3><p>${error.message}</p>`;
+                console.error('Test error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

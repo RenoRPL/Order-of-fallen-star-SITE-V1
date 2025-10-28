@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Sheets Diagnostic</title>
+</head>
+<body>
+    <h1>Google Sheets Diagnostic</h1>
+    <button onclick="runDiagnostic()">Run Diagnostic Test</button>
+    <div id="results"></div>
+
+    <script>
+        async function runDiagnostic() {
+            const results = document.getElementById('results');
+            results.innerHTML = 'Running diagnostic...';
+            
+            try {
+                const response = await fetch('/.netlify/functions/diagnose-sheets', {
+                    method: 'GET'
+                });
+
+                console.log('Diagnostic response status:', response.status);
+                
+                // Get raw text first
+                const rawText = await response.text();
+                console.log('Raw diagnostic response:', rawText);
+                
+                // Try to parse as JSON
+                let result;
+                try {
+                    result = JSON.parse(rawText);
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    results.innerHTML = `
+                        <h3>❌ JSON Parse Error</h3>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Raw Response:</strong></p>
+                        <pre>${rawText}</pre>
+                        <p><strong>Parse Error:</strong> ${parseError.message}</p>
+                    `;
+                    return;
+                }
+                
+                if (response.ok) {
+                    results.innerHTML = `
+                        <h3>✅ Diagnostic Complete</h3>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                } else {
+                    results.innerHTML = `
+                        <h3>❌ Diagnostic Failed</h3>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                }
+                
+            } catch (error) {
+                results.innerHTML = `<h3>❌ Error:</h3><p>${error.message}</p>`;
+                console.error('Diagnostic error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

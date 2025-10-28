@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Google Sheets Write</title>
+</head>
+<body>
+    <h1>Google Sheets Write Test</h1>
+    <button onclick="testWriteFunction()">Test Update for Discord ID: 527694877773922324</button>
+    <div id="results"></div>
+
+    <script>
+        async function testWriteFunction() {
+            const results = document.getElementById('results');
+            results.innerHTML = 'Testing write function...';
+            
+            try {
+                const response = await fetch('/.netlify/functions/update-member-verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        discordId: '527694877773922324',
+                        verified: true,
+                        rsiHandle: 'TestHandle123',
+                        action: 'update'
+                    })
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                // Get raw text first
+                const rawText = await response.text();
+                console.log('Raw response text:', rawText);
+                
+                // Try to parse as JSON
+                let result;
+                try {
+                    result = JSON.parse(rawText);
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    results.innerHTML = `
+                        <h3>❌ JSON Parse Error</h3>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Raw Response:</strong></p>
+                        <pre>${rawText}</pre>
+                        <p><strong>Parse Error:</strong> ${parseError.message}</p>
+                    `;
+                    return;
+                }
+                
+                if (response.ok) {
+                    results.innerHTML = `
+                        <h3>✅ Update Success!</h3>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                } else {
+                    results.innerHTML = `
+                        <h3>❌ Update Failed</h3>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                }
+                
+            } catch (error) {
+                results.innerHTML = `<h3>❌ Error:</h3><p>${error.message}</p>`;
+                console.error('Test error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
