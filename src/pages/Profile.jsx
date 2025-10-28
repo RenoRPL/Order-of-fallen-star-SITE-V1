@@ -378,6 +378,10 @@ export default function Profile() {
                     <span className="btn-text">Link RSI Account</span>
                   </button>
                 )}
+                <button className="command-btn primary" onClick={openRsiModal}>
+                  <span className="btn-icon">🧪</span>
+                  <span className="btn-text">Test Clean RSI Modal</span>
+                </button>
                 <button className="command-btn secondary">
                   <span className="btn-icon">🛠️</span>
                   <span className="btn-text">Update Profile</span>
