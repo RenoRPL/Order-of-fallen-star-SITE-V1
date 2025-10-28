@@ -362,15 +362,19 @@ export default function Profile() {
                 {memberData?.RSI_Verified || rsiData ? (
                   <div className="command-action success">
                     <span className="action-icon">✓</span>
-                    <span className="action-text">RSI Account Linked: {memberData?.RSI_Handle || rsiData?.handle}</span>
+                    <span className="action-text">RSI Linked</span>
                   </div>
                 ) : (
                   <button className="command-action primary" onClick={openRsiModal}>
                     <span className="action-icon">🔗</span>
-                    <span className="action-text">Link RSI Account</span>
+                    <span className="action-text">Link RSI</span>
                   </button>
                 )}
-                <button className="command-action secondary" onClick={handleLogout}>
+                <button className="command-action secondary">
+                  <span className="action-icon">✏️</span>
+                  <span className="action-text">Edit Profile</span>
+                </button>
+                <button className="command-action danger" onClick={handleLogout}>
                   <span className="action-icon">🚪</span>
                   <span className="action-text">Logout</span>
                 </button>
