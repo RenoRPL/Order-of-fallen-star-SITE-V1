@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import RSILinkModal from '../components/RSILinkModal'
+import EditProfileModal from '../components/EditProfileModal'
 import PlayerSearch from '../components/PlayerSearch'
 import OFSDataService from '../services/ofsDataService'
 import { GoogleSheetsService } from '../services/googleSheetsService'
@@ -39,11 +40,32 @@ export default function Profile() {
   const [isViewingOtherPlayer, setIsViewingOtherPlayer] = useState(false)
   const [selectedPlayerLoading, setSelectedPlayerLoading] = useState(false)
 
+  // Profile editing state
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false)
+  const [profileBio, setProfileBio] = useState('')
+  const [profileShip, setProfileShip] = useState('')
+
   // Get current displayed data (either logged-in user or selected player)
   const currentDisplayData = isViewingOtherPlayer && selectedPlayerData ? selectedPlayerData : memberData
   const currentPatrolData = isViewingOtherPlayer && selectedPlayerPatrolData ? selectedPlayerPatrolData : patrolData
   const currentPatrolStats = isViewingOtherPlayer && selectedPlayerStats ? selectedPlayerStats : patrolStats
   const currentGoogleStats = isViewingOtherPlayer && selectedPlayerGoogleStats ? selectedPlayerGoogleStats : googleStats
+
+  // Load profile data from localStorage
+  useEffect(() => {
+    if (user?.id) {
+      const savedProfile = localStorage.getItem(`profile_${user.id}`)
+      if (savedProfile) {
+        try {
+          const { bio, ship } = JSON.parse(savedProfile)
+          setProfileBio(bio || '')
+          setProfileShip(ship || '')
+        } catch (error) {
+          console.error('Error loading profile data:', error)
+        }
+      }
+    }
+  }, [user?.id])
 
   // Fetch member and patrol data
   useEffect(() => {
@@ -332,6 +354,76 @@ export default function Profile() {
     setTimeout(() => setNotification(null), 2000)
   }
 
+  const handleEditProfile = () => {
+    setShowEditProfileModal(true)
+  }
+
+  const handleSaveProfile = async (profileData) => {
+    try {
+      // Save to localStorage (can be moved to backend later)
+      localStorage.setItem(`profile_${user.id}`, JSON.stringify(profileData))
+      
+      // Update local state
+      setProfileBio(profileData.bio)
+      setProfileShip(profileData.ship)
+      
+      // Show success notification
+      setNotification({
+        type: 'success',
+        message: 'Profile updated successfully!'
+      })
+      setTimeout(() => setNotification(null), 3000)
+      
+    } catch (error) {
+      console.error('Error saving profile:', error)
+      setNotification({
+        type: 'error',
+        message: 'Failed to save profile. Please try again.'
+      })
+      setTimeout(() => setNotification(null), 3000)
+    }
+  }
+
+  const getShipDisplayName = (shipValue) => {
+    if (!shipValue) return null
+    
+    // Convert ship value to display name
+    const shipNames = {
+      'aegis-avenger-titan': 'Aegis Avenger Titan',
+      'aegis-gladius': 'Aegis Gladius',
+      'aegis-sabre': 'Aegis Sabre',
+      'aegis-vanguard-warden': 'Aegis Vanguard Warden',
+      'anvil-arrow': 'Anvil Arrow',
+      'anvil-f7c-hornet': 'Anvil F7C Hornet',
+      'anvil-hawk': 'Anvil Hawk',
+      'anvil-hurricane': 'Anvil Hurricane',
+      'anvil-terrapin': 'Anvil Terrapin',
+      'argo-cargo': 'Argo MPUV Cargo',
+      'crusader-mercury-star-runner': 'Crusader Mercury Star Runner',
+      'crusader-nomad': 'Crusader Nomad',
+      'drake-buccaneer': 'Drake Buccaneer',
+      'drake-caterpillar': 'Drake Caterpillar',
+      'drake-cutlass-black': 'Drake Cutlass Black',
+      'drake-herald': 'Drake Herald',
+      'origin-300i': 'Origin 300i',
+      'origin-325a': 'Origin 325a',
+      'origin-350r': 'Origin 350r',
+      'origin-600i': 'Origin 600i',
+      'origin-890-jump': 'Origin 890 Jump',
+      'rsi-aurora-mr': 'RSI Aurora MR',
+      'rsi-constellation-andromeda': 'RSI Constellation Andromeda',
+      'rsi-mantis': 'RSI Mantis',
+      'misc-freelancer': 'MISC Freelancer',
+      'misc-prospector': 'MISC Prospector',
+      'misc-starfarer': 'MISC Starfarer',
+      'banu-defender': 'Banu Defender',
+      'esperia-prowler': 'Esperia Prowler',
+      'vanduul-scythe': 'Vanduul Scythe'
+    }
+    
+    return shipNames[shipValue] || shipValue
+  }
+
   const formatJoinDate = (timestamp) => {
     if (!timestamp) return 'Unknown'
     const date = new Date(parseInt(timestamp) / 4194304 + 1420070400000)
@@ -440,6 +532,28 @@ export default function Profile() {
             </div>
           </div>
           
+          {/* Bio Section - Only show for own profile when bio exists */}
+          {!isViewingOtherPlayer && (profileBio || profileShip) && (
+            <div className="profile-bio-section">
+              <div className="bio-header">
+                <h3>About Me</h3>
+              </div>
+              <div className="bio-content">
+                {profileBio && (
+                  <div className="bio-text">
+                    <p>{profileBio}</p>
+                  </div>
+                )}
+                {profileShip && (
+                  <div className="bio-ship">
+                    <span className="ship-label">Primary Ship:</span>
+                    <span className="ship-name">{getShipDisplayName(profileShip)}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
           {/* Epic Profile Header with Rank Display - Compact */}
           <div className="profile-hero" style={{
             backgroundImage: currentDisplayData?.['Role Path'] 
@@ -535,7 +649,7 @@ export default function Profile() {
                       <span className="action-text">Link RSI</span>
                     </button>
                   )}
-                  <button className="command-action secondary">
+                  <button className="command-action secondary" onClick={handleEditProfile}>
                     <span className="action-icon">✏️</span>
                     <span className="action-text">Edit Profile</span>
                   </button>
@@ -620,6 +734,15 @@ export default function Profile() {
         onClose={() => setShowRsiModal(false)}
         onVerify={handleRsiLink}
         isLoading={rsiLoading}
+      />
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        isOpen={showEditProfileModal}
+        onClose={() => setShowEditProfileModal(false)}
+        onSave={handleSaveProfile}
+        currentBio={profileBio}
+        currentShip={profileShip}
       />
 
       <Footer />

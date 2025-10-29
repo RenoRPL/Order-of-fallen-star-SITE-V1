@@ -1,0 +1,242 @@
+/* Edit Profile Modal Styles */
+.edit-profile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.edit-profile-modal {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #0ea5e9;
+  font-family: 'Orbitron', monospace;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.modal-close-button:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.modal-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  color: #f1f5f9;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-note {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.bio-textarea {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+  border-radius: 8px;
+  padding: 12px;
+  color: #f1f5f9;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.2s ease;
+}
+
+.bio-textarea:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+}
+
+.bio-textarea::placeholder {
+  color: #64748b;
+  opacity: 0.8;
+}
+
+.character-count {
+  color: #64748b;
+  font-family: 'Orbitron', monospace;
+  font-size: 12px;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.ship-select {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+  border-radius: 8px;
+  padding: 12px;
+  color: #f1f5f9;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ship-select:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+}
+
+.ship-select option {
+  background: rgba(15, 23, 42, 1);
+  color: #f1f5f9;
+  padding: 8px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.cancel-button,
+.save-button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid;
+}
+
+.cancel-button {
+  background: rgba(71, 85, 105, 0.3);
+  color: #94a3b8;
+  border-color: rgba(71, 85, 105, 0.5);
+}
+
+.cancel-button:hover:not(:disabled) {
+  background: rgba(71, 85, 105, 0.5);
+  border-color: rgba(148, 163, 184, 0.6);
+}
+
+.save-button {
+  background: rgba(14, 165, 233, 0.2);
+  color: #0ea5e9;
+  border-color: rgba(14, 165, 233, 0.4);
+}
+
+.save-button:hover:not(:disabled) {
+  background: rgba(14, 165, 233, 0.3);
+  border-color: rgba(14, 165, 233, 0.6);
+  transform: translateY(-1px);
+}
+
+.cancel-button:disabled,
+.save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Scrollbar styling for modal */
+.edit-profile-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.edit-profile-modal::-webkit-scrollbar-track {
+  background: rgba(71, 85, 105, 0.3);
+  border-radius: 4px;
+}
+
+.edit-profile-modal::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.5);
+  border-radius: 4px;
+}
+
+.edit-profile-modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.7);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .edit-profile-modal {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .modal-header,
+  .modal-content,
+  .modal-footer {
+    padding: 16px;
+  }
+  
+  .modal-header h2 {
+    font-size: 18px;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .cancel-button,
+  .save-button {
+    width: 100%;
+  }
+}

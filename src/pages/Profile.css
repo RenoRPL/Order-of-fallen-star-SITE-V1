@@ -1798,6 +1798,88 @@
   font-weight: 600;
 }
 
+/* Profile Bio Section */
+.profile-bio-section {
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.bio-header {
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+  padding-bottom: 8px;
+}
+
+.bio-header h3 {
+  margin: 0;
+  color: #0ea5e9;
+  font-family: 'Orbitron', monospace;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.bio-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bio-text {
+  line-height: 1.6;
+}
+
+.bio-text p {
+  margin: 0;
+  color: #e2e8f0;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.bio-ship {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(71, 85, 105, 0.3);
+  border-radius: 6px;
+}
+
+.ship-label {
+  color: #64748b;
+  font-family: 'Orbitron', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ship-name {
+  color: #0ea5e9;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Responsive design for bio section */
+@media (max-width: 768px) {
+  .profile-bio-section {
+    padding: 16px;
+  }
+  
+  .bio-ship {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
 .selected-player-header {
   display: flex;
   justify-content: space-between;
