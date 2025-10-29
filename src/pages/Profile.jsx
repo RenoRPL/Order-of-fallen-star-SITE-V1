@@ -37,6 +37,7 @@ export default function Profile() {
   const [selectedPlayerStats, setSelectedPlayerStats] = useState(null)
   const [selectedPlayerGoogleStats, setSelectedPlayerGoogleStats] = useState(null)
   const [isViewingOtherPlayer, setIsViewingOtherPlayer] = useState(false)
+  const [selectedPlayerLoading, setSelectedPlayerLoading] = useState(false)
 
   // Get current displayed data (either logged-in user or selected player)
   const currentDisplayData = isViewingOtherPlayer && selectedPlayerData ? selectedPlayerData : memberData
@@ -243,6 +244,9 @@ export default function Profile() {
       console.log('Selected player:', player)
       
       try {
+        // Start loading
+        setSelectedPlayerLoading(true)
+        
         // Fetch detailed data for the selected player
         const playerDiscordId = player['User ID']
         
@@ -265,8 +269,20 @@ export default function Profile() {
         
         // Fetch selected player's Google Sheets stats
         try {
-          const playerGoogleStats = await googleSheetsService.getUserStats(playerDiscordId)
+          console.log('Fetching Google Sheets stats for player:', playerDiscordId)
+          const playerGoogleStats = await googleSheetsService.fetchUserStats(playerDiscordId)
+          console.log('Selected player Google stats:', playerGoogleStats)
           setSelectedPlayerGoogleStats(playerGoogleStats)
+          
+          // Show debug notification with stats
+          if (playerGoogleStats) {
+            console.log('Successfully loaded stats for', player.Username, ':', {
+              fpsKills: playerGoogleStats.fpsKills,
+              shipKills: playerGoogleStats.shipKills,
+              quests: playerGoogleStats.quests,
+              totalLength: playerGoogleStats.totalLength
+            })
+          }
         } catch (error) {
           console.log('No Google Sheets stats found for selected player:', error)
           setSelectedPlayerGoogleStats(null)
@@ -291,6 +307,9 @@ export default function Profile() {
           message: `Failed to load profile for ${player.Username}`
         })
         setTimeout(() => setNotification(null), 3000)
+      } finally {
+        // Stop loading
+        setSelectedPlayerLoading(false)
       }
     } else {
       // Deselect player - go back to own profile
@@ -300,6 +319,7 @@ export default function Profile() {
       setSelectedPlayerStats(null)
       setSelectedPlayerGoogleStats(null)
       setIsViewingOtherPlayer(false)
+      setSelectedPlayerLoading(false)
     }
   }
 
@@ -441,25 +461,25 @@ export default function Profile() {
             <div className="battle-stats-overview">
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.fpsKills || '0')}
+                  {(isViewingOtherPlayer ? selectedPlayerLoading : statsLoading) ? '...' : (currentGoogleStats?.fpsKills || '0')}
                 </div>
                 <div className="stat-label">Ground Kills</div>
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.shipKills || '0')}
+                  {(isViewingOtherPlayer ? selectedPlayerLoading : statsLoading) ? '...' : (currentGoogleStats?.shipKills || '0')}
                 </div>
                 <div className="stat-label">Pilot Kills</div>
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.totalLength || '0')}
+                  {(isViewingOtherPlayer ? selectedPlayerLoading : statsLoading) ? '...' : (currentGoogleStats?.totalLength || '0')}
                 </div>
                 <div className="stat-label">Total Hours</div>
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.turretKills || '0')}
+                  {(isViewingOtherPlayer ? selectedPlayerLoading : statsLoading) ? '...' : (currentGoogleStats?.turretKills || '0')}
                 </div>
                 <div className="stat-label">Turret Kills</div>
               </div>
@@ -469,13 +489,13 @@ export default function Profile() {
             <div className="profile-stats-overview">
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.quests || '0')}
+                  {(isViewingOtherPlayer ? selectedPlayerLoading : statsLoading) ? '...' : (currentGoogleStats?.quests || '0')}
                 </div>
                 <div className="stat-label">Quests</div>
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {(isViewingOtherPlayer ? !selectedPlayerGoogleStats : statsLoading) ? '...' : (currentGoogleStats?.ledQuests || '0')}
+                  {(isViewingOtherPlayer ? selectedPlayerLoading : statsLoading) ? '...' : (currentGoogleStats?.ledQuests || '0')}
                 </div>
                 <div className="stat-label">Led Quests</div>
               </div>
@@ -560,6 +580,18 @@ export default function Profile() {
                   <div className="player-detail-row">
                     <span className="detail-label">Patrols Led:</span>
                     <span className="detail-value">{currentPatrolStats?.patrolsLed || 0}</span>
+                  </div>
+                  <div className="player-detail-row">
+                    <span className="detail-label">Ground Kills:</span>
+                    <span className="detail-value">{currentGoogleStats?.fpsKills || 'N/A'}</span>
+                  </div>
+                  <div className="player-detail-row">
+                    <span className="detail-label">Ship Kills:</span>
+                    <span className="detail-value">{currentGoogleStats?.shipKills || 'N/A'}</span>
+                  </div>
+                  <div className="player-detail-row">
+                    <span className="detail-label">Total Quests:</span>
+                    <span className="detail-value">{currentGoogleStats?.quests || 'N/A'}</span>
                   </div>
                   {selectedPlayerData?.['RSI User Name'] && (
                     <div className="player-detail-row">
