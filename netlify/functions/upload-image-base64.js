@@ -1,5 +1,3 @@
-const { GoogleSheetsWriteService } = require('../src/services/googleSheetsWriteService');
-
 exports.handler = async (event, context) => {
   // Set CORS headers
   const headers = {
