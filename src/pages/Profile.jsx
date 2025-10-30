@@ -37,6 +37,8 @@ export default function Profile() {
   const [selectedPlayerPatrolData, setSelectedPlayerPatrolData] = useState([])
   const [selectedPlayerStats, setSelectedPlayerStats] = useState(null)
   const [selectedPlayerGoogleStats, setSelectedPlayerGoogleStats] = useState(null)
+  const [selectedPlayerBackstory, setSelectedPlayerBackstory] = useState('')
+  const [selectedPlayerShip, setSelectedPlayerShip] = useState('')
   const [isViewingOtherPlayer, setIsViewingOtherPlayer] = useState(false)
   const [selectedPlayerLoading, setSelectedPlayerLoading] = useState(false)
 
@@ -117,6 +119,36 @@ export default function Profile() {
         }
       } catch (error) {
         console.error('Error loading ship from Google Sheets:', error)
+        // Continue with localStorage data if Google Sheets fetch fails
+      }
+      
+      // Also fetch backstory from Google Sheets (authoritative source)
+      try {
+        const backstoryResponse = await fetch('/api/update-backstory', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            discordId: user.id,
+            action: 'get'
+          })
+        })
+
+        const backstoryResult = await backstoryResponse.json()
+        if (backstoryResult.success && backstoryResult.backstory) {
+          console.log('Loaded backstory from Google Sheets:', backstoryResult.backstory.length, 'characters')
+          
+          // Update backstory from Google Sheets if it exists
+          setProfileBio(backstoryResult.backstory)
+          
+          // Update localStorage to keep it in sync
+          const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
+          currentProfile.bio = backstoryResult.backstory
+          localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
+        }
+      } catch (error) {
+        console.error('Error loading backstory from Google Sheets:', error)
         // Continue with localStorage data if Google Sheets fetch fails
       }
     }
@@ -411,6 +443,66 @@ export default function Profile() {
           setSelectedPlayerGoogleStats(null)
         }
         
+        // Fetch selected player's backstory from Google Sheets
+        try {
+          console.log('Fetching backstory for player:', playerDiscordId)
+          const backstoryResponse = await fetch('/api/update-backstory', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              discordId: playerDiscordId,
+              action: 'get'
+            })
+          })
+          
+          if (backstoryResponse.ok) {
+            const backstoryResult = await backstoryResponse.json()
+            if (backstoryResult.success) {
+              setSelectedPlayerBackstory(backstoryResult.backstory || '')
+              console.log('Loaded backstory for selected player:', backstoryResult.backstory?.length || 0, 'characters')
+            }
+          }
+        } catch (error) {
+          console.log('No backstory found for selected player:', error)
+          setSelectedPlayerBackstory('')
+        }
+        
+        // Fetch selected player's ship from Google Sheets
+        try {
+          console.log('Fetching ship for player:', playerDiscordId)
+          const shipResponse = await fetch('/api/update-ship-selection-v2', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              discordId: playerDiscordId,
+              action: 'get'
+            })
+          })
+          
+          if (shipResponse.ok) {
+            const shipResult = await shipResponse.json()
+            if (shipResult.success && shipResult.shipValue) {
+              // Convert ship name to value format for UI consistency
+              let shipValueForUI = shipResult.shipValue
+              const matchedShip = shipRegistry.find(ship => 
+                ship.fullName === shipResult.shipValue || ship.value === shipResult.shipValue
+              )
+              if (matchedShip) {
+                shipValueForUI = matchedShip.value
+              }
+              setSelectedPlayerShip(shipValueForUI)
+              console.log('Loaded ship for selected player:', shipResult.shipValue)
+            }
+          }
+        } catch (error) {
+          console.log('No ship found for selected player:', error)
+          setSelectedPlayerShip('')
+        }
+        
         // Switch to viewing the other player
         setIsViewingOtherPlayer(true)
         
@@ -441,6 +533,8 @@ export default function Profile() {
       setSelectedPlayerPatrolData([])
       setSelectedPlayerStats(null)
       setSelectedPlayerGoogleStats(null)
+      setSelectedPlayerBackstory('')
+      setSelectedPlayerShip('')
       setIsViewingOtherPlayer(false)
       setSelectedPlayerLoading(false)
     }
@@ -523,6 +617,52 @@ export default function Profile() {
             stack: sheetError.stack
           })
           // Don't fail the entire save operation for sheet errors
+        }
+      }
+      
+      // Save backstory to Google Sheets Member Log
+      if (user?.id && profileData.bio !== undefined) {
+        try {
+          console.log('Saving backstory to Google Sheets:', {
+            discordId: user.id,
+            backstoryLength: profileData.bio?.length || 0
+          })
+          
+          const backstoryResponse = await fetch('/api/update-backstory', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              discordId: user.id,
+              backstory: profileData.bio,
+              action: 'update'
+            })
+          })
+
+          if (!backstoryResponse.ok) {
+            console.error('Backstory API request failed:', backstoryResponse.status, backstoryResponse.statusText)
+            const errorText = await backstoryResponse.text()
+            console.error('Backstory error response body:', errorText)
+            throw new Error(`Backstory API request failed: ${backstoryResponse.status} ${backstoryResponse.statusText}`)
+          }
+
+          const backstoryResult = await backstoryResponse.json()
+          console.log('Google Sheets backstory update response:', backstoryResult)
+          
+          if (!backstoryResult.success) {
+            console.warn('Failed to save backstory to Google Sheets:', backstoryResult.message)
+            console.warn('Full backstory error response:', backstoryResult)
+          } else {
+            console.log('Backstory saved to Member Log Column J successfully:', backstoryResult)
+          }
+        } catch (backstoryError) {
+          console.error('Error saving backstory to Google Sheets:', backstoryError)
+          console.error('Backstory error details:', {
+            message: backstoryError.message,
+            stack: backstoryError.stack
+          })
+          // Don't fail the entire save operation for backstory errors
         }
       }
       
@@ -783,13 +923,13 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* Bio Section - Only show for own profile when bio exists */}
-          {!isViewingOtherPlayer && (profileBio || profileShip) && (
+          {/* Bio Section - Show for own profile or other players when backstory exists */}
+          {((isViewingOtherPlayer && (selectedPlayerBackstory || selectedPlayerShip)) || (!isViewingOtherPlayer && (profileBio || profileShip))) && (
             <div 
               className="profile-bio-section"
               style={{
-                backgroundImage: getShipImageUrl(profileShip) 
-                  ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${getShipImageUrl(profileShip)})` 
+                backgroundImage: getShipImageUrl(isViewingOtherPlayer ? selectedPlayerShip : profileShip) 
+                  ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${getShipImageUrl(isViewingOtherPlayer ? selectedPlayerShip : profileShip)})` 
                   : 'none',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -797,19 +937,19 @@ export default function Profile() {
               }}
             >
               <div className="bio-header">
-                <h3>About Me</h3>
+                <h3>Back Story</h3>
               </div>
               <div className="bio-content">
-                {profileBio && (
+                {(isViewingOtherPlayer ? selectedPlayerBackstory : profileBio) && (
                   <div className="bio-text">
-                    <p>{profileBio}</p>
+                    <p>{isViewingOtherPlayer ? selectedPlayerBackstory : profileBio}</p>
                   </div>
                 )}
-                {profileShip && (
+                {(isViewingOtherPlayer ? selectedPlayerShip : profileShip) && (
                   <div className="bio-ship">
                     <span className="ship-label">Primary Ship:</span>
                     <div className="ship-info">
-                      <span className="ship-name">{getShipDisplayName(profileShip)}</span>
+                      <span className="ship-name">{getShipDisplayName(isViewingOtherPlayer ? selectedPlayerShip : profileShip)}</span>
                     </div>
                   </div>
                 )}

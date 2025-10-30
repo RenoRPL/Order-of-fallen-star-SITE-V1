@@ -370,6 +370,85 @@ export class GoogleSheetsWriteService {
       return null
     }
   }
+
+  /**
+   * Update backstory for a user
+   * @param {string} discordId - Discord user ID
+   * @param {string} backstory - User's backstory text
+   * @returns {Promise<boolean>} Success status
+   */
+  async updateBackstory(discordId, backstory) {
+    try {
+      console.log('Starting backstory update:', { discordId, backstoryLength: backstory?.length })
+      
+      if (!this.sheets) {
+        console.log('Initializing Google Sheets service for backstory...')
+        await this.initialize()
+      }
+
+      // Find the user's row
+      console.log('Finding user row for backstory update:', discordId)
+      const rowIndex = await this.findUserRow(discordId)
+      if (!rowIndex) {
+        const error = `Discord user ${discordId} not found in Member Log`
+        console.error(error)
+        throw new Error(error)
+      }
+
+      console.log(`Updating backstory for Discord ID ${discordId} at row ${rowIndex}`)
+      console.log('Update details:', {
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.memberLogSheetName}!J${rowIndex}`,
+        backstoryLength: backstory?.length || 0
+      })
+
+      // Update Column J (Back Story) with the backstory value
+      const updateResult = await this.sheets.spreadsheets.values.update({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.memberLogSheetName}!J${rowIndex}`,
+        valueInputOption: 'RAW',
+        resource: {
+          values: [[backstory || '']]
+        }
+      })
+
+      console.log('Backstory update result:', updateResult.data)
+      return true
+
+    } catch (error) {
+      console.error('Error updating backstory:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get current backstory for a user
+   * @param {string} discordId - Discord user ID
+   * @returns {Promise<string|null>} Backstory text
+   */
+  async getBackstory(discordId) {
+    try {
+      if (!this.sheets) await this.initialize()
+
+      const rowIndex = await this.findUserRow(discordId)
+      if (!rowIndex) {
+        return null
+      }
+
+      // Get backstory data from column J
+      const response = await this.sheets.spreadsheets.values.get({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.memberLogSheetName}!J${rowIndex}:J${rowIndex}`
+      })
+
+      const row = response.data.values?.[0]
+      return row?.[0] || null
+
+    } catch (error) {
+      console.error('Error getting backstory:', error)
+      return null
+    }
+  }
 }
 
 // Create singleton instance

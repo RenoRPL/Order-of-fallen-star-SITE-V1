@@ -78,13 +78,13 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
         <div className="modal-content">
           <div className="form-section">
             <label htmlFor="bio-input" className="form-label">
-              Bio
+              Back Story
             </label>
             <textarea
               id="bio-input"
               value={bio}
               onChange={handleBioChange}
-              placeholder="Tell others about yourself, your role in the organization, your favorite activities in Star Citizen..."
+              placeholder="Tell others about your character's background, your role in the organization, your journey in the 'verse..."
               className="bio-textarea"
               maxLength={700}
               rows={6}
