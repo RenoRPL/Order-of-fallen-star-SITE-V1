@@ -167,23 +167,51 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
 
       // Upload custom ship image if a new file was selected
       if (customShipImageFile) {
-        const uploadedUrl = await uploadImageToImgur(customShipImageFile)
-        if (uploadedUrl) {
-          finalCustomShipImage = uploadedUrl
-        } else {
-          setIsSaving(false)
-          return // Exit if upload failed
+        console.log('Starting image upload for file:', customShipImageFile.name)
+        try {
+          const uploadedUrl = await uploadImageToImgur(customShipImageFile)
+          if (uploadedUrl) {
+            finalCustomShipImage = uploadedUrl
+            console.log('Image upload successful, URL:', uploadedUrl)
+          } else {
+            console.error('Image upload returned null/undefined')
+            const continueWithoutImage = confirm('Failed to upload image. Do you want to save your profile without the custom ship image?')
+            if (!continueWithoutImage) {
+              setIsSaving(false)
+              return // Exit if user doesn't want to continue
+            }
+            // Continue with empty custom image
+            finalCustomShipImage = ''
+          }
+        } catch (uploadError) {
+          console.error('Image upload error:', uploadError)
+          const continueWithoutImage = confirm(`Failed to upload image: ${uploadError.message || 'Unknown error'}. Do you want to save your profile without the custom ship image?`)
+          if (!continueWithoutImage) {
+            setIsSaving(false)
+            return // Exit if user doesn't want to continue
+          }
+          // Continue with empty custom image
+          finalCustomShipImage = ''
         }
       }
+
+      console.log('Saving profile with data:', {
+        bio: bio.trim().length + ' characters',
+        ship: selectedShip,
+        customShipImage: finalCustomShipImage ? 'Custom image provided' : 'No custom image'
+      })
       
       await onSave({
         bio: bio.trim(),
         ship: selectedShip,
         customShipImage: finalCustomShipImage
       })
+      
+      console.log('Profile saved successfully')
       onClose()
     } catch (error) {
       console.error('Error saving profile:', error)
+      alert(`Failed to save profile: ${error.message || 'Unknown error'}`)
     } finally {
       setIsSaving(false)
     }

@@ -73,7 +73,17 @@ exports.handler = async (event, context) => {
     const imgur_client_id = process.env.IMGUR_CLIENT_ID
     if (!imgur_client_id) {
       console.error('Missing IMGUR_CLIENT_ID environment variable')
-      throw new Error('Imgur client ID not configured')
+      return {
+        statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+        body: JSON.stringify({
+          success: false,
+          error: 'Image upload service not configured. Please contact administrator.'
+        })
+      }
     }
 
     const imgurResponse = await fetch('https://api.imgur.com/3/upload', {
