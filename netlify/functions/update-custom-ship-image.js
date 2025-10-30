@@ -24,7 +24,16 @@ export const handler = async (event, context) => {
     const requestBody = JSON.parse(event.body || '{}')
     const { customShipImage, discordId } = requestBody
 
+    console.log('Request received:', {
+      method: event.httpMethod,
+      body: event.body,
+      parsedBody: requestBody,
+      discordId,
+      customShipImage: customShipImage ? 'provided' : 'not provided'
+    })
+
     if (!discordId) {
+      console.error('Missing Discord ID in request')
       return {
         statusCode: 400,
         headers,
@@ -80,12 +89,19 @@ export const handler = async (event, context) => {
           }
         } catch (error) {
           console.error('Error updating custom ship image:', error)
+          console.error('Error details:', {
+            message: error.message,
+            stack: error.stack,
+            discordId,
+            customShipImage: customShipImage ? 'provided' : 'not provided'
+          })
           return {
             statusCode: 500,
             headers,
             body: JSON.stringify({ 
               success: false, 
-              error: 'Failed to update custom ship image' 
+              error: 'Failed to update custom ship image',
+              details: error.message
             })
           }
         }
