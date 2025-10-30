@@ -281,6 +281,72 @@ export class GoogleSheetsWriteService {
       throw error
     }
   }
+
+  /**
+   * Update ship selection for a user in Member Log
+   * @param {string} discordId - Discord user ID
+   * @param {string} shipValue - Ship selection value
+   * @returns {Promise<boolean>} Success status
+   */
+  async updateShipSelection(discordId, shipValue) {
+    try {
+      if (!this.sheets) await this.initialize()
+
+      // Find the user's row
+      const rowIndex = await this.findUserRow(discordId)
+      if (!rowIndex) {
+        throw new Error(`Discord user ${discordId} not found in Member Log`)
+      }
+
+      console.log(`Updating ship selection for Discord ID ${discordId} at row ${rowIndex} to: ${shipValue}`)
+
+      // Update Column S (Ship) with the ship value
+      const updateResult = await this.sheets.spreadsheets.values.update({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.memberLogSheetName}!S${rowIndex}`,
+        valueInputOption: 'RAW',
+        resource: {
+          values: [[shipValue || '']]
+        }
+      })
+
+      console.log('Ship update result:', updateResult.data)
+      return true
+
+    } catch (error) {
+      console.error('Error updating ship selection:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get current ship selection for a user
+   * @param {string} discordId - Discord user ID
+   * @returns {Promise<string|null>} Ship selection value
+   */
+  async getShipSelection(discordId) {
+    try {
+      if (!this.sheets) await this.initialize()
+
+      const rowIndex = await this.findUserRow(discordId)
+      if (!rowIndex) {
+        return null
+      }
+
+      // Get ship data from column S
+      const response = await this.sheets.spreadsheets.values.get({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.memberLogSheetName}!S${rowIndex}:S${rowIndex}`
+      })
+
+      const row = response.data.values?.[0]
+      return row?.[0] || null
+
+    } catch (error) {
+      console.error('Error getting ship selection:', error)
+      return null
+    }
+  }
 }
 
 // Create singleton instance

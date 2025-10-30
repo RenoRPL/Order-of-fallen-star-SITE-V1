@@ -52,9 +52,12 @@ export default function Profile() {
   const currentPatrolStats = isViewingOtherPlayer && selectedPlayerStats ? selectedPlayerStats : patrolStats
   const currentGoogleStats = isViewingOtherPlayer && selectedPlayerGoogleStats ? selectedPlayerGoogleStats : googleStats
 
-  // Load profile data from localStorage
+  // Load profile data from localStorage and Google Sheets
   useEffect(() => {
-    if (user?.id) {
+    const loadProfileData = async () => {
+      if (!user?.id) return
+
+      // Load from localStorage first (for immediate display)
       const savedProfile = localStorage.getItem(`profile_${user.id}`)
       if (savedProfile) {
         try {
@@ -62,10 +65,40 @@ export default function Profile() {
           setProfileBio(bio || '')
           setProfileShip(ship || '')
         } catch (error) {
-          console.error('Error loading profile data:', error)
+          console.error('Error loading profile data from localStorage:', error)
         }
       }
+
+      // Also fetch ship selection from Google Sheets (authoritative source)
+      try {
+        const response = await fetch('/api/update-ship-selection', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            discordId: user.id,
+            action: 'get'
+          })
+        })
+
+        const result = await response.json()
+        if (result.success && result.shipValue) {
+          // Update ship from Google Sheets if it exists
+          setProfileShip(result.shipValue)
+          
+          // Update localStorage to keep it in sync
+          const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
+          currentProfile.ship = result.shipValue
+          localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
+        }
+      } catch (error) {
+        console.error('Error loading ship from Google Sheets:', error)
+        // Continue with localStorage data if Google Sheets fetch fails
+      }
     }
+
+    loadProfileData()
   }, [user?.id])
 
   // Load ship registry for display names
@@ -375,12 +408,39 @@ export default function Profile() {
 
   const handleSaveProfile = async (profileData) => {
     try {
-      // Save to localStorage (can be moved to backend later)
+      // Save to localStorage (for immediate UI update)
       localStorage.setItem(`profile_${user.id}`, JSON.stringify(profileData))
       
       // Update local state
       setProfileBio(profileData.bio)
       setProfileShip(profileData.ship)
+      
+      // Save ship selection to Google Sheets Member Log
+      if (user?.id && profileData.ship !== undefined) {
+        try {
+          const response = await fetch('/api/update-ship-selection', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              discordId: user.id,
+              shipValue: profileData.ship,
+              action: 'update'
+            })
+          })
+
+          const result = await response.json()
+          if (!result.success) {
+            console.warn('Failed to save ship to Google Sheets:', result.message)
+          } else {
+            console.log('Ship selection saved to Member Log successfully')
+          }
+        } catch (sheetError) {
+          console.error('Error saving ship to Google Sheets:', sheetError)
+          // Don't fail the entire save operation for sheet errors
+        }
+      }
       
       // Show success notification
       setNotification({
