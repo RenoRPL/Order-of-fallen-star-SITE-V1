@@ -88,22 +88,58 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
     try {
       setIsUploadingImage(true)
       
-      // We'll create this API endpoint next
-      const formData = new FormData()
-      formData.append('image', file)
+      // Convert file to base64
+      const reader = new FileReader()
       
-      const response = await fetch('/api/upload-image', {
-        method: 'POST',
-        body: formData
+      return new Promise((resolve, reject) => {
+        reader.onload = async (e) => {
+          try {
+            const base64Data = e.target.result
+            
+            console.log('Uploading image to Imgur...', {
+              fileType: file.type,
+              fileSize: file.size,
+              fileName: file.name
+            })
+            
+            const response = await fetch('/api/upload-image', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                imageData: base64Data,
+                contentType: file.type
+              })
+            })
+            
+            const result = await response.json()
+            console.log('Upload response:', result)
+            
+            if (result.success) {
+              console.log('Image uploaded successfully:', result.url)
+              resolve(result.url)
+            } else {
+              console.error('Upload failed:', result.error)
+              alert(result.error || 'Upload failed')
+              reject(new Error(result.error || 'Upload failed'))
+            }
+          } catch (error) {
+            console.error('Error during upload:', error)
+            alert('Failed to upload image. Please try again.')
+            reject(error)
+          }
+        }
+        
+        reader.onerror = () => {
+          const error = new Error('Failed to read file')
+          console.error('File reader error:', error)
+          alert('Failed to read file. Please try again.')
+          reject(error)
+        }
+        
+        reader.readAsDataURL(file)
       })
-      
-      const result = await response.json()
-      
-      if (result.success) {
-        return result.url
-      } else {
-        throw new Error(result.error || 'Upload failed')
-      }
     } catch (error) {
       console.error('Error uploading image:', error)
       alert('Failed to upload image. Please try again.')
