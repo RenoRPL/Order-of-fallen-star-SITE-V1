@@ -449,6 +449,85 @@ export class GoogleSheetsWriteService {
       return null
     }
   }
+
+  /**
+   * Update custom ship image URL for a user
+   * @param {string} discordId - Discord user ID
+   * @param {string} imageUrl - Custom ship image URL
+   * @returns {Promise<boolean>} Success status
+   */
+  async updateCustomShipImage(discordId, imageUrl) {
+    try {
+      console.log('Starting custom ship image update:', { discordId, imageUrl })
+      
+      if (!this.sheets) {
+        console.log('Initializing Google Sheets service for custom ship image...')
+        await this.initialize()
+      }
+
+      // Find the user's row
+      console.log('Finding user row for custom ship image update:', discordId)
+      const rowIndex = await this.findUserRow(discordId)
+      if (!rowIndex) {
+        const error = `Discord user ${discordId} not found in Member Log`
+        console.error(error)
+        throw new Error(error)
+      }
+
+      console.log(`Updating custom ship image for Discord ID ${discordId} at row ${rowIndex}`)
+      console.log('Update details:', {
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.memberLogSheetName}!T${rowIndex}`,
+        value: imageUrl
+      })
+
+      // Update Column T (Custom Ship Image) with the image URL
+      const updateResult = await this.sheets.spreadsheets.values.update({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.memberLogSheetName}!T${rowIndex}`,
+        valueInputOption: 'RAW',
+        resource: {
+          values: [[imageUrl || '']]
+        }
+      })
+
+      console.log('Custom ship image update result:', updateResult.data)
+      return true
+
+    } catch (error) {
+      console.error('Error updating custom ship image:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Get current custom ship image URL for a user
+   * @param {string} discordId - Discord user ID
+   * @returns {Promise<string|null>} Custom ship image URL
+   */
+  async getCustomShipImage(discordId) {
+    try {
+      if (!this.sheets) await this.initialize()
+
+      const rowIndex = await this.findUserRow(discordId)
+      if (!rowIndex) {
+        return null
+      }
+
+      // Get custom ship image data from column T
+      const response = await this.sheets.spreadsheets.values.get({
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.memberLogSheetName}!T${rowIndex}:T${rowIndex}`
+      })
+
+      const row = response.data.values?.[0]
+      return row?.[0] || null
+
+    } catch (error) {
+      console.error('Error getting custom ship image:', error)
+      return null
+    }
+  }
 }
 
 // Create singleton instance

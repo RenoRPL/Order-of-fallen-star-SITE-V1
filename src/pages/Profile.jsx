@@ -46,6 +46,8 @@ export default function Profile() {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false)
   const [profileBio, setProfileBio] = useState('')
   const [profileShip, setProfileShip] = useState('')
+  const [profileCustomShipImage, setProfileCustomShipImage] = useState('')
+  const [selectedPlayerCustomShipImage, setSelectedPlayerCustomShipImage] = useState('')
   const [shipRegistry, setShipRegistry] = useState([])
 
   // Get current displayed data (either logged-in user or selected player)
@@ -149,6 +151,33 @@ export default function Profile() {
         }
       } catch (error) {
         console.error('Error loading backstory from Google Sheets:', error)
+        // Continue with localStorage data if Google Sheets fetch fails
+      }
+
+      // Also fetch custom ship image from Google Sheets
+      try {
+        const customShipImageResponse = await fetch('/api/update-custom-ship-image', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        })
+
+        const customShipImageResult = await customShipImageResponse.json()
+        if (customShipImageResult.success && customShipImageResult.customShipImage) {
+          console.log('Loaded custom ship image from Google Sheets:', customShipImageResult.customShipImage)
+          
+          // Update custom ship image from Google Sheets if it exists
+          setProfileCustomShipImage(customShipImageResult.customShipImage)
+          
+          // Update localStorage to keep it in sync
+          const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
+          currentProfile.customShipImage = customShipImageResult.customShipImage
+          localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
+        }
+      } catch (error) {
+        console.error('Error loading custom ship image from Google Sheets:', error)
         // Continue with localStorage data if Google Sheets fetch fails
       }
     }
@@ -519,6 +548,36 @@ export default function Profile() {
           setSelectedPlayerShip('')
         }
         
+        // Fetch selected player's custom ship image from Google Sheets
+        try {
+          console.log('Fetching custom ship image for player:', playerDiscordId)
+          
+          // We need to get a token for this request or handle it differently
+          // For now, let's use a separate endpoint that doesn't require auth for viewing other players
+          const customShipImageResponse = await fetch('/api/get-custom-ship-image', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              discordId: playerDiscordId
+            })
+          })
+          
+          if (customShipImageResponse.ok) {
+            const customShipImageResult = await customShipImageResponse.json()
+            if (customShipImageResult.success && customShipImageResult.customShipImage) {
+              setSelectedPlayerCustomShipImage(customShipImageResult.customShipImage)
+              console.log('Loaded custom ship image for selected player:', customShipImageResult.customShipImage)
+            } else {
+              setSelectedPlayerCustomShipImage('')
+            }
+          }
+        } catch (error) {
+          console.log('No custom ship image found for selected player:', error)
+          setSelectedPlayerCustomShipImage('')
+        }
+        
         // Switch to viewing the other player
         setIsViewingOtherPlayer(true)
         
@@ -577,6 +636,7 @@ export default function Profile() {
       // Update local state
       setProfileBio(profileData.bio)
       setProfileShip(profileData.ship)
+      setProfileCustomShipImage(profileData.customShipImage || '')
       
       // Save ship selection to Google Sheets Member Log
       if (user?.id && profileData.ship !== undefined) {
@@ -679,6 +739,52 @@ export default function Profile() {
             stack: backstoryError.stack
           })
           // Don't fail the entire save operation for backstory errors
+        }
+      }
+      
+      // Save custom ship image to Google Sheets Member Log
+      if (user?.id && profileData.customShipImage !== undefined) {
+        try {
+          console.log('Saving custom ship image to Google Sheets:', {
+            discordId: user.id,
+            customShipImage: profileData.customShipImage
+          })
+          
+          const token = localStorage.getItem('auth_token')
+          const customShipImageResponse = await fetch('/api/update-custom-ship-image', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              customShipImage: profileData.customShipImage
+            })
+          })
+
+          if (!customShipImageResponse.ok) {
+            console.error('Custom ship image API request failed:', customShipImageResponse.status, customShipImageResponse.statusText)
+            const errorText = await customShipImageResponse.text()
+            console.error('Custom ship image error response body:', errorText)
+            throw new Error(`Custom ship image API request failed: ${customShipImageResponse.status} ${customShipImageResponse.statusText}`)
+          }
+
+          const customShipImageResult = await customShipImageResponse.json()
+          console.log('Google Sheets custom ship image update response:', customShipImageResult)
+          
+          if (!customShipImageResult.success) {
+            console.warn('Failed to save custom ship image to Google Sheets:', customShipImageResult.message)
+            console.warn('Full custom ship image error response:', customShipImageResult)
+          } else {
+            console.log('Custom ship image saved to Member Log Column T successfully:', customShipImageResult)
+          }
+        } catch (customShipImageError) {
+          console.error('Error saving custom ship image to Google Sheets:', customShipImageError)
+          console.error('Custom ship image error details:', {
+            message: customShipImageError.message,
+            stack: customShipImageError.stack
+          })
+          // Don't fail the entire save operation for custom ship image errors
         }
       }
       
@@ -791,6 +897,17 @@ export default function Profile() {
     }
     
     return null
+  }
+
+  // Get ship background image, prioritizing custom images over registry images
+  const getShipBackgroundUrl = (shipValue, customShipImage) => {
+    // Prioritize custom ship image if available
+    if (customShipImage && customShipImage.trim() !== '') {
+      return customShipImage
+    }
+    
+    // Fallback to registry ship image
+    return getShipImageUrl(shipValue)
   }
 
   const formatJoinDate = (timestamp) => {
@@ -980,8 +1097,14 @@ export default function Profile() {
             <div 
               className="profile-bio-section"
               style={{
-                backgroundImage: getShipImageUrl(isViewingOtherPlayer ? selectedPlayerShip : profileShip) 
-                  ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${getShipImageUrl(isViewingOtherPlayer ? selectedPlayerShip : profileShip)})` 
+                backgroundImage: getShipBackgroundUrl(
+                  isViewingOtherPlayer ? selectedPlayerShip : profileShip,
+                  isViewingOtherPlayer ? selectedPlayerCustomShipImage : profileCustomShipImage
+                ) 
+                  ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${getShipBackgroundUrl(
+                      isViewingOtherPlayer ? selectedPlayerShip : profileShip,
+                      isViewingOtherPlayer ? selectedPlayerCustomShipImage : profileCustomShipImage
+                    )})` 
                   : 'none',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -1124,6 +1247,7 @@ export default function Profile() {
         onSave={handleSaveProfile}
         currentBio={profileBio}
         currentShip={profileShip}
+        currentCustomShipImage={profileCustomShipImage}
       />
 
       <Footer />

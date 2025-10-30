@@ -240,3 +240,97 @@
     width: 100%;
   }
 }
+
+/* Custom Ship Image Upload Styles */
+.custom-image-upload {
+  margin-top: 8px;
+}
+
+.image-upload-input {
+  display: none;
+}
+
+.upload-area {
+  display: block;
+  width: 100%;
+  min-height: 120px;
+  border: 2px dashed rgba(14, 165, 233, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(30, 41, 59, 0.3);
+}
+
+.upload-area:hover {
+  border-color: rgba(14, 165, 233, 0.6);
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  height: 100%;
+}
+
+.upload-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.upload-text {
+  color: #e2e8f0;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.upload-note {
+  color: #94a3b8;
+  font-family: 'Orbitron', monospace;
+  font-size: 12px;
+}
+
+.image-preview {
+  position: relative;
+  display: inline-block;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.preview-image {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  display: block;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'Orbitron', monospace;
+  transition: background-color 0.3s ease;
+}
+
+.remove-image-btn:hover {
+  background: rgba(239, 68, 68, 1);
+}
+
+.remove-image-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

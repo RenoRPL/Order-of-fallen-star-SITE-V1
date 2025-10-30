@@ -3,9 +3,13 @@ import OFSDataService from '../services/ofsDataService'
 import RichTextEditor from './RichTextEditor'
 import './EditProfileModal.css'
 
-export default function EditProfileModal({ isOpen, onClose, onSave, currentBio = '', currentShip = '' }) {
+export default function EditProfileModal({ isOpen, onClose, onSave, currentBio = '', currentShip = '', currentCustomShipImage = '' }) {
   const [bio, setBio] = useState(currentBio)
   const [selectedShip, setSelectedShip] = useState(currentShip)
+  const [customShipImage, setCustomShipImage] = useState(currentCustomShipImage)
+  const [customShipImageFile, setCustomShipImageFile] = useState(null)
+  const [customShipImagePreview, setCustomShipImagePreview] = useState(currentCustomShipImage)
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [ships, setShips] = useState([])
   const [shipsLoading, setShipsLoading] = useState(false)
@@ -35,8 +39,79 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
       console.log('Modal opened with currentBio:', currentBio)
       setBio(currentBio)
       setSelectedShip(currentShip)
+      setCustomShipImage(currentCustomShipImage)
+      setCustomShipImagePreview(currentCustomShipImage)
+      setCustomShipImageFile(null)
     }
-  }, [isOpen, currentBio, currentShip])
+  }, [isOpen, currentBio, currentShip, currentCustomShipImage])
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0]
+    if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
+      if (!validTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPG, PNG, or GIF)')
+        return
+      }
+
+      // Validate file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024 // 5MB in bytes
+      if (file.size > maxSize) {
+        alert('Image file is too large. Please select an image smaller than 5MB.')
+        return
+      }
+
+      setCustomShipImageFile(file)
+      
+      // Create preview URL
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setCustomShipImagePreview(e.target.result)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleRemoveCustomImage = () => {
+    setCustomShipImageFile(null)
+    setCustomShipImagePreview('')
+    setCustomShipImage('')
+    // Reset file input
+    const fileInput = document.getElementById('custom-ship-image')
+    if (fileInput) {
+      fileInput.value = ''
+    }
+  }
+
+  const uploadImageToImgur = async (file) => {
+    try {
+      setIsUploadingImage(true)
+      
+      // We'll create this API endpoint next
+      const formData = new FormData()
+      formData.append('image', file)
+      
+      const response = await fetch('/api/upload-image', {
+        method: 'POST',
+        body: formData
+      })
+      
+      const result = await response.json()
+      
+      if (result.success) {
+        return result.url
+      } else {
+        throw new Error(result.error || 'Upload failed')
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      alert('Failed to upload image. Please try again.')
+      return null
+    } finally {
+      setIsUploadingImage(false)
+    }
+  }
 
   const handleSave = async () => {
     setIsSaving(true)
@@ -51,10 +126,24 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
         setIsSaving(false)
         return
       }
+
+      let finalCustomShipImage = customShipImage
+
+      // Upload custom ship image if a new file was selected
+      if (customShipImageFile) {
+        const uploadedUrl = await uploadImageToImgur(customShipImageFile)
+        if (uploadedUrl) {
+          finalCustomShipImage = uploadedUrl
+        } else {
+          setIsSaving(false)
+          return // Exit if upload failed
+        }
+      }
       
       await onSave({
         bio: bio.trim(),
-        ship: selectedShip
+        ship: selectedShip,
+        customShipImage: finalCustomShipImage
       })
       onClose()
     } catch (error) {
@@ -120,6 +209,57 @@ Use the toolbar above to format your text with different sizes, bold, underline,
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Custom Ship Image Upload */}
+          <div className="form-section">
+            <label htmlFor="custom-ship-image" className="form-label">
+              Custom Ship Image (Optional)
+              <span className="form-note">Upload your own ship image to use as background</span>
+            </label>
+            
+            <div className="custom-image-upload">
+              <input
+                type="file"
+                id="custom-ship-image"
+                accept="image/jpeg,image/jpg,image/png,image/gif"
+                onChange={handleImageUpload}
+                className="image-upload-input"
+                disabled={isUploadingImage || isSaving}
+              />
+              
+              {customShipImagePreview && (
+                <div className="image-preview">
+                  <img 
+                    src={customShipImagePreview} 
+                    alt="Custom ship preview" 
+                    className="preview-image"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleRemoveCustomImage}
+                    className="remove-image-btn"
+                    disabled={isUploadingImage || isSaving}
+                  >
+                    ✕ Remove
+                  </button>
+                </div>
+              )}
+              
+              {!customShipImagePreview && (
+                <label htmlFor="custom-ship-image" className="upload-area">
+                  <div className="upload-content">
+                    <span className="upload-icon">📁</span>
+                    <span className="upload-text">
+                      Click to select an image or drag and drop
+                    </span>
+                    <span className="upload-note">
+                      Supports JPG, PNG, GIF up to 5MB
+                    </span>
+                  </div>
+                </label>
+              )}
+            </div>
           </div>
         </div>
 
