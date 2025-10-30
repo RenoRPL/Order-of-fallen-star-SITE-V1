@@ -130,14 +130,24 @@ export class GoogleSheetsWriteService {
       })
 
       const values = response.data.values || []
+      console.log('Member Log Column A data:', {
+        totalRows: values.length,
+        firstFewRows: values.slice(0, 5).map((row, index) => ({ 
+          rowIndex: index + 1, 
+          discordId: row[0] 
+        })),
+        searchingFor: discordId
+      })
       
       // Find the row with matching Discord ID
       for (let i = 0; i < values.length; i++) {
         if (values[i][0] && values[i][0].toString() === discordId.toString()) {
+          console.log(`Found user ${discordId} at row ${i + 1}`)
           return i + 1 // Return 1-based row index
         }
       }
 
+      console.log(`User ${discordId} not found in Member Log`)
       return null // User not found
     } catch (error) {
       console.error('Error finding user row:', error)
@@ -290,15 +300,28 @@ export class GoogleSheetsWriteService {
    */
   async updateShipSelection(discordId, shipValue) {
     try {
-      if (!this.sheets) await this.initialize()
+      console.log('Starting ship selection update:', { discordId, shipValue })
+      
+      if (!this.sheets) {
+        console.log('Initializing Google Sheets service...')
+        await this.initialize()
+      }
 
       // Find the user's row
+      console.log('Finding user row for Discord ID:', discordId)
       const rowIndex = await this.findUserRow(discordId)
       if (!rowIndex) {
-        throw new Error(`Discord user ${discordId} not found in Member Log`)
+        const error = `Discord user ${discordId} not found in Member Log`
+        console.error(error)
+        throw new Error(error)
       }
 
       console.log(`Updating ship selection for Discord ID ${discordId} at row ${rowIndex} to: ${shipValue}`)
+      console.log('Update details:', {
+        spreadsheetId: this.spreadsheetId,
+        range: `${this.memberLogSheetName}!S${rowIndex}`,
+        value: shipValue
+      })
 
       // Update Column S (Ship) with the ship value
       const updateResult = await this.sheets.spreadsheets.values.update({

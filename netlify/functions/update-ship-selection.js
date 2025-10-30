@@ -48,6 +48,12 @@ export const handler = async (event, context) => {
     }
 
     console.log(`Ship ${action} request for Discord ID: ${discordId}, Ship: ${shipValue}`)
+    console.log('Environment variables check:', {
+      hasProjectId: !!process.env.GOOGLE_SHEETS_PROJECT_ID,
+      hasClientEmail: !!process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
+      hasPrivateKey: !!process.env.GOOGLE_SHEETS_PRIVATE_KEY,
+      hasSpreadsheetId: !!process.env.GOOGLE_SPREADSHEET_ID
+    })
 
     // Initialize Google Sheets service
     const writeService = new GoogleSheetsWriteService()

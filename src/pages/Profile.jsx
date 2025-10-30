@@ -431,8 +431,19 @@ export default function Profile() {
       if (user?.id && profileData.ship !== undefined) {
         try {
           // Find the ship in the registry to get the full name
+          console.log('Saving ship selection:', {
+            selectedShipValue: profileData.ship,
+            shipRegistryLength: shipRegistry.length,
+            shipRegistry: shipRegistry.slice(0, 3) // Log first 3 ships for debugging
+          })
+          
           const selectedShip = shipRegistry.find(ship => ship.value === profileData.ship)
           const shipNameToSave = selectedShip ? selectedShip.fullName : profileData.ship
+          
+          console.log('Ship to save to Google Sheets:', {
+            selectedShip,
+            shipNameToSave
+          })
           
           const response = await fetch('/api/update-ship-selection', {
             method: 'POST',
@@ -447,13 +458,20 @@ export default function Profile() {
           })
 
           const result = await response.json()
+          console.log('Google Sheets update response:', result)
+          
           if (!result.success) {
             console.warn('Failed to save ship to Google Sheets:', result.message)
+            console.warn('Full error response:', result)
           } else {
-            console.log('Ship selection saved to Member Log successfully')
+            console.log('Ship selection saved to Member Log successfully:', result)
           }
         } catch (sheetError) {
           console.error('Error saving ship to Google Sheets:', sheetError)
+          console.error('Error details:', {
+            message: sheetError.message,
+            stack: sheetError.stack
+          })
           // Don't fail the entire save operation for sheet errors
         }
       }
