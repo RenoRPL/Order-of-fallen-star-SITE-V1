@@ -75,17 +75,41 @@ export const handler = async (event, context) => {
         // Update custom ship image
         try {
           if (customShipImage !== undefined) {
-            await googleSheetsWriteService.updateCustomShipImage(discordId, customShipImage)
-            console.log('Custom ship image updated successfully for Discord ID:', discordId)
-          }
-
-          return {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({
-              success: true,
-              message: 'Custom ship image updated successfully'
-            })
+            // Check if it's a base64 data URL and if it's too large for Google Sheets
+            if (customShipImage.startsWith('data:image/') && customShipImage.length > 45000) {
+              console.log('Base64 image too large for Google Sheets:', customShipImage.length, 'characters')
+              console.log('Storing placeholder instead of full base64 data')
+              
+              // Store a placeholder indicating the image is stored locally
+              const placeholder = `LOCAL_BASE64_IMAGE_${discordId}_${Date.now()}`
+              await googleSheetsWriteService.updateCustomShipImage(discordId, placeholder)
+              console.log('Placeholder saved for large base64 image:', placeholder)
+              
+              return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                  success: true,
+                  message: 'Custom ship image saved locally (too large for Google Sheets)',
+                  imageUrl: customShipImage,
+                  storedAs: 'local'
+                })
+              }
+            } else {
+              // Normal case - image URL or small base64
+              await googleSheetsWriteService.updateCustomShipImage(discordId, customShipImage)
+              console.log('Custom ship image updated successfully for Discord ID:', discordId)
+              
+              return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                  success: true,
+                  message: 'Custom ship image updated successfully',
+                  storedAs: 'sheets'
+                })
+              }
+            }
           }
         } catch (error) {
           console.error('Error updating custom ship image:', error)
