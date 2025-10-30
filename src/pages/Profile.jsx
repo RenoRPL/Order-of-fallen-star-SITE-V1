@@ -211,6 +211,14 @@ export default function Profile() {
       try {
         // Fetch member data
         const member = await OFSDataService.getMemberData(user.id)
+        console.log('Fetched member data:', member)
+        console.log('Member data keys:', member ? Object.keys(member) : 'No member data')
+        
+        if (member) {
+          console.log('Rank field:', member.Rank)
+          console.log('Role field:', member.Role)
+          console.log('Role Path field:', member['Role Path'])
+        }
         
         console.log('Fetched member data:', member) // Debug log
         
@@ -421,6 +429,14 @@ export default function Profile() {
         
         // Set the selected player data (this is already from getMemberData)
         setSelectedPlayerData(player)
+        console.log('Selected player data:', player)
+        console.log('Selected player data keys:', player ? Object.keys(player) : 'No player data')
+        
+        if (player) {
+          console.log('Selected player Rank field:', player.Rank)
+          console.log('Selected player Role field:', player.Role)
+          console.log('Selected player Role Path field:', player['Role Path'])
+        }
         
         // Fetch selected player's Google Sheets stats
         try {

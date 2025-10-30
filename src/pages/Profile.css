@@ -1861,6 +1861,34 @@
 
 .bio-text {
   line-height: 1.6;
+  max-height: 60vh; /* Limit height to 60% of viewport height */
+  overflow-y: auto; /* Add vertical scroll bar when content overflows */
+  padding-right: 8px; /* Add padding for scroll bar */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.bio-text:hover {
+  background-color: rgba(0, 0, 0, 0.2); /* Darken background slightly on hover */
+}
+
+/* Custom scroll bar styling for bio text */
+.bio-text::-webkit-scrollbar {
+  width: 8px;
+}
+
+.bio-text::-webkit-scrollbar-track {
+  background: rgba(71, 85, 105, 0.2);
+  border-radius: 4px;
+}
+
+.bio-text::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.6);
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.bio-text::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.8);
 }
 
 .bio-text p {
