@@ -36,7 +36,7 @@ exports.handler = async (event, context) => {
 
     // Check image size (base64 is ~33% larger than original)
     const imageSizeBytes = (imageData.length * 3) / 4;
-    const maxSizeBytes = 1024 * 1024; // 1MB limit for Google Sheets
+    const maxSizeBytes = 2 * 1024 * 1024; // 2MB limit for Google Sheets
 
     if (imageSizeBytes > maxSizeBytes) {
       return {
@@ -44,7 +44,7 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({ 
           error: 'Image too large',
-          message: 'Please use an image smaller than 1MB when using direct storage'
+          message: 'Please use an image smaller than 2MB when using direct storage'
         })
       };
     }

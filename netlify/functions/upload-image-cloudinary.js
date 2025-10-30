@@ -62,40 +62,62 @@ exports.handler = async (event, context) => {
     // Create form data for Cloudinary upload
     const formData = new URLSearchParams();
     formData.append('file', `data:image/jpeg;base64,${base64Data}`);
-    formData.append('upload_preset', 'ml_default'); // You'll need to create this preset in Cloudinary
     
-    // Upload to Cloudinary
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-      method: 'POST',
-      body: formData
-    });
+    // Try multiple preset names in case the user named it differently
+    const presetNames = ['ml_default', 'unsigned', 'default', 'upload'];
+    let lastPresetError = null;
+    
+    for (const presetName of presetNames) {
+      try {
+        const tempFormData = new URLSearchParams();
+        tempFormData.append('file', `data:image/jpeg;base64,${base64Data}`);
+        tempFormData.append('upload_preset', presetName);
+        
+        console.log(`Trying Cloudinary preset: ${presetName}`);
+        
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+          method: 'POST',
+          body: tempFormData
+        });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Cloudinary upload failed:', response.status, errorText);
-      return {
-        statusCode: response.status,
-        headers,
-        body: JSON.stringify({ 
-          error: 'Upload failed',
-          details: errorText
-        })
-      };
+        if (response.ok) {
+          const result = await response.json();
+          console.log(`Cloudinary upload successful with preset: ${presetName}`);
+          
+          return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({
+              success: true,
+              imageUrl: result.secure_url,
+              deleteHash: result.public_id,
+              service: 'cloudinary',
+              preset: presetName
+            })
+          };
+        } else {
+          const errorText = await response.text();
+          lastPresetError = errorText;
+          console.warn(`Preset ${presetName} failed:`, errorText);
+          continue;
+        }
+      } catch (error) {
+        lastPresetError = error.message;
+        console.warn(`Preset ${presetName} error:`, error);
+        continue;
+      }
     }
-
-    const result = await response.json();
     
+    // All presets failed
+    console.error('All Cloudinary presets failed. Last error:', lastPresetError);
     return {
-      statusCode: 200,
+      statusCode: 400,
       headers,
-      body: JSON.stringify({
-        success: true,
-        imageUrl: result.secure_url,
-        deleteHash: result.public_id, // Can be used to delete the image later
-        service: 'cloudinary'
+      body: JSON.stringify({ 
+        error: 'Upload failed',
+        details: `All presets failed. Last error: ${lastPresetError}. Please create an unsigned upload preset in Cloudinary settings.`
       })
     };
-
   } catch (error) {
     console.error('Error uploading to Cloudinary:', error);
     return {
