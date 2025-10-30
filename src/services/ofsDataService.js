@@ -306,7 +306,7 @@ class OFSDataService {
       
       shipData.forEach(ship => {
         const model = ship['Ship Model'] || ship.A || ''
-        const make = ship['Ship Make'] || ship.B || ''
+        const make = ship['Make'] || ship['Ship Make'] || ship.B || ''
         const imageUrl = ship['Image URL'] || ship.C || ''
         
         if (model.trim() !== '' && make.trim() !== '') {
@@ -329,11 +329,59 @@ class OFSDataService {
       })
       
       console.log('Loaded ships from registry:', ships.length)
+      
+      // If no ships loaded from registry, provide fallback ships
+      if (ships.length === 0) {
+        console.warn('No ships loaded from registry, using fallback ships')
+        return this.getFallbackShips()
+      }
+      
       return ships
     } catch (error) {
       console.error('Error fetching Ship Registry data:', error)
-      return []
+      console.log('Using fallback ships due to error')
+      return this.getFallbackShips()
     }
+  }
+
+  static getFallbackShips() {
+    return [
+      { model: 'Avenger Titan', make: 'Aegis', imageUrl: '', fullName: 'Aegis Avenger Titan', value: 'aegis-avenger-titan' },
+      { model: 'Gladius', make: 'Aegis', imageUrl: '', fullName: 'Aegis Gladius', value: 'aegis-gladius' },
+      { model: 'Sabre', make: 'Aegis', imageUrl: '', fullName: 'Aegis Sabre', value: 'aegis-sabre' },
+      { model: 'Vanguard Warden', make: 'Aegis', imageUrl: '', fullName: 'Aegis Vanguard Warden', value: 'aegis-vanguard-warden' },
+      { model: 'Arrow', make: 'Anvil', imageUrl: '', fullName: 'Anvil Arrow', value: 'anvil-arrow' },
+      { model: 'F7C Hornet', make: 'Anvil', imageUrl: '', fullName: 'Anvil F7C Hornet', value: 'anvil-f7c-hornet' },
+      { model: 'Hawk', make: 'Anvil', imageUrl: '', fullName: 'Anvil Hawk', value: 'anvil-hawk' },
+      { model: 'Hurricane', make: 'Anvil', imageUrl: '', fullName: 'Anvil Hurricane', value: 'anvil-hurricane' },
+      { model: 'Terrapin', make: 'Anvil', imageUrl: '', fullName: 'Anvil Terrapin', value: 'anvil-terrapin' },
+      { model: 'MPUV Cargo', make: 'Argo', imageUrl: '', fullName: 'Argo MPUV Cargo', value: 'argo-cargo' },
+      { model: 'Mercury Star Runner', make: 'Crusader', imageUrl: '', fullName: 'Crusader Mercury Star Runner', value: 'crusader-mercury-star-runner' },
+      { model: 'Nomad', make: 'Crusader', imageUrl: '', fullName: 'Crusader Nomad', value: 'crusader-nomad' },
+      { model: 'Buccaneer', make: 'Drake', imageUrl: '', fullName: 'Drake Buccaneer', value: 'drake-buccaneer' },
+      { model: 'Caterpillar', make: 'Drake', imageUrl: '', fullName: 'Drake Caterpillar', value: 'drake-caterpillar' },
+      { model: 'Cutlass Black', make: 'Drake', imageUrl: '', fullName: 'Drake Cutlass Black', value: 'drake-cutlass-black' },
+      { model: 'Herald', make: 'Drake', imageUrl: '', fullName: 'Drake Herald', value: 'drake-herald' },
+      { model: '300i', make: 'Origin', imageUrl: '', fullName: 'Origin 300i', value: 'origin-300i' },
+      { model: '325a', make: 'Origin', imageUrl: '', fullName: 'Origin 325a', value: 'origin-325a' },
+      { model: '350r', make: 'Origin', imageUrl: '', fullName: 'Origin 350r', value: 'origin-350r' },
+      { model: '600i', make: 'Origin', imageUrl: '', fullName: 'Origin 600i', value: 'origin-600i' },
+      { model: '890 Jump', make: 'Origin', imageUrl: '', fullName: 'Origin 890 Jump', value: 'origin-890-jump' },
+      { model: 'Aurora MR', make: 'RSI', imageUrl: '', fullName: 'RSI Aurora MR', value: 'rsi-aurora-mr' },
+      { model: 'Constellation Andromeda', make: 'RSI', imageUrl: '', fullName: 'RSI Constellation Andromeda', value: 'rsi-constellation-andromeda' },
+      { model: 'Mantis', make: 'RSI', imageUrl: '', fullName: 'RSI Mantis', value: 'rsi-mantis' },
+      { model: 'Freelancer', make: 'MISC', imageUrl: '', fullName: 'MISC Freelancer', value: 'misc-freelancer' },
+      { model: 'Prospector', make: 'MISC', imageUrl: '', fullName: 'MISC Prospector', value: 'misc-prospector' },
+      { model: 'Starfarer', make: 'MISC', imageUrl: '', fullName: 'MISC Starfarer', value: 'misc-starfarer' },
+      { model: 'Defender', make: 'Banu', imageUrl: '', fullName: 'Banu Defender', value: 'banu-defender' },
+      { model: 'Prowler', make: 'Esperia', imageUrl: '', fullName: 'Esperia Prowler', value: 'esperia-prowler' },
+      { model: 'Scythe', make: 'Vanduul', imageUrl: '', fullName: 'Vanduul Scythe', value: 'vanduul-scythe' }
+    ].sort((a, b) => {
+      if (a.make !== b.make) {
+        return a.make.localeCompare(b.make)
+      }
+      return a.model.localeCompare(b.model)
+    })
   }
 }
 
