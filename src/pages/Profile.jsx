@@ -71,7 +71,7 @@ export default function Profile() {
 
       // Also fetch ship selection from Google Sheets (authoritative source)
       try {
-        const response = await fetch('/api/update-ship-selection', {
+        const response = await fetch('/api/update-ship-selection-v2', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -88,12 +88,23 @@ export default function Profile() {
           const shipFromSheets = result.shipValue
           let shipValueForUI = shipFromSheets
           
+          console.log('Ship from Google Sheets:', shipFromSheets)
+          console.log('Ship registry length:', shipRegistry.length)
+          
           // If it's a full name, find the corresponding value
           const matchedShip = shipRegistry.find(ship => 
             ship.fullName === shipFromSheets || ship.value === shipFromSheets
           )
           if (matchedShip) {
             shipValueForUI = matchedShip.value
+            console.log('Converted ship to UI value:', shipValueForUI)
+          } else {
+            console.warn('No matching ship found for:', shipFromSheets, 'Registry length:', shipRegistry.length)
+            // If registry is empty, try to use the value as-is (might be already in correct format)
+            if (shipRegistry.length === 0) {
+              console.log('Ship registry not loaded yet, using value as-is')
+              shipValueForUI = shipFromSheets
+            }
           }
           
           // Update ship from Google Sheets if it exists
@@ -118,6 +129,7 @@ export default function Profile() {
     const loadShipRegistry = async () => {
       try {
         const ships = await OFSDataService.getShipRegistry()
+        console.log('Loaded ships from registry:', ships.length)
         setShipRegistry(ships)
       } catch (error) {
         console.error('Error loading ship registry:', error)
@@ -126,6 +138,35 @@ export default function Profile() {
     
     loadShipRegistry()
   }, [])
+
+  // Re-process ship value when ship registry loads
+  useEffect(() => {
+    if (shipRegistry.length > 0 && profileShip && !user) {
+      // Skip if no user or no ship selected
+      return
+    }
+    
+    if (shipRegistry.length > 0 && profileShip) {
+      // Check if current profileShip is a full name that needs conversion
+      const currentShip = shipRegistry.find(ship => ship.value === profileShip)
+      if (!currentShip) {
+        // Current profileShip might be a full name, try to find by fullName
+        const shipByFullName = shipRegistry.find(ship => ship.fullName === profileShip)
+        if (shipByFullName) {
+          console.log('Converting ship from full name to value:', profileShip, '->', shipByFullName.value)
+          setProfileShip(shipByFullName.value)
+          
+          // Update localStorage
+          if (user?.id) {
+            const savedProfile = localStorage.getItem(`profile_${user.id}`)
+            const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
+            currentProfile.ship = shipByFullName.value
+            localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
+          }
+        }
+      }
+    }
+  }, [shipRegistry, profileShip, user?.id])
 
   // Fetch member and patrol data
   useEffect(() => {
