@@ -79,12 +79,17 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
           <div className="form-section">
             <label htmlFor="bio-input" className="form-label">
               Back Story
+              <span className="form-note">Use double line breaks to create paragraphs, single breaks for new lines</span>
             </label>
             <textarea
               id="bio-input"
               value={bio}
               onChange={handleBioChange}
-              placeholder="Tell others about your character's background, your role in the organization, your journey in the 'verse..."
+              placeholder="Tell others about your character's background, your role in the organization, your journey in the 'verse...
+
+Use double line breaks to create new paragraphs.
+
+Single line breaks create new lines within the same paragraph."
               className="bio-textarea"
               maxLength={5000}
               rows={8}

@@ -683,6 +683,29 @@ export default function Profile() {
     }
   }
 
+  const formatBackstoryText = (text) => {
+    if (!text) return null
+    
+    // Split text into paragraphs based on double line breaks
+    const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim())
+    
+    return paragraphs.map((paragraph, index) => {
+      // Convert single line breaks within paragraphs to <br> tags
+      const formattedParagraph = paragraph.split('\n').map((line, lineIndex) => (
+        <React.Fragment key={lineIndex}>
+          {line}
+          {lineIndex < paragraph.split('\n').length - 1 && <br />}
+        </React.Fragment>
+      ))
+      
+      return (
+        <p key={index} className="backstory-paragraph">
+          {formattedParagraph}
+        </p>
+      )
+    })
+  }
+
   const getShipDisplayName = (shipValue) => {
     if (!shipValue) return null
     
@@ -942,7 +965,7 @@ export default function Profile() {
               <div className="bio-content">
                 {(isViewingOtherPlayer ? selectedPlayerBackstory : profileBio) && (
                   <div className="bio-text">
-                    <p>{isViewingOtherPlayer ? selectedPlayerBackstory : profileBio}</p>
+                    {formatBackstoryText(isViewingOtherPlayer ? selectedPlayerBackstory : profileBio)}
                   </div>
                 )}
                 {(isViewingOtherPlayer ? selectedPlayerShip : profileShip) && (
