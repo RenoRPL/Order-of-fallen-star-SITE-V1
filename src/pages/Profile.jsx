@@ -445,7 +445,7 @@ export default function Profile() {
             shipNameToSave
           })
           
-          const response = await fetch('/api/update-ship-selection-simple', {
+          const response = await fetch('/api/update-ship-selection-v2', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
