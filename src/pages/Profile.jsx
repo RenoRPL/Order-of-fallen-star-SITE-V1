@@ -705,7 +705,7 @@ export default function Profile() {
               className="profile-bio-section"
               style={{
                 backgroundImage: getShipImageUrl(profileShip) 
-                  ? `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${getShipImageUrl(profileShip)})` 
+                  ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${getShipImageUrl(profileShip)})` 
                   : 'none',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
