@@ -761,10 +761,10 @@ export default function Profile() {
           const customShipImageResponse = await fetch('/api/update-custom-ship-image', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+              discordId: user.id,
               customShipImage: profileData.customShipImage
             })
           })

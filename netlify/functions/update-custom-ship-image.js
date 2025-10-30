@@ -20,25 +20,15 @@ export const handler = async (event, context) => {
   }
 
   try {
-    // Verify user authentication
-    const authHeader = event.headers.authorization
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: 'No valid authorization token provided' })
-      }
-    }
-
-    const token = authHeader.split(' ')[1]
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    const discordId = decoded.id
+    // Get Discord ID from request body instead of JWT token
+    const requestBody = JSON.parse(event.body || '{}')
+    const { customShipImage, discordId } = requestBody
 
     if (!discordId) {
       return {
-        statusCode: 401,
+        statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Invalid token - no Discord ID found' })
+        body: JSON.stringify({ error: 'Discord ID is required' })
       }
     }
 
@@ -75,9 +65,6 @@ export const handler = async (event, context) => {
       case 'PUT':
         // Update custom ship image
         try {
-          const requestBody = JSON.parse(event.body || '{}')
-          const { customShipImage } = requestBody
-
           if (customShipImage !== undefined) {
             await googleSheetsWriteService.updateCustomShipImage(discordId, customShipImage)
             console.log('Custom ship image updated successfully for Discord ID:', discordId)
