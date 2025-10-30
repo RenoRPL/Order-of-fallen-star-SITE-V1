@@ -185,13 +185,24 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
           }
         } catch (uploadError) {
           console.error('Image upload error:', uploadError)
-          const continueWithoutImage = confirm(`Failed to upload image: ${uploadError.message || 'Unknown error'}. Do you want to save your profile without the custom ship image?`)
-          if (!continueWithoutImage) {
-            setIsSaving(false)
-            return // Exit if user doesn't want to continue
+          // Check if it's a configuration error
+          if (uploadError.message && uploadError.message.includes('not configured')) {
+            const continueWithoutImage = confirm('Image upload service is not yet configured by administrator. Do you want to save your profile without the custom ship image for now?')
+            if (!continueWithoutImage) {
+              setIsSaving(false)
+              return // Exit if user doesn't want to continue
+            }
+            // Continue with empty custom image
+            finalCustomShipImage = ''
+          } else {
+            const continueWithoutImage = confirm(`Failed to upload image: ${uploadError.message || 'Unknown error'}. Do you want to save your profile without the custom ship image?`)
+            if (!continueWithoutImage) {
+              setIsSaving(false)
+              return // Exit if user doesn't want to continue
+            }
+            // Continue with empty custom image
+            finalCustomShipImage = ''
           }
-          // Continue with empty custom image
-          finalCustomShipImage = ''
         }
       }
 
