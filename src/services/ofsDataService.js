@@ -299,6 +299,21 @@ class OFSDataService {
     }
   }
 
+  static convertImgurUrl(url) {
+    if (!url) return url
+    
+    // Convert imgur.com URLs to direct i.imgur.com URLs
+    if (url.includes('imgur.com/') && !url.includes('i.imgur.com')) {
+      const imgurId = url.split('/').pop()
+      // Try common image extensions
+      const extensions = ['jpg', 'png', 'gif', 'jpeg', 'webp']
+      // Default to jpg if no extension is specified
+      return `https://i.imgur.com/${imgurId}.jpg`
+    }
+    
+    return url
+  }
+
   static async getShipRegistry() {
     try {
       const shipData = await this.fetchCSV(SHIP_REGISTRY_URL)
@@ -313,7 +328,7 @@ class OFSDataService {
           ships.push({
             model: model.trim(),
             make: make.trim(),
-            imageUrl: imageUrl.trim(),
+            imageUrl: this.convertImgurUrl(imageUrl.trim()),
             fullName: `${make.trim()} ${model.trim()}`,
             value: `${make.toLowerCase().replace(/\s+/g, '-')}-${model.toLowerCase().replace(/\s+/g, '-')}`
           })
