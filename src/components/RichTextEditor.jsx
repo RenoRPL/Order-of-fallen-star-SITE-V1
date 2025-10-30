@@ -4,6 +4,7 @@ import './RichTextEditor.css'
 export default function RichTextEditor({ value, onChange, placeholder, maxLength }) {
   const [selectedText, setSelectedText] = useState('')
   const [showColorPicker, setShowColorPicker] = useState(false)
+  const [isInitialized, setIsInitialized] = useState(false)
   const editorRef = useRef(null)
   const colorPickerRef = useRef(null)
 
@@ -33,23 +34,42 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
     }
   }, [])
 
+  // Initialize content only once
+  useEffect(() => {
+    if (editorRef.current && !isInitialized) {
+      if (value && value.trim() !== '') {
+        editorRef.current.innerHTML = value
+      } else {
+        editorRef.current.innerHTML = ''
+      }
+      setIsInitialized(true)
+    }
+  }, [value, isInitialized])
+
   const handleSelectionChange = () => {
     const selection = window.getSelection()
     setSelectedText(selection.toString())
   }
 
   const execCommand = (command, value = null) => {
-    // Ensure the editor is focused and we have a selection
-    editorRef.current.focus()
-    
+    // Save current selection
     const selection = window.getSelection()
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0)
-      if (!range.collapsed || command === 'bold' || command === 'italic' || command === 'underline') {
-        document.execCommand(command, false, value)
-        handleContentChange()
+    const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null
+    
+    if (range) {
+      // Apply the command
+      document.execCommand(command, false, value)
+      
+      // Restore selection if it was lost
+      if (selection.rangeCount === 0 && range) {
+        selection.addRange(range)
       }
+      
+      handleContentChange()
     }
+    
+    // Keep focus on editor
+    editorRef.current.focus()
   }
 
   const handleContentChange = () => {
@@ -57,6 +77,13 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
       const content = editorRef.current.innerHTML
       // Convert HTML to a format we can store/display
       onChange(content)
+    }
+  }
+
+  const handleFocus = () => {
+    // Prevent cursor from jumping to beginning on focus
+    if (editorRef.current && editorRef.current.innerHTML === '') {
+      // Only set placeholder behavior if truly empty
     }
   }
 
@@ -227,8 +254,8 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
         ref={editorRef}
         className="rich-editor-content"
         contentEditable
-        dangerouslySetInnerHTML={{ __html: value }}
         onInput={handleContentChange}
+        onFocus={handleFocus}
         onMouseUp={handleSelectionChange}
         onKeyUp={handleSelectionChange}
         onPaste={handlePaste}
