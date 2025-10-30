@@ -49,12 +49,10 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
     }
   }, [isOpen, currentBio, currentShip])
 
-  // Handle bio text change (no emojis allowed)
+  // Handle bio text change (allow emojis)
   const handleBioChange = (e) => {
     const text = e.target.value
-    // Remove emojis using regex
-    const textWithoutEmojis = text.replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '')
-    setBio(textWithoutEmojis)
+    setBio(text)
   }
 
   const handleSave = async () => {
@@ -94,7 +92,6 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
           <div className="form-section">
             <label htmlFor="bio-input" className="form-label">
               Bio
-              <span className="form-note">No emojis allowed</span>
             </label>
             <textarea
               id="bio-input"
@@ -102,11 +99,11 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
               onChange={handleBioChange}
               placeholder="Tell others about yourself, your role in the organization, your favorite activities in Star Citizen..."
               className="bio-textarea"
-              maxLength={500}
+              maxLength={700}
               rows={6}
             />
             <div className="character-count">
-              {bio.length}/500 characters
+              {bio.length}/700 characters
             </div>
           </div>
 
