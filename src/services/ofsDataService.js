@@ -5,6 +5,7 @@ const RANKS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNS
 const PATROL_STATS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1245860458&single=true&output=csv'
 const PATHS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1288322893&single=true&output=csv'
 const WHAT_WE_OFFER_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1449801333&single=true&output=csv'
+const SHIP_REGISTRY_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1333995409&single=true&output=csv'
 
 class OFSDataService {
   static async fetchCSV(url) {
@@ -294,6 +295,43 @@ class OFSDataService {
       return features
     } catch (error) {
       console.error('Error fetching What We Offer data:', error)
+      return []
+    }
+  }
+
+  static async getShipRegistry() {
+    try {
+      const shipData = await this.fetchCSV(SHIP_REGISTRY_URL)
+      const ships = []
+      
+      shipData.forEach(ship => {
+        const model = ship['Ship Model'] || ship.A || ''
+        const make = ship['Ship Make'] || ship.B || ''
+        const imageUrl = ship['Image URL'] || ship.C || ''
+        
+        if (model.trim() !== '' && make.trim() !== '') {
+          ships.push({
+            model: model.trim(),
+            make: make.trim(),
+            imageUrl: imageUrl.trim(),
+            fullName: `${make.trim()} ${model.trim()}`,
+            value: `${make.toLowerCase().replace(/\s+/g, '-')}-${model.toLowerCase().replace(/\s+/g, '-')}`
+          })
+        }
+      })
+      
+      // Sort ships by make then model for better organization
+      ships.sort((a, b) => {
+        if (a.make !== b.make) {
+          return a.make.localeCompare(b.make)
+        }
+        return a.model.localeCompare(b.model)
+      })
+      
+      console.log('Loaded ships from registry:', ships.length)
+      return ships
+    } catch (error) {
+      console.error('Error fetching Ship Registry data:', error)
       return []
     }
   }

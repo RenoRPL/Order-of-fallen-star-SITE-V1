@@ -1,45 +1,32 @@
 import React, { useState, useEffect } from 'react'
+import OFSDataService from '../services/ofsDataService'
 import './EditProfileModal.css'
 
 export default function EditProfileModal({ isOpen, onClose, onSave, currentBio = '', currentShip = '' }) {
   const [bio, setBio] = useState(currentBio)
   const [selectedShip, setSelectedShip] = useState(currentShip)
   const [isSaving, setIsSaving] = useState(false)
+  const [ships, setShips] = useState([])
+  const [shipsLoading, setShipsLoading] = useState(false)
 
-  // Star Citizen ships list (popular ones to start)
-  const starCitizenShips = [
-    { value: '', label: 'Select a ship...' },
-    { value: 'aegis-avenger-titan', label: 'Aegis Avenger Titan' },
-    { value: 'aegis-gladius', label: 'Aegis Gladius' },
-    { value: 'aegis-sabre', label: 'Aegis Sabre' },
-    { value: 'aegis-vanguard-warden', label: 'Aegis Vanguard Warden' },
-    { value: 'anvil-arrow', label: 'Anvil Arrow' },
-    { value: 'anvil-f7c-hornet', label: 'Anvil F7C Hornet' },
-    { value: 'anvil-hawk', label: 'Anvil Hawk' },
-    { value: 'anvil-hurricane', label: 'Anvil Hurricane' },
-    { value: 'anvil-terrapin', label: 'Anvil Terrapin' },
-    { value: 'argo-cargo', label: 'Argo MPUV Cargo' },
-    { value: 'crusader-mercury-star-runner', label: 'Crusader Mercury Star Runner' },
-    { value: 'crusader-nomad', label: 'Crusader Nomad' },
-    { value: 'drake-buccaneer', label: 'Drake Buccaneer' },
-    { value: 'drake-caterpillar', label: 'Drake Caterpillar' },
-    { value: 'drake-cutlass-black', label: 'Drake Cutlass Black' },
-    { value: 'drake-herald', label: 'Drake Herald' },
-    { value: 'origin-300i', label: 'Origin 300i' },
-    { value: 'origin-325a', label: 'Origin 325a' },
-    { value: 'origin-350r', label: 'Origin 350r' },
-    { value: 'origin-600i', label: 'Origin 600i' },
-    { value: 'origin-890-jump', label: 'Origin 890 Jump' },
-    { value: 'rsi-aurora-mr', label: 'RSI Aurora MR' },
-    { value: 'rsi-constellation-andromeda', label: 'RSI Constellation Andromeda' },
-    { value: 'rsi-mantis', label: 'RSI Mantis' },
-    { value: 'misc-freelancer', label: 'MISC Freelancer' },
-    { value: 'misc-prospector', label: 'MISC Prospector' },
-    { value: 'misc-starfarer', label: 'MISC Starfarer' },
-    { value: 'banu-defender', label: 'Banu Defender' },
-    { value: 'esperia-prowler', label: 'Esperia Prowler' },
-    { value: 'vanduul-scythe', label: 'Vanduul Scythe' }
-  ]
+  // Fetch ships from Google Sheets when modal opens
+  useEffect(() => {
+    const fetchShips = async () => {
+      if (isOpen && ships.length === 0) {
+        setShipsLoading(true)
+        try {
+          const shipRegistry = await OFSDataService.getShipRegistry()
+          setShips(shipRegistry)
+        } catch (error) {
+          console.error('Error fetching ship registry:', error)
+        } finally {
+          setShipsLoading(false)
+        }
+      }
+    }
+
+    fetchShips()
+  }, [isOpen, ships.length])
 
   // Reset form when modal opens
   useEffect(() => {
@@ -117,10 +104,14 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
               value={selectedShip}
               onChange={(e) => setSelectedShip(e.target.value)}
               className="ship-select"
+              disabled={shipsLoading}
             >
-              {starCitizenShips.map((ship) => (
+              <option value="">
+                {shipsLoading ? 'Loading ships...' : 'Select a ship...'}
+              </option>
+              {ships.map((ship) => (
                 <option key={ship.value} value={ship.value}>
-                  {ship.label}
+                  {ship.fullName}
                 </option>
               ))}
             </select>

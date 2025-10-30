@@ -44,6 +44,7 @@ export default function Profile() {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false)
   const [profileBio, setProfileBio] = useState('')
   const [profileShip, setProfileShip] = useState('')
+  const [shipRegistry, setShipRegistry] = useState([])
 
   // Get current displayed data (either logged-in user or selected player)
   const currentDisplayData = isViewingOtherPlayer && selectedPlayerData ? selectedPlayerData : memberData
@@ -66,6 +67,20 @@ export default function Profile() {
       }
     }
   }, [user?.id])
+
+  // Load ship registry for display names
+  useEffect(() => {
+    const loadShipRegistry = async () => {
+      try {
+        const ships = await OFSDataService.getShipRegistry()
+        setShipRegistry(ships)
+      } catch (error) {
+        console.error('Error loading ship registry:', error)
+      }
+    }
+    
+    loadShipRegistry()
+  }, [])
 
   // Fetch member and patrol data
   useEffect(() => {
@@ -387,7 +402,13 @@ export default function Profile() {
   const getShipDisplayName = (shipValue) => {
     if (!shipValue) return null
     
-    // Convert ship value to display name
+    // First try to find in ship registry
+    const ship = shipRegistry.find(s => s.value === shipValue)
+    if (ship) {
+      return ship.fullName
+    }
+    
+    // Fallback to old system for backwards compatibility
     const shipNames = {
       'aegis-avenger-titan': 'Aegis Avenger Titan',
       'aegis-gladius': 'Aegis Gladius',
@@ -422,6 +443,18 @@ export default function Profile() {
     }
     
     return shipNames[shipValue] || shipValue
+  }
+
+  const getShipImageUrl = (shipValue) => {
+    if (!shipValue) return null
+    
+    // Try to find in ship registry
+    const ship = shipRegistry.find(s => s.value === shipValue)
+    if (ship && ship.imageUrl) {
+      return ship.imageUrl
+    }
+    
+    return null
   }
 
   const formatJoinDate = (timestamp) => {
@@ -547,7 +580,17 @@ export default function Profile() {
                 {profileShip && (
                   <div className="bio-ship">
                     <span className="ship-label">Primary Ship:</span>
-                    <span className="ship-name">{getShipDisplayName(profileShip)}</span>
+                    <div className="ship-info">
+                      {getShipImageUrl(profileShip) && (
+                        <img 
+                          src={getShipImageUrl(profileShip)} 
+                          alt={getShipDisplayName(profileShip)}
+                          className="ship-image"
+                          onError={(e) => e.target.style.display = 'none'}
+                        />
+                      )}
+                      <span className="ship-name">{getShipDisplayName(profileShip)}</span>
+                    </div>
                   </div>
                 )}
               </div>
