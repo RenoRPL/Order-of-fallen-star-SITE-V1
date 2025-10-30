@@ -445,7 +445,7 @@ export default function Profile() {
             shipNameToSave
           })
           
-          const response = await fetch('/api/update-ship-selection', {
+          const response = await fetch('/api/update-ship-selection-simple', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -456,6 +456,15 @@ export default function Profile() {
               action: 'update'
             })
           })
+
+          console.log('Response status:', response.status, response.statusText)
+          
+          if (!response.ok) {
+            console.error('API request failed:', response.status, response.statusText)
+            const errorText = await response.text()
+            console.error('Error response body:', errorText)
+            throw new Error(`API request failed: ${response.status} ${response.statusText}`)
+          }
 
           const result = await response.json()
           console.log('Google Sheets update response:', result)
