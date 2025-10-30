@@ -102,28 +102,53 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
               fileName: file.name
             })
             
-            const response = await fetch('/api/upload-image', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                imageData: base64Data,
-                contentType: file.type
-              })
-            })
+            // Try multiple upload services in order of preference
+            const uploadServices = [
+              '/api/upload-image',           // Imgur (primary)
+              '/api/upload-image-cloudinary', // Cloudinary (fallback)
+              '/api/upload-image-base64'     // Base64 (last resort)
+            ]
             
-            const result = await response.json()
-            console.log('Upload response:', result)
+            let lastError = null
             
-            if (result.success) {
-              console.log('Image uploaded successfully:', result.url)
-              resolve(result.url)
-            } else {
-              console.error('Upload failed:', result.error)
-              alert(result.error || 'Upload failed')
-              reject(new Error(result.error || 'Upload failed'))
+            for (const service of uploadServices) {
+              try {
+                console.log(`Trying upload service: ${service}`)
+                
+                const response = await fetch(service, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    imageData: base64Data,
+                    contentType: file.type
+                  })
+                })
+                
+                const result = await response.json()
+                console.log(`${service} response:`, result)
+                
+                if (result.success) {
+                  console.log(`Image uploaded successfully via ${service}:`, result.imageUrl)
+                  resolve(result.imageUrl)
+                  return
+                } else {
+                  lastError = result.error
+                  console.warn(`${service} failed:`, result.error)
+                  continue // Try next service
+                }
+              } catch (error) {
+                lastError = error.message
+                console.warn(`${service} error:`, error)
+                continue // Try next service
+              }
             }
+            
+            // All services failed
+            console.error('All upload services failed. Last error:', lastError)
+            alert(lastError || 'All upload services failed. Please try again.')
+            reject(new Error(lastError || 'Upload failed'))
           } catch (error) {
             console.error('Error during upload:', error)
             alert('Failed to upload image. Please try again.')
