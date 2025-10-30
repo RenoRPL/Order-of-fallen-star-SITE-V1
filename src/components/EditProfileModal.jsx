@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import OFSDataService from '../services/ofsDataService'
+import RichTextEditor from './RichTextEditor'
 import './EditProfileModal.css'
 
 export default function EditProfileModal({ isOpen, onClose, onSave, currentBio = '', currentShip = '' }) {
@@ -36,15 +37,20 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
     }
   }, [isOpen, currentBio, currentShip])
 
-  // Handle bio text change (allow emojis)
-  const handleBioChange = (e) => {
-    const text = e.target.value
-    setBio(text)
-  }
-
   const handleSave = async () => {
     setIsSaving(true)
     try {
+      // Convert HTML to plain text for character limit validation
+      const tempDiv = document.createElement('div')
+      tempDiv.innerHTML = bio
+      const textContent = tempDiv.textContent || tempDiv.innerText || ''
+      
+      if (textContent.length > 5000) {
+        alert('Backstory exceeds 5000 character limit. Please shorten your text.')
+        setIsSaving(false)
+        return
+      }
+      
       await onSave({
         bio: bio.trim(),
         ship: selectedShip
@@ -79,24 +85,16 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
           <div className="form-section">
             <label htmlFor="bio-input" className="form-label">
               Back Story
-              <span className="form-note">Use double line breaks to create paragraphs, single breaks for new lines</span>
+              <span className="form-note">Use the formatting tools to style your backstory</span>
             </label>
-            <textarea
-              id="bio-input"
+            <RichTextEditor
               value={bio}
-              onChange={handleBioChange}
+              onChange={setBio}
               placeholder="Tell others about your character's background, your role in the organization, your journey in the 'verse...
 
-Use double line breaks to create new paragraphs.
-
-Single line breaks create new lines within the same paragraph."
-              className="bio-textarea"
+Use the toolbar above to format your text with different sizes, bold, underline, and colors."
               maxLength={5000}
-              rows={8}
             />
-            <div className="character-count">
-              {bio.length}/5000 characters
-            </div>
           </div>
 
           <div className="form-section">

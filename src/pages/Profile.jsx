@@ -686,24 +686,37 @@ export default function Profile() {
   const formatBackstoryText = (text) => {
     if (!text) return null
     
-    // Split text into paragraphs based on double line breaks
-    const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim())
+    // Check if the text contains HTML tags (from rich text editor)
+    const hasHtmlTags = /<[^>]*>/.test(text)
     
-    return paragraphs.map((paragraph, index) => {
-      // Convert single line breaks within paragraphs to <br> tags
-      const formattedParagraph = paragraph.split('\n').map((line, lineIndex) => (
-        <React.Fragment key={lineIndex}>
-          {line}
-          {lineIndex < paragraph.split('\n').length - 1 && <br />}
-        </React.Fragment>
-      ))
-      
+    if (hasHtmlTags) {
+      // For HTML content from rich text editor, render as HTML
       return (
-        <p key={index} className="backstory-paragraph">
-          {formattedParagraph}
-        </p>
+        <div 
+          className="backstory-html-content"
+          dangerouslySetInnerHTML={{ __html: text }}
+        />
       )
-    })
+    } else {
+      // For plain text, use the old paragraph formatting
+      const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim())
+      
+      return paragraphs.map((paragraph, index) => {
+        // Convert single line breaks within paragraphs to <br> tags
+        const formattedParagraph = paragraph.split('\n').map((line, lineIndex) => (
+          <React.Fragment key={lineIndex}>
+            {line}
+            {lineIndex < paragraph.split('\n').length - 1 && <br />}
+          </React.Fragment>
+        ))
+        
+        return (
+          <p key={index} className="backstory-paragraph">
+            {formattedParagraph}
+          </p>
+        )
+      })
+    }
   }
 
   const getShipDisplayName = (shipValue) => {

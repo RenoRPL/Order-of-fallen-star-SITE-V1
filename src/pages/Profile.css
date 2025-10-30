@@ -1882,6 +1882,51 @@
   text-align: justify;
 }
 
+/* Rich text HTML content styling */
+.backstory-html-content {
+  line-height: 1.6;
+}
+
+.backstory-html-content p {
+  margin: 0 0 16px 0;
+  color: #e2e8f0;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  font-weight: 400;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  line-height: 1.6;
+  text-align: justify;
+}
+
+.backstory-html-content p:last-child {
+  margin-bottom: 0;
+}
+
+.backstory-html-content strong {
+  font-weight: bold;
+  color: #f1f5f9;
+}
+
+.backstory-html-content u {
+  text-decoration: underline;
+}
+
+.backstory-html-content em {
+  font-style: italic;
+}
+
+.backstory-html-content span[style*="font-size: 12px"] {
+  font-size: 12px !important;
+}
+
+.backstory-html-content span[style*="font-size: 14px"] {
+  font-size: 14px !important;
+}
+
+.backstory-html-content span[style*="font-size: 16px"] {
+  font-size: 16px !important;
+}
+
 .bio-ship {
   display: flex;
   justify-content: space-between;
