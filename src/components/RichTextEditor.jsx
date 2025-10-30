@@ -34,15 +34,20 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
     }
   }, [])
 
-  // Initialize content only once
+  // Initialize and update content
   useEffect(() => {
-    if (editorRef.current && !isInitialized) {
-      if (value && value.trim() !== '') {
-        editorRef.current.innerHTML = value
-      } else {
-        editorRef.current.innerHTML = ''
+    if (editorRef.current) {
+      const newContent = value || ''
+      const currentContent = editorRef.current.innerHTML
+      
+      // Only update if content is different to avoid cursor jumps
+      if (currentContent !== newContent) {
+        editorRef.current.innerHTML = newContent
       }
-      setIsInitialized(true)
+      
+      if (!isInitialized) {
+        setIsInitialized(true)
+      }
     }
   }, [value, isInitialized])
 

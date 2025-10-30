@@ -32,6 +32,7 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
   // Reset form when modal opens
   useEffect(() => {
     if (isOpen) {
+      console.log('Modal opened with currentBio:', currentBio)
       setBio(currentBio)
       setSelectedShip(currentShip)
     }
@@ -88,6 +89,7 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
               <span className="form-note">Use the formatting tools to style your backstory</span>
             </label>
             <RichTextEditor
+              key={`editor-${isOpen}-${currentBio ? 'with-bio' : 'no-bio'}`} // Force re-initialization when modal opens
               value={bio}
               onChange={setBio}
               placeholder="Tell others about your character's background, your role in the organization, your journey in the 'verse...
