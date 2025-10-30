@@ -625,38 +625,6 @@ export default function Profile() {
             </div>
           </div>
           
-          {/* Bio Section - Only show for own profile when bio exists */}
-          {!isViewingOtherPlayer && (profileBio || profileShip) && (
-            <div className="profile-bio-section">
-              <div className="bio-header">
-                <h3>About Me</h3>
-              </div>
-              <div className="bio-content">
-                {profileBio && (
-                  <div className="bio-text">
-                    <p>{profileBio}</p>
-                  </div>
-                )}
-                {profileShip && (
-                  <div className="bio-ship">
-                    <span className="ship-label">Primary Ship:</span>
-                    <div className="ship-info">
-                      {getShipImageUrl(profileShip) && (
-                        <img 
-                          src={getShipImageUrl(profileShip)} 
-                          alt={getShipDisplayName(profileShip)}
-                          className="ship-image"
-                          onError={(e) => e.target.style.display = 'none'}
-                        />
-                      )}
-                      <span className="ship-name">{getShipDisplayName(profileShip)}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-          
           {/* Epic Profile Header with Rank Display - Compact */}
           <div className="profile-hero" style={{
             backgroundImage: currentDisplayData?.['Role Path'] 
@@ -730,6 +698,38 @@ export default function Profile() {
               </div>
             </div>
           </div>
+
+          {/* Bio Section - Only show for own profile when bio exists */}
+          {!isViewingOtherPlayer && (profileBio || profileShip) && (
+            <div className="profile-bio-section">
+              <div className="bio-header">
+                <h3>About Me</h3>
+              </div>
+              <div className="bio-content">
+                {profileBio && (
+                  <div className="bio-text">
+                    <p>{profileBio}</p>
+                  </div>
+                )}
+                {profileShip && (
+                  <div className="bio-ship">
+                    <span className="ship-label">Primary Ship:</span>
+                    <div className="ship-info">
+                      {getShipImageUrl(profileShip) && (
+                        <img 
+                          src={getShipImageUrl(profileShip)} 
+                          alt={getShipDisplayName(profileShip)}
+                          className="ship-image"
+                          onError={(e) => e.target.style.display = 'none'}
+                        />
+                      )}
+                      <span className="ship-name">{getShipDisplayName(profileShip)}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Content Grid - Compact Layout */}
           <div className="profile-content">
