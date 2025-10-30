@@ -39,9 +39,17 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
   }
 
   const execCommand = (command, value = null) => {
-    document.execCommand(command, false, value)
+    // Ensure the editor is focused and we have a selection
     editorRef.current.focus()
-    handleContentChange()
+    
+    const selection = window.getSelection()
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0)
+      if (!range.collapsed || command === 'bold' || command === 'italic' || command === 'underline') {
+        document.execCommand(command, false, value)
+        handleContentChange()
+      }
+    }
   }
 
   const handleContentChange = () => {
@@ -72,15 +80,31 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
       if (!range.collapsed) {
         const span = document.createElement('span')
         span.style.fontSize = size
-        range.surroundContents(span)
-        selection.removeAllRanges()
-        handleContentChange()
+        try {
+          range.surroundContents(span)
+          selection.removeAllRanges()
+          selection.addRange(range)
+          handleContentChange()
+        } catch (e) {
+          // Fallback if surroundContents fails
+          document.execCommand('fontSize', false, '7')
+          const fontElements = editorRef.current.querySelectorAll('font[size="7"]')
+          fontElements.forEach(el => {
+            el.style.fontSize = size
+            el.removeAttribute('size')
+          })
+          handleContentChange()
+        }
       }
     }
+    editorRef.current.focus()
   }
 
   const applyColor = (color) => {
-    execCommand('foreColor', color)
+    const selection = window.getSelection()
+    if (selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed) {
+      execCommand('foreColor', color)
+    }
     setShowColorPicker(false)
   }
 
@@ -92,7 +116,10 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
           <button
             type="button"
             className="toolbar-btn"
-            onClick={() => applyFontSize('12px')}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              applyFontSize('12px')
+            }}
             title="Small Text"
           >
             <span style={{ fontSize: '12px' }}>S</span>
@@ -100,7 +127,10 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
           <button
             type="button"
             className="toolbar-btn"
-            onClick={() => applyFontSize('14px')}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              applyFontSize('14px')
+            }}
             title="Normal Text"
           >
             <span style={{ fontSize: '14px' }}>M</span>
@@ -108,7 +138,10 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
           <button
             type="button"
             className="toolbar-btn"
-            onClick={() => applyFontSize('16px')}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              applyFontSize('16px')
+            }}
             title="Large Text"
           >
             <span style={{ fontSize: '16px' }}>L</span>
@@ -121,7 +154,10 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
           <button
             type="button"
             className="toolbar-btn"
-            onClick={() => execCommand('bold')}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              execCommand('bold')
+            }}
             title="Bold"
           >
             <strong>B</strong>
@@ -129,7 +165,10 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
           <button
             type="button"
             className="toolbar-btn"
-            onClick={() => execCommand('underline')}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              execCommand('underline')
+            }}
             title="Underline"
           >
             <u>U</u>
@@ -137,7 +176,10 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
           <button
             type="button"
             className="toolbar-btn"
-            onClick={() => execCommand('italic')}
+            onMouseDown={(e) => {
+              e.preventDefault()
+              execCommand('italic')
+            }}
             title="Italic"
           >
             <em>I</em>
@@ -151,7 +193,10 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
             <button
               type="button"
               className="toolbar-btn color-btn"
-              onClick={() => setShowColorPicker(!showColorPicker)}
+              onMouseDown={(e) => {
+                e.preventDefault()
+                setShowColorPicker(!showColorPicker)
+              }}
               title="Text Color"
             >
               <span className="color-icon">A</span>
@@ -164,7 +209,10 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
                     type="button"
                     className="color-option"
                     style={{ backgroundColor: color }}
-                    onClick={() => applyColor(color)}
+                    onMouseDown={(e) => {
+                      e.preventDefault()
+                      applyColor(color)
+                    }}
                     title={`Color: ${color}`}
                   />
                 ))}
