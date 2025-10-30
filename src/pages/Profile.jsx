@@ -156,15 +156,19 @@ export default function Profile() {
 
       // Also fetch custom ship image from Google Sheets
       try {
-        const customShipImageResponse = await fetch('/api/update-custom-ship-image', {
-          method: 'GET',
+        const customShipImageResponse = await fetch('/api/get-custom-ship-image', {
+          method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            discordId: user.id
+          })
         })
 
         const customShipImageResult = await customShipImageResponse.json()
+        console.log('Custom ship image API response:', customShipImageResult)
+        
         if (customShipImageResult.success && customShipImageResult.customShipImage) {
           console.log('Loaded custom ship image from Google Sheets:', customShipImageResult.customShipImage)
           
@@ -175,6 +179,9 @@ export default function Profile() {
           const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
           currentProfile.customShipImage = customShipImageResult.customShipImage
           localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
+        } else {
+          console.log('No custom ship image found or API response unsuccessful:', customShipImageResult)
+          setProfileCustomShipImage('')
         }
       } catch (error) {
         console.error('Error loading custom ship image from Google Sheets:', error)
