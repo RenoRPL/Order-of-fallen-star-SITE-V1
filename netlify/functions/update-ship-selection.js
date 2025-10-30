@@ -1,6 +1,6 @@
 import { GoogleSheetsWriteService } from '../../src/services/googleSheetsWriteService.js'
 
-export const handler = async (event, context) => {
+export async function handler(event, context) {
   // Set CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
