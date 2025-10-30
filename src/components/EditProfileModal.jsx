@@ -86,11 +86,11 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
               onChange={handleBioChange}
               placeholder="Tell others about your character's background, your role in the organization, your journey in the 'verse..."
               className="bio-textarea"
-              maxLength={700}
-              rows={6}
+              maxLength={5000}
+              rows={8}
             />
             <div className="character-count">
-              {bio.length}/700 characters
+              {bio.length}/5000 characters
             </div>
           </div>
 
