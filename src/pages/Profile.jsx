@@ -701,7 +701,17 @@ export default function Profile() {
 
           {/* Bio Section - Only show for own profile when bio exists */}
           {!isViewingOtherPlayer && (profileBio || profileShip) && (
-            <div className="profile-bio-section">
+            <div 
+              className="profile-bio-section"
+              style={{
+                backgroundImage: getShipImageUrl(profileShip) 
+                  ? `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${getShipImageUrl(profileShip)})` 
+                  : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
+            >
               <div className="bio-header">
                 <h3>About Me</h3>
               </div>
@@ -715,14 +725,6 @@ export default function Profile() {
                   <div className="bio-ship">
                     <span className="ship-label">Primary Ship:</span>
                     <div className="ship-info">
-                      {getShipImageUrl(profileShip) && (
-                        <img 
-                          src={getShipImageUrl(profileShip)} 
-                          alt={getShipDisplayName(profileShip)}
-                          className="ship-image"
-                          onError={(e) => e.target.style.display = 'none'}
-                        />
-                      )}
                       <span className="ship-name">{getShipDisplayName(profileShip)}</span>
                     </div>
                   </div>
