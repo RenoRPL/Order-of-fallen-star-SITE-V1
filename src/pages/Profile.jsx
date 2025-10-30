@@ -84,12 +84,24 @@ export default function Profile() {
 
         const result = await response.json()
         if (result.success && result.shipValue) {
+          // Convert ship name back to value format for UI consistency
+          const shipFromSheets = result.shipValue
+          let shipValueForUI = shipFromSheets
+          
+          // If it's a full name, find the corresponding value
+          const matchedShip = shipRegistry.find(ship => 
+            ship.fullName === shipFromSheets || ship.value === shipFromSheets
+          )
+          if (matchedShip) {
+            shipValueForUI = matchedShip.value
+          }
+          
           // Update ship from Google Sheets if it exists
-          setProfileShip(result.shipValue)
+          setProfileShip(shipValueForUI)
           
           // Update localStorage to keep it in sync
           const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
-          currentProfile.ship = result.shipValue
+          currentProfile.ship = shipValueForUI
           localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
         }
       } catch (error) {
@@ -418,6 +430,10 @@ export default function Profile() {
       // Save ship selection to Google Sheets Member Log
       if (user?.id && profileData.ship !== undefined) {
         try {
+          // Find the ship in the registry to get the full name
+          const selectedShip = shipRegistry.find(ship => ship.value === profileData.ship)
+          const shipNameToSave = selectedShip ? selectedShip.fullName : profileData.ship
+          
           const response = await fetch('/api/update-ship-selection', {
             method: 'POST',
             headers: {
@@ -425,7 +441,7 @@ export default function Profile() {
             },
             body: JSON.stringify({
               discordId: user.id,
-              shipValue: profileData.ship,
+              shipValue: shipNameToSave,
               action: 'update'
             })
           })
