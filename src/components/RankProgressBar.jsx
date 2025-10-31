@@ -121,6 +121,17 @@ export default function RankProgressBar({
     return '#ff4757'
   }
 
+  const calculateOverallProgress = (requirements, stats, memberData) => {
+    if (!requirements || requirements.length === 0) return 0
+
+    const progressValues = requirements.map(requirement => 
+      calculateProgress(requirement, stats, memberData)
+    )
+
+    const totalProgress = progressValues.reduce((sum, progress) => sum + progress, 0)
+    return Math.round(totalProgress / requirements.length)
+  }
+
   if (loading) {
     return (
       <div className={`rank-progress-bar loading ${className}`}>
@@ -147,6 +158,9 @@ export default function RankProgressBar({
   }
 
   const requirements = parseRequirements(nextRankData['Requirements'])
+  // TESTING: Override progress to 60% for demonstration
+  const overallProgress = 60 // calculateOverallProgress(requirements, currentStats, memberData)
+  const overallProgressColor = getProgressColor(overallProgress)
 
   return (
     <div className={`rank-progress-bar ${className}`}>
@@ -156,6 +170,28 @@ export default function RankProgressBar({
           <span className="current-rank">{currentRank || 'Unranked'}</span>
           <span className="progression-arrow">→</span>
           <span className="next-rank">{nextRankData['Rank Name']}</span>
+        </div>
+      </div>
+
+      {/* Overall Progress Bar */}
+      <div className="overall-progress-section">
+        <div className="overall-progress-header">
+          <span className="overall-progress-label">
+            Overall Progress
+            {overallProgress >= 100 && <span className="completion-badge">✓ Ready for Promotion!</span>}
+          </span>
+          <span className="overall-progress-percentage">{overallProgress}%</span>
+        </div>
+        <div className="overall-progress-bar">
+          <div 
+            className={`overall-progress-fill ${overallProgress >= 100 ? 'completed' : ''}`}
+            style={{ 
+              width: `${overallProgress}%`,
+              backgroundColor: overallProgressColor,
+              boxShadow: `0 0 15px ${overallProgressColor}70, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
+            }}
+          />
+          <div className="overall-progress-glow" style={{ backgroundColor: overallProgressColor }} />
         </div>
       </div>
 
