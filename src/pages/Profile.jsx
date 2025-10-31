@@ -302,7 +302,18 @@ export default function Profile() {
 
   // Apply profile theme colors as CSS custom properties
   useEffect(() => {
-    const themeColors = getProfileThemeColors(currentCustomization)
+    let themeToUse = currentCustomization
+    
+    // If viewing another player and no customization found, use default theme
+    if (isViewingOtherPlayer && !selectedPlayerCustomization) {
+      themeToUse = {
+        profilePageTheme: 'default',
+        profileCustomHue: 220
+      }
+      console.log('Using default theme for selected player (no customization found)')
+    }
+    
+    const themeColors = getProfileThemeColors(themeToUse)
     const root = document.documentElement
     
     // Apply theme colors as CSS variables
@@ -316,7 +327,7 @@ export default function Profile() {
       root.style.setProperty('--profile-secondary', '#1e293b')
       root.style.setProperty('--profile-accent', '#39b9ff')
     }
-  }, [currentCustomization])
+  }, [currentCustomization, isViewingOtherPlayer, selectedPlayerCustomization])
 
   // Fetch member and patrol data
   useEffect(() => {
@@ -667,15 +678,25 @@ export default function Profile() {
           setSelectedPlayerCustomShipImage('')
         }
         
-        // Fetch selected player's customization settings from localStorage (if available)
+        // Fetch selected player's customization settings
         try {
+          // TODO: First try to fetch from Google Sheets API
+          // const customizationResponse = await fetch('/api/get-customization', {
+          //   method: 'POST',
+          //   headers: { 'Content-Type': 'application/json' },
+          //   body: JSON.stringify({ discordId: playerDiscordId, action: 'get' })
+          // })
+          
+          // For now, try localStorage (will only work if player used same device)
           const savedProfile = localStorage.getItem(`profile_${playerDiscordId}`)
           if (savedProfile) {
             const { customization } = JSON.parse(savedProfile)
             setSelectedPlayerCustomization(customization || null)
-            console.log('Loaded customization for selected player:', customization)
+            console.log('Loaded customization for selected player from localStorage:', customization)
           } else {
+            // Set to null so we use default theme
             setSelectedPlayerCustomization(null)
+            console.log('No customization found for selected player, using default theme')
           }
         } catch (error) {
           console.log('No customization found for selected player:', error)
@@ -901,6 +922,27 @@ export default function Profile() {
             stack: customShipImageError.stack
           })
           // Don't fail the entire save operation for custom ship image errors
+        }
+      }
+      
+      // Save customization (theme) data to Google Sheets Member Log
+      if (user?.id && profileData.customization !== undefined) {
+        try {
+          console.log('Saving customization to Google Sheets:', {
+            discordId: user.id,
+            customization: profileData.customization
+          })
+          
+          // For now, we'll store the customization data as JSON in a new column
+          // This would require a new API endpoint, but for testing we'll log it
+          console.log('Customization data to save:', JSON.stringify(profileData.customization))
+          
+          // TODO: Create a new API endpoint like /api/update-customization
+          // that saves theme data to Google Sheets for cross-device/player visibility
+          
+        } catch (customizationError) {
+          console.error('Error saving customization to Google Sheets:', customizationError)
+          // Don't fail the entire save operation for customization errors
         }
       }
       

@@ -1762,14 +1762,14 @@
 }
 
 .command-action.primary {
-  background: rgba(14, 165, 233, 0.2);
-  color: rgba(56, 189, 248, 1);
-  border-color: rgba(14, 165, 233, 0.4);
+  background: color-mix(in srgb, var(--profile-primary), transparent 80%);
+  color: var(--profile-primary);
+  border-color: color-mix(in srgb, var(--profile-primary), transparent 60%);
 }
 
 .command-action.primary:hover {
-  background: rgba(14, 165, 233, 0.3);
-  border-color: rgba(56, 189, 248, 0.6);
+  background: color-mix(in srgb, var(--profile-primary), transparent 70%);
+  border-color: color-mix(in srgb, var(--profile-primary), transparent 40%);
 }
 
 .command-action.success {
@@ -1816,18 +1816,20 @@
 /* Selected Player Section */
 .selected-player-section {
   background: rgba(30, 41, 59, 0.95);
-  border: 1px solid rgba(14, 165, 233, 0.3);
+  border: 1px solid color-mix(in srgb, var(--profile-primary), transparent 70%);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 20px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 15px color-mix(in srgb, var(--profile-primary), transparent 85%);
 }
 
 /* Profile Switch Banner */
 .profile-switch-banner {
-  background: rgba(14, 165, 233, 0.1);
-  border: 1px solid rgba(14, 165, 233, 0.3);
+  background: color-mix(in srgb, var(--profile-primary), transparent 90%);
+  border: 1px solid color-mix(in srgb, var(--profile-primary), transparent 70%);
   border-radius: 8px;
   padding: 12px 16px;
   margin-bottom: 16px;
@@ -1859,19 +1861,21 @@
 
 .switch-back-button:hover {
   background: color-mix(in srgb, var(--profile-accent, #0ea5e9) 30%, transparent);
-  border-color: rgba(14, 165, 233, 0.6);
+  border-color: color-mix(in srgb, var(--profile-primary), transparent 40%);
   transform: translateX(-2px);
 }
 
 /* Viewed Player Info Section */
 .viewed-player-info-section {
   background: rgba(30, 41, 59, 0.95);
-  border: 1px solid rgba(14, 165, 233, 0.3);
+  border: 1px solid color-mix(in srgb, var(--profile-primary), transparent 70%);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 20px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 15px color-mix(in srgb, var(--profile-primary), transparent 85%);
 }
 
 .viewed-player-header {
@@ -1924,12 +1928,14 @@
 /* Profile Bio Section */
 .profile-bio-section {
   background: rgba(30, 41, 59, 0.95);
-  border: 1px solid rgba(14, 165, 233, 0.3);
+  border: 1px solid color-mix(in srgb, var(--profile-primary), transparent 70%);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 20px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 15px color-mix(in srgb, var(--profile-primary), transparent 85%);
   position: relative;
   min-height: 100px;
   overflow: hidden;
@@ -1938,7 +1944,10 @@
 /* When background image is set, enhance the overlay */
 .profile-bio-section[style*="background-image"] {
   background-color: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(14, 165, 233, 0.5);
+  border: 1px solid color-mix(in srgb, var(--profile-primary), transparent 50%);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 20px color-mix(in srgb, var(--profile-primary), transparent 80%);
 }
 
 /* Add a subtle overlay for better text readability */
@@ -1963,13 +1972,13 @@
 
 .bio-header {
   margin-bottom: 16px;
-  border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+  border-bottom: 1px solid color-mix(in srgb, var(--profile-primary), transparent 70%);
   padding-bottom: 8px;
 }
 
 .bio-header h3 {
   margin: 0;
-  color: #0ea5e9;
+  color: var(--profile-primary);
   font-family: 'Orbitron', monospace;
   font-size: 16px;
   font-weight: 600;
@@ -2005,13 +2014,13 @@
 }
 
 .bio-text::-webkit-scrollbar-thumb {
-  background: rgba(14, 165, 233, 0.6);
+  background: color-mix(in srgb, var(--profile-primary), transparent 40%);
   border-radius: 4px;
   transition: background-color 0.3s ease;
 }
 
 .bio-text::-webkit-scrollbar-thumb:hover {
-  background: rgba(14, 165, 233, 0.8);
+  background: color-mix(in srgb, var(--profile-primary), transparent 20%);
 }
 
 .bio-text p {
@@ -2100,7 +2109,7 @@
 }
 
 .ship-name {
-  color: #0ea5e9;
+  color: var(--profile-primary);
   font-family: 'Orbitron', monospace;
   font-size: 14px;
   font-weight: 600;
@@ -2141,7 +2150,7 @@
 
 .selected-player-header h3 {
   margin: 0;
-  color: #0ea5e9;
+  color: var(--profile-primary);
   font-family: 'Orbitron', monospace;
   font-size: 16px;
   font-weight: 600;
@@ -2188,14 +2197,14 @@
 }
 
 .player-rank {
-  color: #0ea5e9;
+  color: var(--profile-primary);
   font-family: 'Orbitron', monospace;
   font-size: 14px;
   font-weight: 600;
-  background: rgba(14, 165, 233, 0.1);
+  background: color-mix(in srgb, var(--profile-primary), transparent 90%);
   padding: 4px 8px;
   border-radius: 6px;
-  border: 1px solid rgba(14, 165, 233, 0.3);
+  border: 1px solid color-mix(in srgb, var(--profile-primary), transparent 70%);
 }
 
 .player-details {
