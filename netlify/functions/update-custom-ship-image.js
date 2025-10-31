@@ -75,28 +75,22 @@ export const handler = async (event, context) => {
         // Update custom ship image
         try {
           if (customShipImage !== undefined) {
-            // Check if it's a base64 data URL and if it's too large for Google Sheets
+            // Reject base64 data URLs that are too large - they won't be visible to other users
             if (customShipImage.startsWith('data:image/') && customShipImage.length > 45000) {
-              console.log('Base64 image too large for Google Sheets:', customShipImage.length, 'characters')
-              console.log('Storing placeholder instead of full base64 data')
-              
-              // Store a placeholder indicating the image is stored locally
-              const placeholder = `LOCAL_BASE64_IMAGE_${discordId}_${Date.now()}`
-              await googleSheetsWriteService.updateCustomShipImage(discordId, placeholder)
-              console.log('Placeholder saved for large base64 image:', placeholder)
+              console.log('Rejecting large base64 image - not shareable:', customShipImage.length, 'characters')
               
               return {
-                statusCode: 200,
+                statusCode: 400,
                 headers,
                 body: JSON.stringify({
-                  success: true,
-                  message: 'Custom ship image saved locally (too large for Google Sheets)',
-                  imageUrl: customShipImage,
-                  storedAs: 'local'
+                  success: false,
+                  error: 'Image too large for sharing',
+                  message: 'Please use a smaller image or ensure Cloudinary/Imgur is configured. Large images stored locally are not visible to other users.',
+                  details: `Image size: ${customShipImage.length} characters (max shareable: 45000)`
                 })
               }
             } else {
-              // Normal case - image URL or small base64
+              // Normal case - image URL or small base64 (shareable)
               await googleSheetsWriteService.updateCustomShipImage(discordId, customShipImage)
               console.log('Custom ship image updated successfully for Discord ID:', discordId)
               

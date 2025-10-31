@@ -172,36 +172,16 @@ export default function Profile() {
         if (customShipImageResult.success && customShipImageResult.customShipImage) {
           console.log('Loaded custom ship image from Google Sheets:', customShipImageResult.customShipImage)
           
-          // Check if it's a placeholder for a large base64 image stored locally
-          if (customShipImageResult.customShipImage.startsWith('LOCAL_BASE64_IMAGE_')) {
-            console.log('Found placeholder for large base64 image, checking localStorage')
-            const localImage = localStorage.getItem(`custom_ship_image_${user.id}`)
-            if (localImage) {
-              console.log('Using large base64 image from localStorage')
-              setProfileCustomShipImage(localImage)
-            } else {
-              console.log('No local image found, using empty')
-              setProfileCustomShipImage('')
-            }
-          } else {
-            // Normal case - use image URL from Google Sheets
-            setProfileCustomShipImage(customShipImageResult.customShipImage)
-          }
+          // Update custom ship image from Google Sheets
+          setProfileCustomShipImage(customShipImageResult.customShipImage)
           
           // Update localStorage to keep it in sync
           const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
           currentProfile.customShipImage = customShipImageResult.customShipImage
           localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
         } else {
-          console.log('No custom ship image found in Google Sheets, checking localStorage')
-          // Check if there's a large base64 image stored locally
-          const localImage = localStorage.getItem(`custom_ship_image_${user.id}`)
-          if (localImage) {
-            console.log('Using large base64 image from localStorage fallback')
-            setProfileCustomShipImage(localImage)
-          } else {
-            setProfileCustomShipImage('')
-          }
+          console.log('No custom ship image found in Google Sheets')
+          setProfileCustomShipImage('')
         }
       } catch (error) {
         console.error('Error loading custom ship image from Google Sheets:', error)
@@ -791,9 +771,19 @@ export default function Profile() {
 
           if (!customShipImageResponse.ok) {
             console.error('Custom ship image API request failed:', customShipImageResponse.status, customShipImageResponse.statusText)
-            const errorText = await customShipImageResponse.text()
-            console.error('Custom ship image error response body:', errorText)
-            throw new Error(`Custom ship image API request failed: ${customShipImageResponse.status} ${customShipImageResponse.statusText}`)
+            const errorResponse = await customShipImageResponse.json().catch(async () => {
+              const errorText = await customShipImageResponse.text()
+              return { error: errorText }
+            })
+            console.error('Custom ship image error response:', errorResponse)
+            
+            // Handle specific error cases
+            if (customShipImageResponse.status === 400 && errorResponse.message?.includes('too large for sharing')) {
+              alert('Image too large: Your image is too big to be shared with other players. Please:\n\n1. Use a smaller image (under 1MB), or\n2. Ask admin to configure Cloudinary/Imgur for large image support\n\nLarge images stored locally are only visible to you.')
+            } else {
+              alert(`Failed to save custom ship image: ${errorResponse.error || errorResponse.message || 'Unknown error'}`)
+            }
+            throw new Error(`Custom ship image API request failed: ${customShipImageResponse.status}`)
           }
 
           const customShipImageResult = await customShipImageResponse.json()
@@ -802,14 +792,9 @@ export default function Profile() {
           if (!customShipImageResult.success) {
             console.warn('Failed to save custom ship image to Google Sheets:', customShipImageResult.message)
             console.warn('Full custom ship image error response:', customShipImageResult)
+            alert(`Failed to save custom ship image: ${customShipImageResult.error || customShipImageResult.message}`)
           } else {
             console.log('Custom ship image saved successfully:', customShipImageResult)
-            
-            // If image was stored locally due to size, save it in localStorage
-            if (customShipImageResult.storedAs === 'local' && customShipImageResult.imageUrl) {
-              console.log('Storing large base64 image in localStorage')
-              localStorage.setItem(`custom_ship_image_${user.id}`, customShipImageResult.imageUrl)
-            }
           }
         } catch (customShipImageError) {
           console.error('Error saving custom ship image to Google Sheets:', customShipImageError)

@@ -59,63 +59,51 @@ export const handler = async (event, context) => {
     // Convert base64 to Buffer
     const base64Data = imageData.replace(/^data:image\/[a-z]+;base64,/, '');
     
-    // Create form data for Cloudinary upload
+    // Create form data for Cloudinary upload using signed upload (no preset needed)
+    const timestamp = Math.round(Date.now() / 1000);
+    
+    // Create signature for signed upload
+    const crypto = await import('crypto');
+    const stringToSign = `timestamp=${timestamp}${apiSecret}`;
+    const signature = crypto.createHash('sha1').update(stringToSign).digest('hex');
+    
     const formData = new URLSearchParams();
     formData.append('file', `data:image/jpeg;base64,${base64Data}`);
+    formData.append('api_key', apiKey);
+    formData.append('timestamp', timestamp.toString());
+    formData.append('signature', signature);
     
-    // Try multiple preset names in case the user named it differently
-    const presetNames = ['ml_default', 'unsigned', 'default', 'upload'];
-    let lastPresetError = null;
+    console.log('Uploading to Cloudinary with signed upload');
     
-    for (const presetName of presetNames) {
-      try {
-        const tempFormData = new URLSearchParams();
-        tempFormData.append('file', `data:image/jpeg;base64,${base64Data}`);
-        tempFormData.append('upload_preset', presetName);
-        
-        console.log(`Trying Cloudinary preset: ${presetName}`);
-        
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-          method: 'POST',
-          body: tempFormData
-        });
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: 'POST',
+      body: formData
+    });
 
-        if (response.ok) {
-          const result = await response.json();
-          console.log(`Cloudinary upload successful with preset: ${presetName}`);
-          
-          return {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({
-              success: true,
-              imageUrl: result.secure_url,
-              deleteHash: result.public_id,
-              service: 'cloudinary',
-              preset: presetName
-            })
-          };
-        } else {
-          const errorText = await response.text();
-          lastPresetError = errorText;
-          console.warn(`Preset ${presetName} failed:`, errorText);
-          continue;
-        }
-      } catch (error) {
-        lastPresetError = error.message;
-        console.warn(`Preset ${presetName} error:`, error);
-        continue;
-      }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Cloudinary signed upload failed:', response.status, errorText);
+      return {
+        statusCode: response.status,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Upload failed',
+          details: errorText
+        })
+      };
     }
+
+    const result = await response.json();
+    console.log('Cloudinary upload successful:', result.secure_url);
     
-    // All presets failed
-    console.error('All Cloudinary presets failed. Last error:', lastPresetError);
     return {
-      statusCode: 400,
+      statusCode: 200,
       headers,
-      body: JSON.stringify({ 
-        error: 'Upload failed',
-        details: `All presets failed. Last error: ${lastPresetError}. Please create an unsigned upload preset in Cloudinary settings.`
+      body: JSON.stringify({
+        success: true,
+        imageUrl: result.secure_url,
+        deleteHash: result.public_id,
+        service: 'cloudinary'
       })
     };
   } catch (error) {
