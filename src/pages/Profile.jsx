@@ -48,6 +48,8 @@ export default function Profile() {
   const [profileBio, setProfileBio] = useState('')
   const [profileShip, setProfileShip] = useState('')
   const [profileCustomShipImage, setProfileCustomShipImage] = useState('')
+  const [profileCustomization, setProfileCustomization] = useState(null)
+  const [selectedPlayerCustomization, setSelectedPlayerCustomization] = useState(null)
   const [selectedPlayerCustomShipImage, setSelectedPlayerCustomShipImage] = useState('')
   const [shipRegistry, setShipRegistry] = useState([])
 
@@ -66,9 +68,10 @@ export default function Profile() {
       const savedProfile = localStorage.getItem(`profile_${user.id}`)
       if (savedProfile) {
         try {
-          const { bio, ship } = JSON.parse(savedProfile)
+          const { bio, ship, customization } = JSON.parse(savedProfile)
           setProfileBio(bio || '')
           setProfileShip(ship || '')
+          setProfileCustomization(customization || null)
         } catch (error) {
           console.error('Error loading profile data from localStorage:', error)
         }
@@ -645,6 +648,7 @@ export default function Profile() {
       setProfileBio(profileData.bio)
       setProfileShip(profileData.ship)
       setProfileCustomShipImage(profileData.customShipImage || '')
+      setProfileCustomization(profileData.customization || null)
       
       // Save ship selection to Google Sheets Member Log
       if (user?.id && profileData.ship !== undefined) {
@@ -1157,6 +1161,7 @@ export default function Profile() {
               currentRank={currentDisplayData.Rank}
               currentStats={currentGoogleStats}
               memberData={currentDisplayData}
+              customization={profileCustomization}
             />
           )}
 
@@ -1276,6 +1281,7 @@ export default function Profile() {
         currentBio={profileBio}
         currentShip={profileShip}
         currentCustomShipImage={profileCustomShipImage}
+        currentCustomization={profileCustomization}
       />
 
       <Footer />

@@ -6,12 +6,14 @@ export default function RankProgressBar({
   currentRank, 
   currentStats, 
   memberData, 
-  className = '' 
+  className = '',
+  customization = null
 }) {
   const [allRanks, setAllRanks] = useState([])
   const [currentRankData, setCurrentRankData] = useState(null)
   const [nextRankData, setNextRankData] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showTooltip, setShowTooltip] = useState(false)
 
   // Define rank order for progression (from lowest to highest)
   const rankOrder = [
@@ -27,6 +29,43 @@ export default function RankProgressBar({
     'Chapter Master',
     'Primarch'
   ]
+
+  // Progress bar color themes
+  const colorThemes = {
+    'classic': {
+      primary: '#39b9ff',
+      secondary: '#00ff88',
+      background: 'rgba(57, 185, 255, 0.1)',
+      border: 'rgba(57, 185, 255, 0.3)'
+    },
+    'frost': {
+      primary: '#00d4ff',
+      secondary: '#7dd3fc',
+      background: 'rgba(0, 212, 255, 0.1)',
+      border: 'rgba(0, 212, 255, 0.3)'
+    },
+    'ocean': {
+      primary: '#0ea5e9',
+      secondary: '#38bdf8',
+      background: 'rgba(14, 165, 233, 0.1)',
+      border: 'rgba(14, 165, 233, 0.3)'
+    },
+    'midnight': {
+      primary: '#1e40af',
+      secondary: '#3b82f6',
+      background: 'rgba(30, 64, 175, 0.1)',
+      border: 'rgba(30, 64, 175, 0.3)'
+    },
+    'cyan': {
+      primary: '#06b6d4',
+      secondary: '#67e8f9',
+      background: 'rgba(6, 182, 212, 0.1)',
+      border: 'rgba(6, 182, 212, 0.3)'
+    }
+  }
+
+  // Get current theme
+  const currentTheme = colorThemes[customization?.progressBarTheme || 'classic']
 
   useEffect(() => {
     loadRankData()
@@ -132,6 +171,62 @@ export default function RankProgressBar({
     return Math.round(totalProgress / requirements.length)
   }
 
+  const getRequirementsBreakdown = (requirements, stats, memberData) => {
+    if (!requirements || !stats || !memberData) return []
+
+    return requirements.map(requirement => {
+      const reqLower = requirement.toLowerCase()
+      const numberMatch = requirement.match(/(\d+)/)
+      const requiredAmount = numberMatch ? parseInt(numberMatch[1]) : 0
+      
+      let currentAmount = 0
+      let type = ''
+
+      if (reqLower.includes('quest') && reqLower.includes('led')) {
+        currentAmount = parseInt(stats.ledQuests) || 0
+        type = 'Quests Led'
+      } else if (reqLower.includes('quest')) {
+        currentAmount = parseInt(stats.quests) || 0
+        type = 'Quests Completed'
+      } else if (reqLower.includes('crusade') && reqLower.includes('led')) {
+        currentAmount = parseInt(stats.ledCrusades) || 0
+        type = 'Crusades Led'
+      } else if (reqLower.includes('crusade')) {
+        currentAmount = parseInt(stats.crusades) || 0
+        type = 'Crusades Completed'
+      } else if (reqLower.includes('kill') && reqLower.includes('ground')) {
+        currentAmount = parseInt(stats.fpsKills) || 0
+        type = 'Ground Kills'
+      } else if (reqLower.includes('kill') && (reqLower.includes('ship') || reqLower.includes('pilot'))) {
+        currentAmount = parseInt(stats.shipKills) || 0
+        type = 'Ship Kills'
+      } else if (reqLower.includes('kill') && reqLower.includes('turret')) {
+        currentAmount = parseInt(stats.turretKills) || 0
+        type = 'Turret Kills'
+      } else if (reqLower.includes('hour')) {
+        currentAmount = parseInt(stats.totalLength) || 0
+        type = 'Hours Played'
+      } else if (reqLower.includes('month') || reqLower.includes('time')) {
+        if (memberData?.['Join Date']) {
+          const joinDate = new Date(memberData['Join Date'])
+          const now = new Date()
+          const monthsDiff = (now.getFullYear() - joinDate.getFullYear()) * 12 + (now.getMonth() - joinDate.getMonth())
+          currentAmount = monthsDiff
+        }
+        type = 'Months in Service'
+      } else {
+        type = 'Other'
+      }
+
+      return {
+        type,
+        current: currentAmount,
+        required: requiredAmount,
+        progress: requiredAmount > 0 ? Math.min(100, (currentAmount / requiredAmount) * 100) : 100
+      }
+    })
+  }
+
   if (loading) {
     return (
       <div className={`rank-progress-bar loading ${className}`}>
@@ -160,87 +255,57 @@ export default function RankProgressBar({
   const requirements = parseRequirements(nextRankData['Requirements'])
   // TESTING: Override progress to 60% for demonstration
   const overallProgress = 60 // calculateOverallProgress(requirements, currentStats, memberData)
-  const overallProgressColor = getProgressColor(overallProgress)
+  const overallProgressColor = currentTheme.primary
+  const requirementsBreakdown = getRequirementsBreakdown(requirements, currentStats, memberData)
 
   return (
-    <div className={`rank-progress-bar ${className}`}>
-      <div className="progress-header">
-        <h3>Progress to {nextRankData['Rank Name']}</h3>
-        <div className="rank-progression">
-          <span className="current-rank">{currentRank || 'Unranked'}</span>
-          <span className="progression-arrow">→</span>
-          <span className="next-rank">{nextRankData['Rank Name']}</span>
+    <div className={`rank-progress-bar-inline ${className}`}>
+      {/* Compact Header */}
+      <div className="progress-inline-header">
+        <div className="rank-progression-compact">
+          <span className="current-rank-compact">{currentRank || 'Unranked'}</span>
+          <span className="progression-arrow-compact">→</span>
+          <span className="next-rank-compact">{nextRankData['Rank Name']}</span>
         </div>
+        <span className="progress-percentage-compact">{overallProgress}%</span>
       </div>
 
-      {/* Overall Progress Bar */}
-      <div className="overall-progress-section">
-        <div className="overall-progress-header">
-          <span className="overall-progress-label">
-            Overall Progress
-            {overallProgress >= 100 && <span className="completion-badge">✓ Ready for Promotion!</span>}
-          </span>
-          <span className="overall-progress-percentage">{overallProgress}%</span>
-        </div>
-        <div className="overall-progress-bar">
+      {/* Sleek Progress Bar with Hover */}
+      <div 
+        className="progress-bar-container"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        style={{
+          '--theme-primary': currentTheme.primary,
+          '--theme-secondary': currentTheme.secondary,
+          '--theme-background': currentTheme.background,
+          '--theme-border': currentTheme.border
+        }}
+      >
+        <div className="sleek-progress-bar">
           <div 
-            className={`overall-progress-fill ${overallProgress >= 100 ? 'completed' : ''}`}
+            className="sleek-progress-fill"
             style={{ 
               width: `${overallProgress}%`,
-              backgroundColor: overallProgressColor,
-              boxShadow: `0 0 15px ${overallProgressColor}70, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
+              background: `linear-gradient(90deg, ${currentTheme.primary}, ${currentTheme.secondary})`
             }}
           />
-          <div className="overall-progress-glow" style={{ backgroundColor: overallProgressColor }} />
         </div>
-      </div>
 
-      <div className="requirements-container">
-        {requirements.length > 0 ? (
-          requirements.map((requirement, index) => {
-            const progress = calculateProgress(requirement, currentStats, memberData)
-            const progressColor = getProgressColor(progress)
-
-            return (
-              <div key={index} className="requirement-item">
-                <div className="requirement-text">
-                  {requirement}
-                </div>
-                <div className="requirement-progress">
-                  <div 
-                    className="progress-bar-fill"
-                    style={{ 
-                      width: `${progress}%`,
-                      backgroundColor: progressColor,
-                      boxShadow: `0 0 10px ${progressColor}50`
-                    }}
-                  />
-                  <div className="progress-percentage">
-                    {Math.round(progress)}%
-                  </div>
-                </div>
+        {/* Hover Tooltip */}
+        {showTooltip && requirementsBreakdown.length > 0 && (
+          <div className="requirements-tooltip">
+            <div className="tooltip-header">Requirements for {nextRankData['Rank Name']}</div>
+            {requirementsBreakdown.map((req, index) => (
+              <div key={index} className="tooltip-requirement">
+                <span className="req-type">{req.type}:</span>
+                <span className="req-progress">{req.current}/{req.required}</span>
+                <span className="req-percentage">({Math.round(req.progress)}%)</span>
               </div>
-            )
-          })
-        ) : (
-          <div className="no-requirements">
-            <span>Requirements data not available</span>
+            ))}
           </div>
         )}
       </div>
-
-      {nextRankData['Rank Image'] && (
-        <div className="next-rank-preview">
-          <img 
-            src={`/Ranks/${nextRankData['Rank Name']}.png`}
-            alt={`${nextRankData['Rank Name']} insignia`}
-            className="next-rank-icon"
-            onError={(e) => {
-              e.target.style.display = 'none'
-            }}
-          />
-        </div>
-      )}
     </div>
   )
 }

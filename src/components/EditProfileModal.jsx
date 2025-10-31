@@ -3,7 +3,7 @@ import OFSDataService from '../services/ofsDataService'
 import RichTextEditor from './RichTextEditor'
 import './EditProfileModal.css'
 
-export default function EditProfileModal({ isOpen, onClose, onSave, currentBio = '', currentShip = '', currentCustomShipImage = '' }) {
+export default function EditProfileModal({ isOpen, onClose, onSave, currentBio = '', currentShip = '', currentCustomShipImage = '', currentCustomization = null }) {
   const [bio, setBio] = useState(currentBio)
   const [selectedShip, setSelectedShip] = useState(currentShip)
   const [customShipImage, setCustomShipImage] = useState(currentCustomShipImage)
@@ -13,6 +13,16 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
   const [isSaving, setIsSaving] = useState(false)
   const [ships, setShips] = useState([])
   const [shipsLoading, setShipsLoading] = useState(false)
+  const [progressBarTheme, setProgressBarTheme] = useState(currentCustomization?.progressBarTheme || 'classic')
+
+  // Progress bar theme options
+  const progressBarThemes = [
+    { value: 'classic', name: 'Classic Blue', primary: '#39b9ff', secondary: '#00ff88' },
+    { value: 'frost', name: 'Frost Blue', primary: '#00d4ff', secondary: '#7dd3fc' },
+    { value: 'ocean', name: 'Deep Ocean', primary: '#0ea5e9', secondary: '#38bdf8' },
+    { value: 'midnight', name: 'Midnight Blue', primary: '#1e40af', secondary: '#3b82f6' },
+    { value: 'cyan', name: 'Cyber Cyan', primary: '#06b6d4', secondary: '#67e8f9' }
+  ]
 
   // Fetch ships from Google Sheets when modal opens
   useEffect(() => {
@@ -42,8 +52,9 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
       setCustomShipImage(currentCustomShipImage)
       setCustomShipImagePreview(currentCustomShipImage)
       setCustomShipImageFile(null)
+      setProgressBarTheme(currentCustomization?.progressBarTheme || 'classic')
     }
-  }, [isOpen, currentBio, currentShip, currentCustomShipImage])
+  }, [isOpen, currentBio, currentShip, currentCustomShipImage, currentCustomization])
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0]
@@ -234,13 +245,15 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
       console.log('Saving profile with data:', {
         bio: bio.trim().length + ' characters',
         ship: selectedShip,
-        customShipImage: finalCustomShipImage ? 'Custom image provided' : 'No custom image'
+        customShipImage: finalCustomShipImage ? 'Custom image provided' : 'No custom image',
+        customization: { progressBarTheme }
       })
       
       await onSave({
         bio: bio.trim(),
         ship: selectedShip,
-        customShipImage: finalCustomShipImage
+        customShipImage: finalCustomShipImage,
+        customization: { progressBarTheme }
       })
       
       console.log('Profile saved successfully')
@@ -359,6 +372,48 @@ Use the toolbar above to format your text with different sizes, bold, underline,
                   </div>
                 </label>
               )}
+            </div>
+          </div>
+
+          {/* Progress Bar Theme Customization */}
+          <div className="form-section">
+            <label className="form-label">
+              Progress Bar Theme
+              <span className="form-note">Customize your rank progress bar appearance</span>
+            </label>
+            
+            <div className="theme-selection">
+              {progressBarThemes.map((theme) => (
+                <div 
+                  key={theme.value}
+                  className={`theme-option ${progressBarTheme === theme.value ? 'selected' : ''}`}
+                  onClick={() => setProgressBarTheme(theme.value)}
+                >
+                  <div className="theme-preview">
+                    <div 
+                      className="theme-preview-bar"
+                      style={{
+                        background: `linear-gradient(90deg, ${theme.primary}, ${theme.secondary})`
+                      }}
+                    />
+                  </div>
+                  <div className="theme-info">
+                    <span className="theme-name">{theme.name}</span>
+                    <div className="theme-colors">
+                      <div 
+                        className="color-swatch"
+                        style={{ backgroundColor: theme.primary }}
+                        title="Primary Color"
+                      />
+                      <div 
+                        className="color-swatch"
+                        style={{ backgroundColor: theme.secondary }}
+                        title="Secondary Color"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
