@@ -145,18 +145,6 @@
   font-size: 1.2rem;
   font-weight: 700;
   text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
-  animation: percentagePulse 2s ease-in-out infinite;
-}
-
-@keyframes percentagePulse {
-  0%, 100% { 
-    transform: scale(1);
-    text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
-  }
-  50% { 
-    transform: scale(1.05);
-    text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
-  }
 }
 
 .overall-progress-bar {
@@ -229,9 +217,7 @@
   height: 100%;
   background: linear-gradient(90deg, 
     transparent 0%, 
-    rgba(255, 255, 255, 0.4) 30%,
-    rgba(255, 255, 255, 0.6) 50%,
-    rgba(255, 255, 255, 0.4) 70%,
+    rgba(255, 255, 255, 0.1) 50%, 
     transparent 100%
   );
   animation: overallProgressShine 3s ease-in-out infinite;
@@ -251,19 +237,7 @@
   border-radius: 10px;
   opacity: 0.3;
   filter: blur(8px);
-  animation: progressGlowExpand 2s ease-in-out infinite;
   pointer-events: none;
-}
-
-@keyframes progressGlowExpand {
-  0%, 100% { 
-    width: 0%;
-    opacity: 0.3;
-  }
-  50% { 
-    width: 100%;
-    opacity: 0.6;
-  }
 }
 
 /* Requirements Container */
