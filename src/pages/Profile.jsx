@@ -198,6 +198,11 @@ export default function Profile() {
 
   // Progress bar color theme function
   const getProgressBarColors = (customization) => {
+    // If viewing another player and no customization found, use default
+    if (isViewingOtherPlayer && !selectedPlayerCustomization) {
+      return { primary: '#39b9ff', secondary: '#00ff88' } // Default classic theme
+    }
+    
     if (!customization?.progressBarTheme) {
       return { primary: '#39b9ff', secondary: '#00ff88' } // Default classic theme
     }
