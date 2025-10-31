@@ -201,6 +201,17 @@
   width: 100%;
 }
 
+.progress-label {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #e2e8f0;
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
 .welcome-progress-bar-container {
   display: flex;
   align-items: center;
