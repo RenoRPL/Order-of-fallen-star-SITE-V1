@@ -54,6 +54,7 @@ export default function Profile() {
 
   // Get current displayed data (either logged-in user or selected player)
   const currentDisplayData = isViewingOtherPlayer && selectedPlayerData ? selectedPlayerData : memberData
+  const currentCustomization = isViewingOtherPlayer && selectedPlayerCustomization ? selectedPlayerCustomization : profileCustomization
   const currentPatrolData = isViewingOtherPlayer && selectedPlayerPatrolData ? selectedPlayerPatrolData : patrolData
   const currentPatrolStats = isViewingOtherPlayer && selectedPlayerStats ? selectedPlayerStats : patrolStats
   const currentGoogleStats = isViewingOtherPlayer && selectedPlayerGoogleStats ? selectedPlayerGoogleStats : googleStats
@@ -194,6 +195,35 @@ export default function Profile() {
 
     loadProfileData()
   }, [user?.id])
+
+  // Progress bar color theme function
+  const getProgressBarColors = (customization) => {
+    if (!customization?.progressBarTheme) {
+      return { primary: '#39b9ff', secondary: '#00ff88' } // Default classic theme
+    }
+
+    const theme = customization.progressBarTheme
+    
+    // If custom theme is selected, use the custom hue
+    if (theme === 'custom' && customization.customHue !== undefined) {
+      const hue = customization.customHue
+      return {
+        primary: `hsl(${hue}, 85%, 60%)`,
+        secondary: `hsl(${hue + 30}, 80%, 65%)`
+      }
+    }
+
+    // Predefined themes
+    const themes = {
+      classic: { primary: '#39b9ff', secondary: '#00ff88' },
+      frost: { primary: '#00d4ff', secondary: '#7dd3fc' },
+      ocean: { primary: '#0ea5e9', secondary: '#38bdf8' },
+      midnight: { primary: '#1e40af', secondary: '#3b82f6' },
+      cyan: { primary: '#06b6d4', secondary: '#67e8f9' }
+    }
+
+    return themes[theme] || themes.classic
+  }
 
   // Load ship registry for display names
   useEffect(() => {
@@ -586,6 +616,21 @@ export default function Profile() {
         } catch (error) {
           console.log('No custom ship image found for selected player:', error)
           setSelectedPlayerCustomShipImage('')
+        }
+        
+        // Fetch selected player's customization settings from localStorage (if available)
+        try {
+          const savedProfile = localStorage.getItem(`profile_${playerDiscordId}`)
+          if (savedProfile) {
+            const { customization } = JSON.parse(savedProfile)
+            setSelectedPlayerCustomization(customization || null)
+            console.log('Loaded customization for selected player:', customization)
+          } else {
+            setSelectedPlayerCustomization(null)
+          }
+        } catch (error) {
+          console.log('No customization found for selected player:', error)
+          setSelectedPlayerCustomization(null)
         }
         
         // Switch to viewing the other player
@@ -1020,8 +1065,8 @@ export default function Profile() {
                 {/* Path badge moved to bottom center */}
                 <span className="path-badge">{currentDisplayData?.['Role Path'] || 'Unassigned'}</span>
                 
-                {/* Integrated Progress Bar - Show for own profile only when user has rank data */}
-                {!isViewingOtherPlayer && currentDisplayData?.Rank && (
+                {/* Integrated Progress Bar - Show when user has rank data */}
+                {currentDisplayData?.Rank && (
                   <div className="welcome-progress-section">
                     <div className="welcome-progress-header">
                       <span className="current-rank-welcome">{currentDisplayData.Rank}</span>
@@ -1034,7 +1079,10 @@ export default function Profile() {
                           className="welcome-progress-fill"
                           style={{ 
                             width: '60%',
-                            background: `linear-gradient(90deg, ${profileCustomization?.progressBarTheme === 'frost' ? '#00d4ff' : '#39b9ff'}, ${profileCustomization?.progressBarTheme === 'frost' ? '#7dd3fc' : '#00ff88'})`
+                            background: (() => {
+                              const colors = getProgressBarColors(currentCustomization)
+                              return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
+                            })()
                           }}
                         />
                       </div>

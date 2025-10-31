@@ -423,3 +423,101 @@
     align-items: flex-start;
   }
 }
+
+/* Hue Slider Styles */
+.hue-slider-section {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(30, 41, 59, 0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.hue-slider-label {
+  display: block;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
+  font-weight: 500;
+}
+
+.hue-value {
+  color: #0ea5e9;
+  font-weight: 600;
+  font-family: 'Orbitron', monospace;
+}
+
+.hue-slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.hue-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.hue-slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #0ea5e9;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.5);
+  transition: all 0.2s ease;
+}
+
+.hue-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.7);
+}
+
+.hue-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #0ea5e9;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.5);
+  transition: all 0.2s ease;
+}
+
+.hue-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.7);
+}
+
+.hue-preview-colors {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.hue-preview-primary,
+.hue-preview-secondary {
+  width: 40px;
+  height: 20px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.hue-preview-primary:hover,
+.hue-preview-secondary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+}

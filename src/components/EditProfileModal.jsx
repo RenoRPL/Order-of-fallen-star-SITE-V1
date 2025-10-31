@@ -14,6 +14,7 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
   const [ships, setShips] = useState([])
   const [shipsLoading, setShipsLoading] = useState(false)
   const [progressBarTheme, setProgressBarTheme] = useState(currentCustomization?.progressBarTheme || 'classic')
+  const [customHue, setCustomHue] = useState(currentCustomization?.customHue || 200) // Default to blue-ish hue
 
   // Progress bar theme options
   const progressBarThemes = [
@@ -21,8 +22,17 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
     { value: 'frost', name: 'Frost Blue', primary: '#00d4ff', secondary: '#7dd3fc' },
     { value: 'ocean', name: 'Deep Ocean', primary: '#0ea5e9', secondary: '#38bdf8' },
     { value: 'midnight', name: 'Midnight Blue', primary: '#1e40af', secondary: '#3b82f6' },
-    { value: 'cyan', name: 'Cyber Cyan', primary: '#06b6d4', secondary: '#67e8f9' }
+    { value: 'cyan', name: 'Cyber Cyan', primary: '#06b6d4', secondary: '#67e8f9' },
+    { value: 'custom', name: 'Custom Hue', primary: 'custom', secondary: 'custom' }
   ]
+
+  // Generate custom colors based on hue
+  const getCustomColors = (hue) => {
+    return {
+      primary: `hsl(${hue}, 85%, 60%)`,
+      secondary: `hsl(${hue + 30}, 80%, 65%)`
+    }
+  }
 
   // Fetch ships from Google Sheets when modal opens
   useEffect(() => {
@@ -246,14 +256,14 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
         bio: bio.trim().length + ' characters',
         ship: selectedShip,
         customShipImage: finalCustomShipImage ? 'Custom image provided' : 'No custom image',
-        customization: { progressBarTheme }
+        customization: { progressBarTheme, customHue }
       })
       
       await onSave({
         bio: bio.trim(),
         ship: selectedShip,
         customShipImage: finalCustomShipImage,
-        customization: { progressBarTheme }
+        customization: { progressBarTheme, customHue }
       })
       
       console.log('Profile saved successfully')
@@ -383,38 +393,103 @@ Use the toolbar above to format your text with different sizes, bold, underline,
             </label>
             
             <div className="theme-selection">
-              {progressBarThemes.map((theme) => (
-                <div 
-                  key={theme.value}
-                  className={`theme-option ${progressBarTheme === theme.value ? 'selected' : ''}`}
-                  onClick={() => setProgressBarTheme(theme.value)}
-                >
-                  <div className="theme-preview">
-                    <div 
-                      className="theme-preview-bar"
-                      style={{
-                        background: `linear-gradient(90deg, ${theme.primary}, ${theme.secondary})`
-                      }}
-                    />
-                  </div>
-                  <div className="theme-info">
-                    <span className="theme-name">{theme.name}</span>
-                    <div className="theme-colors">
+              {progressBarThemes.map((theme) => {
+                const isCustom = theme.value === 'custom'
+                const customColors = isCustom ? getCustomColors(customHue) : null
+                
+                return (
+                  <div 
+                    key={theme.value}
+                    className={`theme-option ${progressBarTheme === theme.value ? 'selected' : ''}`}
+                    onClick={() => setProgressBarTheme(theme.value)}
+                  >
+                    <div className="theme-preview">
                       <div 
-                        className="color-swatch"
-                        style={{ backgroundColor: theme.primary }}
-                        title="Primary Color"
-                      />
-                      <div 
-                        className="color-swatch"
-                        style={{ backgroundColor: theme.secondary }}
-                        title="Secondary Color"
+                        className="theme-preview-bar"
+                        style={{
+                          background: isCustom 
+                            ? `linear-gradient(90deg, ${customColors.primary}, ${customColors.secondary})`
+                            : `linear-gradient(90deg, ${theme.primary}, ${theme.secondary})`
+                        }}
                       />
                     </div>
+                    <div className="theme-info">
+                      <span className="theme-name">{theme.name}</span>
+                      <div className="theme-colors">
+                        {isCustom ? (
+                          <>
+                            <div 
+                              className="color-swatch"
+                              style={{ backgroundColor: customColors.primary }}
+                              title="Primary Color"
+                            />
+                            <div 
+                              className="color-swatch"
+                              style={{ backgroundColor: customColors.secondary }}
+                              title="Secondary Color"
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <div 
+                              className="color-swatch"
+                              style={{ backgroundColor: theme.primary }}
+                              title="Primary Color"
+                            />
+                            <div 
+                              className="color-swatch"
+                              style={{ backgroundColor: theme.secondary }}
+                              title="Secondary Color"
+                            />
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Custom Hue Slider - Only show when custom theme is selected */}
+            {progressBarTheme === 'custom' && (
+              <div className="hue-slider-section">
+                <label className="hue-slider-label">
+                  Custom Hue: <span className="hue-value">{customHue}°</span>
+                </label>
+                <div className="hue-slider-container">
+                  <input
+                    type="range"
+                    min="0"
+                    max="360"
+                    value={customHue}
+                    onChange={(e) => setCustomHue(parseInt(e.target.value))}
+                    className="hue-slider"
+                    style={{
+                      background: `linear-gradient(to right, 
+                        hsl(0, 85%, 60%), 
+                        hsl(60, 85%, 60%), 
+                        hsl(120, 85%, 60%), 
+                        hsl(180, 85%, 60%), 
+                        hsl(240, 85%, 60%), 
+                        hsl(300, 85%, 60%), 
+                        hsl(360, 85%, 60%))`
+                    }}
+                  />
+                  <div className="hue-preview-colors">
+                    <div 
+                      className="hue-preview-primary"
+                      style={{ backgroundColor: getCustomColors(customHue).primary }}
+                      title="Primary Color Preview"
+                    />
+                    <div 
+                      className="hue-preview-secondary"
+                      style={{ backgroundColor: getCustomColors(customHue).secondary }}
+                      title="Secondary Color Preview"
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
