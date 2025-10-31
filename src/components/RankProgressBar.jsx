@@ -267,7 +267,6 @@ export default function RankProgressBar({
           <span className="progression-arrow-compact">→</span>
           <span className="next-rank-compact">{nextRankData['Rank Name']}</span>
         </div>
-        <span className="progress-percentage-compact">{overallProgress}%</span>
       </div>
 
       {/* Sleek Progress Bar with Hover */}

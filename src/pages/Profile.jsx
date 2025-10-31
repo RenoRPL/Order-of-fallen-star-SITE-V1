@@ -6,7 +6,6 @@ import Footer from '../components/Footer'
 import RSILinkModal from '../components/RSILinkModal'
 import EditProfileModal from '../components/EditProfileModal'
 import PlayerSearch from '../components/PlayerSearch'
-import RankProgressBar from '../components/RankProgressBar'
 import OFSDataService from '../services/ofsDataService'
 import { GoogleSheetsService } from '../services/googleSheetsService'
 import './Profile.css'
@@ -1020,6 +1019,28 @@ export default function Profile() {
                 </p>
                 {/* Path badge moved to bottom center */}
                 <span className="path-badge">{currentDisplayData?.['Role Path'] || 'Unassigned'}</span>
+                
+                {/* Integrated Progress Bar - Show for own profile only when user has rank data */}
+                {!isViewingOtherPlayer && currentDisplayData?.Rank && (
+                  <div className="welcome-progress-section">
+                    <div className="welcome-progress-header">
+                      <span className="current-rank-welcome">{currentDisplayData.Rank}</span>
+                      <span className="progress-arrow-welcome">→</span>
+                      <span className="next-rank-welcome">Squire</span>
+                    </div>
+                    <div className="welcome-progress-bar-container">
+                      <div className="welcome-progress-bar">
+                        <div 
+                          className="welcome-progress-fill"
+                          style={{ 
+                            width: '60%',
+                            background: `linear-gradient(90deg, ${profileCustomization?.progressBarTheme === 'frost' ? '#00d4ff' : '#39b9ff'}, ${profileCustomization?.progressBarTheme === 'frost' ? '#7dd3fc' : '#00ff88'})`
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               
               {/* Right: Rank Icon and Role Badge */}
@@ -1153,16 +1174,6 @@ export default function Profile() {
                 )}
               </div>
             </div>
-          )}
-
-          {/* Rank Progress Bar - Show for own profile only when user has rank data */}
-          {!isViewingOtherPlayer && currentDisplayData?.Rank && (
-            <RankProgressBar
-              currentRank={currentDisplayData.Rank}
-              currentStats={currentGoogleStats}
-              memberData={currentDisplayData}
-              customization={profileCustomization}
-            />
           )}
 
           {/* Content Grid - Compact Layout */}

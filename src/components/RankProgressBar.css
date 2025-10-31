@@ -17,12 +17,33 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
+/* Welcome Section Integration */
+.rank-progress-bar-inline.welcome-progress-bar {
+  margin: 1rem 0 0 0;
+  padding: 0.8rem 1.2rem;
+  background: linear-gradient(135deg, 
+    rgba(10, 25, 47, 0.6) 0%, 
+    rgba(24, 39, 77, 0.5) 50%, 
+    rgba(15, 30, 60, 0.6) 100%
+  );
+  border: 1px solid var(--theme-border, rgba(57, 185, 255, 0.2));
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
 /* Compact Header */
 .progress-inline-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+}
+
+/* Welcome section - center the header */
+.welcome-progress-bar .progress-inline-header {
+  justify-content: center;
+  margin-bottom: 0.8rem;
 }
 
 .rank-progression-compact {
@@ -204,10 +225,19 @@
     margin: 1rem 0;
   }
   
+  .welcome-progress-bar {
+    padding: 0.6rem 0.8rem;
+    margin: 0.8rem 0 0 0;
+  }
+  
   .progress-inline-header {
     flex-direction: column;
     gap: 0.8rem;
     align-items: flex-start;
+  }
+  
+  .welcome-progress-bar .progress-inline-header {
+    align-items: center;
   }
   
   .rank-progression-compact {
