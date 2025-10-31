@@ -201,14 +201,13 @@
   width: 100%;
 }
 
-.welcome-progress-header {
+.welcome-progress-bar-container {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 0.8rem;
-  font-size: 0.85rem;
-  font-weight: 500;
+  gap: 1rem;
+  width: 100%;
+  max-width: 450px; /* Increased from 300px */
+  margin: 0 auto;
 }
 
 .current-rank-welcome {
@@ -218,13 +217,10 @@
   border: 1px solid rgba(57, 185, 255, 0.3);
   border-radius: 6px;
   font-weight: 600;
+  font-size: 0.85rem;
   text-shadow: 0 0 5px rgba(57, 185, 255, 0.5);
-}
-
-.progress-arrow-welcome {
-  color: #ffffff;
-  font-size: 1rem;
-  opacity: 0.7;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .next-rank-welcome {
@@ -234,16 +230,14 @@
   border: 1px solid rgba(0, 255, 136, 0.3);
   border-radius: 6px;
   font-weight: 600;
+  font-size: 0.85rem;
   text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
-}
-
-.welcome-progress-bar-container {
-  width: 100%;
-  max-width: 300px;
-  margin: 0 auto;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .welcome-progress-bar {
+  flex: 1; /* Take up remaining space */
   height: 12px;
   background: linear-gradient(90deg, 
     rgba(0, 0, 0, 0.4) 0%, 
@@ -1287,13 +1281,15 @@
     padding: 1rem;
   }
 
-  .welcome-progress-header {
-    font-size: 0.75rem;
-    gap: 0.6rem;
+  .welcome-progress-bar-container {
+    max-width: 350px; /* Increased for mobile */
+    gap: 0.8rem;
   }
 
-  .welcome-progress-bar-container {
-    max-width: 250px;
+  .current-rank-welcome,
+  .next-rank-welcome {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
   }
 
   .welcome-progress-bar {

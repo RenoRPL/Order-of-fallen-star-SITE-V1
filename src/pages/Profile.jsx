@@ -1068,12 +1068,8 @@ export default function Profile() {
                 {/* Integrated Progress Bar - Show when user has rank data */}
                 {currentDisplayData?.Rank && (
                   <div className="welcome-progress-section">
-                    <div className="welcome-progress-header">
-                      <span className="current-rank-welcome">{currentDisplayData.Rank}</span>
-                      <span className="progress-arrow-welcome">→</span>
-                      <span className="next-rank-welcome">Squire</span>
-                    </div>
                     <div className="welcome-progress-bar-container">
+                      <span className="current-rank-welcome">{currentDisplayData.Rank}</span>
                       <div className="welcome-progress-bar">
                         <div 
                           className="welcome-progress-fill"
@@ -1086,6 +1082,7 @@ export default function Profile() {
                           }}
                         />
                       </div>
+                      <span className="next-rank-welcome">Squire</span>
                     </div>
                   </div>
                 )}
