@@ -15,6 +15,8 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
   const [shipsLoading, setShipsLoading] = useState(false)
   const [progressBarTheme, setProgressBarTheme] = useState(currentCustomization?.progressBarTheme || 'classic')
   const [customHue, setCustomHue] = useState(currentCustomization?.customHue || 200) // Default to blue-ish hue
+  const [profilePageTheme, setProfilePageTheme] = useState(currentCustomization?.profilePageTheme || 'default')
+  const [profileCustomHue, setProfileCustomHue] = useState(currentCustomization?.profileCustomHue || 220) // Default to blue-ish hue
 
   // Progress bar theme options
   const progressBarThemes = [
@@ -31,6 +33,26 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
     return {
       primary: `hsl(${hue}, 85%, 60%)`,
       secondary: `hsl(${hue + 30}, 80%, 65%)`
+    }
+  }
+
+  // Profile page theme options
+  const profilePageThemes = [
+    { value: 'default', name: 'Default Space', primary: '#0ea5e9', secondary: '#1e293b', accent: '#39b9ff' },
+    { value: 'crimson', name: 'Crimson Void', primary: '#dc2626', secondary: '#450a0a', accent: '#ef4444' },
+    { value: 'emerald', name: 'Emerald Nebula', primary: '#059669', secondary: '#064e3b', accent: '#10b981' },
+    { value: 'violet', name: 'Violet Storm', primary: '#7c3aed', secondary: '#2e1065', accent: '#8b5cf6' },
+    { value: 'amber', name: 'Solar Flare', primary: '#d97706', secondary: '#451a03', accent: '#f59e0b' },
+    { value: 'rose', name: 'Rose Nebula', primary: '#e11d48', secondary: '#4c0519', accent: '#f43f5e' },
+    { value: 'custom', name: 'Custom Hue', primary: 'custom', secondary: 'custom', accent: 'custom' }
+  ]
+
+  // Generate custom profile colors based on hue
+  const getCustomProfileColors = (hue) => {
+    return {
+      primary: `hsl(${hue}, 85%, 60%)`,
+      secondary: `hsl(${hue}, 90%, 8%)`,
+      accent: `hsl(${hue}, 80%, 65%)`
     }
   }
 
@@ -63,6 +85,9 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
       setCustomShipImagePreview(currentCustomShipImage)
       setCustomShipImageFile(null)
       setProgressBarTheme(currentCustomization?.progressBarTheme || 'classic')
+      setCustomHue(currentCustomization?.customHue || 200)
+      setProfilePageTheme(currentCustomization?.profilePageTheme || 'default')
+      setProfileCustomHue(currentCustomization?.profileCustomHue || 220)
     }
   }, [isOpen, currentBio, currentShip, currentCustomShipImage, currentCustomization])
 
@@ -256,14 +281,14 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
         bio: bio.trim().length + ' characters',
         ship: selectedShip,
         customShipImage: finalCustomShipImage ? 'Custom image provided' : 'No custom image',
-        customization: { progressBarTheme, customHue }
+        customization: { progressBarTheme, customHue, profilePageTheme, profileCustomHue }
       })
       
       await onSave({
         bio: bio.trim(),
         ship: selectedShip,
         customShipImage: finalCustomShipImage,
-        customization: { progressBarTheme, customHue }
+        customization: { progressBarTheme, customHue, profilePageTheme, profileCustomHue }
       })
       
       console.log('Profile saved successfully')
@@ -485,6 +510,113 @@ Use the toolbar above to format your text with different sizes, bold, underline,
                       className="hue-preview-secondary"
                       style={{ backgroundColor: getCustomColors(customHue).secondary }}
                       title="Secondary Color Preview"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Profile Page Theme Customization */}
+          <div className="form-section">
+            <label className="form-label">
+              Profile Page Theme
+              <span className="form-note">Customize your entire profile page appearance</span>
+            </label>
+            
+            <div className="theme-selection">
+              {profilePageThemes.map((theme) => {
+                const isCustom = theme.value === 'custom'
+                const customColors = isCustom ? getCustomProfileColors(profileCustomHue) : null
+                
+                return (
+                  <div 
+                    key={theme.value}
+                    className={`theme-option ${profilePageTheme === theme.value ? 'selected' : ''}`}
+                    onClick={() => setProfilePageTheme(theme.value)}
+                  >
+                    <div className="theme-preview">
+                      <div 
+                        className="theme-preview-bar profile-theme-preview"
+                        style={{
+                          background: isCustom 
+                            ? `linear-gradient(135deg, ${customColors.primary}, ${customColors.secondary})`
+                            : `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`
+                        }}
+                      />
+                    </div>
+                    <div className="theme-info">
+                      <span className="theme-name">{theme.name}</span>
+                      <div className="theme-colors">
+                        {isCustom ? (
+                          <>
+                            <div 
+                              className="color-swatch"
+                              style={{ backgroundColor: customColors.primary }}
+                              title="Primary Color"
+                            />
+                            <div 
+                              className="color-swatch"
+                              style={{ backgroundColor: customColors.accent }}
+                              title="Accent Color"
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <div 
+                              className="color-swatch"
+                              style={{ backgroundColor: theme.primary }}
+                              title="Primary Color"
+                            />
+                            <div 
+                              className="color-swatch"
+                              style={{ backgroundColor: theme.accent }}
+                              title="Accent Color"
+                            />
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Custom Profile Hue Slider - Only show when custom theme is selected */}
+            {profilePageTheme === 'custom' && (
+              <div className="hue-slider-section">
+                <label className="hue-slider-label">
+                  Custom Profile Hue: <span className="hue-value">{profileCustomHue}°</span>
+                </label>
+                <div className="hue-slider-container">
+                  <input
+                    type="range"
+                    min="0"
+                    max="360"
+                    value={profileCustomHue}
+                    onChange={(e) => setProfileCustomHue(parseInt(e.target.value))}
+                    className="hue-slider"
+                    style={{
+                      background: `linear-gradient(to right, 
+                        hsl(0, 85%, 60%), 
+                        hsl(60, 85%, 60%), 
+                        hsl(120, 85%, 60%), 
+                        hsl(180, 85%, 60%), 
+                        hsl(240, 85%, 60%), 
+                        hsl(300, 85%, 60%), 
+                        hsl(360, 85%, 60%))`
+                    }}
+                  />
+                  <div className="hue-preview-colors">
+                    <div 
+                      className="hue-preview-primary"
+                      style={{ backgroundColor: getCustomProfileColors(profileCustomHue).primary }}
+                      title="Primary Color Preview"
+                    />
+                    <div 
+                      className="hue-preview-secondary"
+                      style={{ backgroundColor: getCustomProfileColors(profileCustomHue).accent }}
+                      title="Accent Color Preview"
                     />
                   </div>
                 </div>

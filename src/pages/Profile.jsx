@@ -225,6 +225,37 @@ export default function Profile() {
     return themes[theme] || themes.classic
   }
 
+  // Profile page theme function
+  const getProfileThemeColors = (customization) => {
+    if (!customization?.profilePageTheme) {
+      return { primary: '#0ea5e9', secondary: '#1e293b', accent: '#39b9ff' } // Default theme
+    }
+
+    const theme = customization.profilePageTheme
+    
+    // If custom theme is selected, use the custom hue
+    if (theme === 'custom' && customization.profileCustomHue !== undefined) {
+      const hue = customization.profileCustomHue
+      return {
+        primary: `hsl(${hue}, 85%, 60%)`,
+        secondary: `hsl(${hue}, 90%, 8%)`,
+        accent: `hsl(${hue}, 80%, 65%)`
+      }
+    }
+
+    // Predefined themes
+    const themes = {
+      default: { primary: '#0ea5e9', secondary: '#1e293b', accent: '#39b9ff' },
+      crimson: { primary: '#dc2626', secondary: '#450a0a', accent: '#ef4444' },
+      emerald: { primary: '#059669', secondary: '#064e3b', accent: '#10b981' },
+      violet: { primary: '#7c3aed', secondary: '#2e1065', accent: '#8b5cf6' },
+      amber: { primary: '#d97706', secondary: '#451a03', accent: '#f59e0b' },
+      rose: { primary: '#e11d48', secondary: '#4c0519', accent: '#f43f5e' }
+    }
+
+    return themes[theme] || themes.default
+  }
+
   // Load ship registry for display names
   useEffect(() => {
     const loadShipRegistry = async () => {
@@ -268,6 +299,24 @@ export default function Profile() {
       }
     }
   }, [shipRegistry, profileShip, user?.id])
+
+  // Apply profile theme colors as CSS custom properties
+  useEffect(() => {
+    const themeColors = getProfileThemeColors(currentCustomization)
+    const root = document.documentElement
+    
+    // Apply theme colors as CSS variables
+    root.style.setProperty('--profile-primary', themeColors.primary)
+    root.style.setProperty('--profile-secondary', themeColors.secondary)
+    root.style.setProperty('--profile-accent', themeColors.accent)
+    
+    // Cleanup function to reset to defaults when component unmounts
+    return () => {
+      root.style.setProperty('--profile-primary', '#0ea5e9')
+      root.style.setProperty('--profile-secondary', '#1e293b')
+      root.style.setProperty('--profile-accent', '#39b9ff')
+    }
+  }, [currentCustomization])
 
   // Fetch member and patrol data
   useEffect(() => {

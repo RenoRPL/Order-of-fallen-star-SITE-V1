@@ -146,9 +146,9 @@
 .welcome-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #39b9ff;
+  color: var(--profile-accent, #39b9ff);
   margin: 0 0 0.5rem 0;
-  text-shadow: 0 0 20px rgba(57, 185, 255, 0.5);
+  text-shadow: 0 0 20px color-mix(in srgb, var(--profile-accent, #39b9ff) 50%, transparent);
   letter-spacing: 1px;
 }
 
@@ -184,9 +184,9 @@
 }
 
 .role-badge {
-  background: linear-gradient(135deg, rgba(57, 185, 255, 0.2) 0%, rgba(57, 185, 255, 0.1) 100%);
-  border: 1px solid rgba(57, 185, 255, 0.3);
-  color: #39b9ff;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--profile-accent, #39b9ff) 20%, transparent) 0%, color-mix(in srgb, var(--profile-accent, #39b9ff) 10%, transparent) 100%);
+  border: 1px solid color-mix(in srgb, var(--profile-accent, #39b9ff) 30%, transparent);
+  color: var(--profile-accent, #39b9ff);
 }
 
 .path-badge {
@@ -222,14 +222,14 @@
 }
 
 .current-rank-welcome {
-  color: #39b9ff;
+  color: var(--profile-accent, #39b9ff);
   padding: 0.2rem 0.6rem;
-  background: rgba(57, 185, 255, 0.15);
-  border: 1px solid rgba(57, 185, 255, 0.3);
+  background: color-mix(in srgb, var(--profile-accent, #39b9ff) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--profile-accent, #39b9ff) 30%, transparent);
   border-radius: 6px;
   font-weight: 600;
   font-size: 0.85rem;
-  text-shadow: 0 0 5px rgba(57, 185, 255, 0.5);
+  text-shadow: 0 0 5px color-mix(in srgb, var(--profile-accent, #39b9ff) 50%, transparent);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -255,7 +255,7 @@
     rgba(20, 20, 40, 0.5) 50%, 
     rgba(0, 0, 0, 0.4) 100%
   );
-  border: 1px solid rgba(57, 185, 255, 0.2);
+  border: 1px solid color-mix(in srgb, var(--profile-accent, #39b9ff) 20%, transparent);
   border-radius: 8px;
   position: relative;
   overflow: hidden;

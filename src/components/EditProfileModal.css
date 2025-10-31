@@ -521,3 +521,28 @@
   transform: scale(1.05);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
 }
+
+/* Profile Theme Preview Styles */
+.profile-theme-preview {
+  height: 30px !important;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-theme-preview::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    rgba(255, 255, 255, 0.1) 25%, 
+    transparent 25%, 
+    transparent 75%, 
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 8px 8px;
+  opacity: 0.3;
+}
