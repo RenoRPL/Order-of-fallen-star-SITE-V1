@@ -6,6 +6,7 @@ import Footer from '../components/Footer'
 import RSILinkModal from '../components/RSILinkModal'
 import EditProfileModal from '../components/EditProfileModal'
 import PlayerSearch from '../components/PlayerSearch'
+import RankProgressBar from '../components/RankProgressBar'
 import OFSDataService from '../services/ofsDataService'
 import { GoogleSheetsService } from '../services/googleSheetsService'
 import './Profile.css'
@@ -1148,6 +1149,15 @@ export default function Profile() {
                 )}
               </div>
             </div>
+          )}
+
+          {/* Rank Progress Bar - Show for own profile only when user has rank data */}
+          {!isViewingOtherPlayer && currentDisplayData?.Rank && (
+            <RankProgressBar
+              currentRank={currentDisplayData.Rank}
+              currentStats={currentGoogleStats}
+              memberData={currentDisplayData}
+            />
           )}
 
           {/* Content Grid - Compact Layout */}
