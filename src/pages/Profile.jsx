@@ -60,6 +60,15 @@ export default function Profile() {
   const currentPatrolData = isViewingOtherPlayer && selectedPlayerPatrolData ? selectedPlayerPatrolData : patrolData
   const currentPatrolStats = isViewingOtherPlayer && selectedPlayerStats ? selectedPlayerStats : patrolStats
   const currentGoogleStats = isViewingOtherPlayer && selectedPlayerGoogleStats ? selectedPlayerGoogleStats : googleStats
+  
+  // Debug logging for stats display
+  console.log('=== PROFILE STATS DEBUG ===');
+  console.log('isViewingOtherPlayer:', isViewingOtherPlayer);
+  console.log('selectedPlayerGoogleStats:', selectedPlayerGoogleStats);
+  console.log('googleStats (own stats):', googleStats);
+  console.log('currentGoogleStats (what will be displayed):', currentGoogleStats);
+  console.log('selectedPlayerLoading:', selectedPlayerLoading);
+  console.log('=== END PROFILE STATS DEBUG ===');
 
   // Load profile data from localStorage and Google Sheets
   useEffect(() => {
@@ -397,6 +406,7 @@ export default function Profile() {
             const playerGoogleStats = await googleSheetsService.fetchUserStats(targetUserId)
             console.log('URL-based player Google stats:', playerGoogleStats)
             setSelectedPlayerGoogleStats(playerGoogleStats)
+            console.log('*** SET selectedPlayerGoogleStats for URL player ***', playerGoogleStats)
           } catch (error) {
             console.log('No Google Sheets stats found for URL player:', error)
             setSelectedPlayerGoogleStats(null)
