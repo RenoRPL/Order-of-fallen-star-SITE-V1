@@ -66,34 +66,43 @@
 .roster-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 100px 20px 50px;
+  padding: 120px 30px 60px;
   position: relative;
   z-index: 1;
 }
 
 .roster-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 60px;
   position: relative;
   z-index: 2;
+  background: rgba(11, 15, 25, 0.3);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 40px 30px;
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .roster-header h1 {
   font-family: 'Orbitron', 'Exo 2', 'Rajdhani', monospace;
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 700;
   background: linear-gradient(45deg, #00d4ff, #39b9ff, #ffffff, #ffd700, #ff6b9d, #00d4ff);
   background-size: 400% 400%;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin: 0 0 10px 0;
+  margin: 0 0 20px 0;
   position: relative;
   z-index: 1;
   animation: gradientShift 18s ease-in-out infinite;
   filter: drop-shadow(0 0 8px rgba(57, 185, 255, 0.6)) 
           drop-shadow(0 0 16px rgba(57, 185, 255, 0.4)) 
           drop-shadow(0 0 24px rgba(57, 185, 255, 0.2));
+  line-height: 1.2;
 }
 
 @keyframes gradientShift {
@@ -103,22 +112,24 @@
 }
 
 .roster-subtitle {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #94a3b8;
   margin: 0;
   font-family: 'Orbitron', 'Exo 2', 'Rajdhani', monospace;
   text-shadow: 0 0 10px rgba(57, 185, 255, 0.3);
   position: relative;
   z-index: 1;
+  line-height: 1.4;
 }
 
 /* Controls Section */
 .roster-controls {
   display: flex;
   gap: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   flex-wrap: wrap;
   align-items: center;
+  padding: 0 10px;
 }
 
 .search-bar {
@@ -211,12 +222,15 @@
 
 /* Roster Table */
 .roster-table-container {
-  background: rgba(30, 41, 59, 0.95);
-  border: 1px solid rgba(14, 165, 233, 0.3);
-  border-radius: 12px;
+  background: rgba(11, 15, 25, 0.4);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  border-radius: 16px;
   overflow: hidden;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 0 40px rgba(14, 165, 233, 0.1);
 }
 
 .roster-table {
@@ -225,16 +239,17 @@
 }
 
 .roster-table thead {
-  background: rgba(14, 165, 233, 0.1);
+  background: rgba(14, 165, 233, 0.08);
+  backdrop-filter: blur(10px);
 }
 
 .roster-table th {
-  padding: 16px 20px;
+  padding: 18px 24px;
   text-align: left;
-  font-family: 'Orbitron', monospace;
+  font-family: 'Orbitron', 'Exo 2', 'Rajdhani', monospace;
   font-weight: 600;
   color: #0ea5e9;
-  border-bottom: 1px solid rgba(14, 165, 233, 0.3);
+  border-bottom: 1px solid rgba(14, 165, 233, 0.2);
   position: relative;
 }
 
@@ -259,8 +274,9 @@
 }
 
 .roster-table tbody tr {
-  border-bottom: 1px solid rgba(71, 85, 105, 0.3);
-  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+  transition: all 0.3s ease;
+  background: rgba(11, 15, 25, 0.1);
 }
 
 .roster-table tbody tr.clickable {
@@ -268,18 +284,20 @@
 }
 
 .roster-table tbody tr:hover {
-  background: rgba(14, 165, 233, 0.08);
+  background: rgba(14, 165, 233, 0.06);
   transform: translateX(2px);
+  backdrop-filter: blur(5px);
 }
 
 .roster-table tbody tr.clickable:hover {
-  background: rgba(14, 165, 233, 0.12);
-  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);
+  background: rgba(14, 165, 233, 0.10);
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.12);
+  backdrop-filter: blur(8px);
 }
 
 .roster-table tbody tr:active {
   transform: translateX(1px);
-  background: rgba(14, 165, 233, 0.15);
+  background: rgba(14, 165, 233, 0.12);
 }
 
 .roster-table tbody tr:last-child {
@@ -287,7 +305,7 @@
 }
 
 .roster-table td {
-  padding: 14px 20px;
+  padding: 16px 24px;
   vertical-align: middle;
 }
 

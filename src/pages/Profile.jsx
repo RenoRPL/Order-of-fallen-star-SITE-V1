@@ -530,6 +530,93 @@ export default function Profile() {
             setRankData(rank)
           }
           
+          // Fetch current user's backstory from Google Sheets
+          try {
+            console.log('Fetching backstory for current user:', targetUserId)
+            const backstoryResponse = await fetch('/api/update-backstory', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                discordId: targetUserId,
+                action: 'get'
+              })
+            })
+            
+            if (backstoryResponse.ok) {
+              const backstoryResult = await backstoryResponse.json()
+              if (backstoryResult.success) {
+                setProfileBio(backstoryResult.backstory || '')
+                console.log('Loaded backstory for current user:', backstoryResult.backstory?.length || 0, 'characters')
+              }
+            }
+          } catch (error) {
+            console.log('No backstory found for current user:', error)
+            setProfileBio('')
+          }
+          
+          // Fetch current user's ship from Google Sheets
+          try {
+            console.log('Fetching ship for current user:', targetUserId)
+            const shipResponse = await fetch('/api/update-ship-selection-v2', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                discordId: targetUserId,
+                action: 'get'
+              })
+            })
+            
+            if (shipResponse.ok) {
+              const shipResult = await shipResponse.json()
+              if (shipResult.success && shipResult.shipValue) {
+                // Convert ship name to value format for UI consistency
+                let shipValueForUI = shipResult.shipValue
+                const matchedShip = shipRegistry.find(ship => 
+                  ship.fullName === shipResult.shipValue || ship.value === shipResult.shipValue
+                )
+                if (matchedShip) {
+                  shipValueForUI = matchedShip.value
+                }
+                setProfileShip(shipValueForUI)
+                console.log('Loaded ship for current user:', shipResult.shipValue)
+              }
+            }
+          } catch (error) {
+            console.log('No ship found for current user:', error)
+            setProfileShip('')
+          }
+          
+          // Fetch current user's custom ship image from Google Sheets
+          try {
+            console.log('Fetching custom ship image for current user:', targetUserId)
+            const customShipImageResponse = await fetch('/api/get-custom-ship-image', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                discordId: targetUserId
+              })
+            })
+            
+            if (customShipImageResponse.ok) {
+              const customShipImageResult = await customShipImageResponse.json()
+              if (customShipImageResult.success && customShipImageResult.customShipImage) {
+                setProfileCustomShipImage(customShipImageResult.customShipImage)
+                console.log('Loaded custom ship image for current user:', customShipImageResult.customShipImage)
+              } else {
+                setProfileCustomShipImage('')
+              }
+            }
+          } catch (error) {
+            console.log('No custom ship image found for current user:', error)
+            setProfileCustomShipImage('')
+          }
+
           // Fetch patrol data
           const patrols = await OFSDataService.getPatrolData(targetUserId)
           setPatrolData(patrols)
