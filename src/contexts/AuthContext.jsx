@@ -21,14 +21,54 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check for existing authentication on mount
     const userData = DiscordAuthService.getUserData()
+    
     if (userData) {
       setUser(userData.user)
       setIsAuthenticated(true)
       // Fetch user stats after setting user
       fetchUserStats(userData.user.id)
+      setIsLoading(false)
+    } else if (window.location.hostname === 'localhost') {
+      // Auto-login in localhost for testing
+      console.log('Localhost detected - auto-logging in with test user')
+      autoLoginForTesting()
+    } else {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }, [])
+
+  const autoLoginForTesting = async () => {
+    try {
+      // Create mock user data for local testing
+      const mockUser = {
+        id: '527694877773922324', // Your Discord ID for testing
+        username: 'RenoTG',
+        display_name: 'Page RenoTG',
+        avatar: 'default',
+        discriminator: '0000'
+      }
+      
+      const mockTokenData = {
+        access_token: 'mock_token_' + Date.now(),
+        refresh_token: 'mock_refresh_token',
+        expires_in: 604800 // 7 days
+      }
+      
+      // Store mock authentication data
+      DiscordAuthService.storeUserData(mockUser, mockTokenData)
+      setUser(mockUser)
+      setIsAuthenticated(true)
+      
+      // Fetch user stats for testing
+      await fetchUserStats(mockUser.id)
+      
+      console.log('Auto-login successful for testing')
+    } catch (error) {
+      console.error('Auto-login failed:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const fetchUserStats = async (userId) => {
     try {
@@ -93,11 +133,11 @@ export const AuthProvider = ({ children }) => {
       if (window.location.hostname === 'localhost') {
         console.log('Local development mode - using mock auth')
         
-        // Create a mock user object for testing
+        // Create a mock user object for testing with your actual Discord ID
         const mockUser = {
-          id: '123456789',
-          username: 'TestUser',
-          display_name: 'Test User',
+          id: '527694877773922324', // Your actual Discord ID for testing
+          username: 'RenoTG',
+          display_name: 'Page RenoTG',
           avatar: 'default',
           discriminator: '0000'
         }
