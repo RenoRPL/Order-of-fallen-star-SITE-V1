@@ -752,8 +752,10 @@ export default function Profile() {
     const handleBackstoryScroll = () => {
       if (backstoryRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = backstoryRef.current
-        // Show jump to top button if scrolled down more than 100px and not at bottom
-        const shouldShow = scrollTop > 100 && (scrollTop + clientHeight) < scrollHeight - 10
+        console.log('Backstory scroll:', { scrollTop, scrollHeight, clientHeight })
+        // Show jump to top button if scrolled down more than 50px
+        const shouldShow = scrollTop > 50
+        console.log('Should show jump to top:', shouldShow)
         setShowBackstoryJumpToTop(shouldShow)
       }
     }
@@ -1676,8 +1678,13 @@ export default function Profile() {
                   </div>
                 )}
                 
+                {/* Debug info */}
+                <div style={{ position: 'absolute', top: '10px', left: '10px', color: 'yellow', fontSize: '12px', backgroundColor: 'rgba(0,0,0,0.7)', padding: '5px', borderRadius: '3px' }}>
+                  Show Button: {showBackstoryJumpToTop ? 'YES' : 'NO'}
+                </div>
+                
                 {/* Jump to Top Button - appears when scrolling down */}
-                {showBackstoryJumpToTop && (
+                {(showBackstoryJumpToTop || true) && ( 
                   <button
                     className="backstory-jump-to-top"
                     onClick={handleBackstoryJumpToTop}
@@ -1685,7 +1692,7 @@ export default function Profile() {
                       position: 'absolute',
                       bottom: '20px',
                       right: '20px',
-                      backgroundColor: 'rgba(0, 150, 255, 0.8)',
+                      backgroundColor: showBackstoryJumpToTop ? 'rgba(0, 150, 255, 0.9)' : 'rgba(255, 0, 0, 0.5)',
                       border: 'none',
                       borderRadius: '50%',
                       width: '50px',
@@ -1693,9 +1700,10 @@ export default function Profile() {
                       color: 'white',
                       cursor: 'pointer',
                       fontSize: '18px',
-                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+                      fontWeight: 'bold',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)',
                       transition: 'all 0.3s ease',
-                      zIndex: 10
+                      zIndex: 1000
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = 'rgba(0, 150, 255, 1)'
