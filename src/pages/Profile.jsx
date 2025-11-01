@@ -375,6 +375,111 @@ export default function Profile() {
           const stats = OFSDataService.formatPatrolStats(patrols)
           setSelectedPlayerStats(stats)
           
+          // Fetch selected player's backstory from Google Sheets
+          try {
+            console.log('Fetching backstory for player:', targetUserId)
+            const backstoryResponse = await fetch('/api/update-backstory', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                discordId: targetUserId,
+                action: 'get'
+              })
+            })
+            
+            if (backstoryResponse.ok) {
+              const backstoryResult = await backstoryResponse.json()
+              if (backstoryResult.success) {
+                setSelectedPlayerBackstory(backstoryResult.backstory || '')
+                console.log('Loaded backstory for selected player:', backstoryResult.backstory?.length || 0, 'characters')
+              }
+            }
+          } catch (error) {
+            console.log('No backstory found for selected player:', error)
+            setSelectedPlayerBackstory('')
+          }
+          
+          // Fetch selected player's ship from Google Sheets
+          try {
+            console.log('Fetching ship for player:', targetUserId)
+            const shipResponse = await fetch('/api/update-ship-selection-v2', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                discordId: targetUserId,
+                action: 'get'
+              })
+            })
+            
+            if (shipResponse.ok) {
+              const shipResult = await shipResponse.json()
+              if (shipResult.success && shipResult.shipValue) {
+                // Convert ship name to value format for UI consistency
+                let shipValueForUI = shipResult.shipValue
+                const matchedShip = shipRegistry.find(ship => 
+                  ship.fullName === shipResult.shipValue || ship.value === shipResult.shipValue
+                )
+                if (matchedShip) {
+                  shipValueForUI = matchedShip.value
+                }
+                setSelectedPlayerShip(shipValueForUI)
+                console.log('Loaded ship for selected player:', shipResult.shipValue)
+              }
+            }
+          } catch (error) {
+            console.log('No ship found for selected player:', error)
+            setSelectedPlayerShip('')
+          }
+          
+          // Fetch selected player's custom ship image from Google Sheets
+          try {
+            console.log('Fetching custom ship image for player:', targetUserId)
+            const customShipImageResponse = await fetch('/api/get-custom-ship-image', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                discordId: targetUserId
+              })
+            })
+            
+            if (customShipImageResponse.ok) {
+              const customShipImageResult = await customShipImageResponse.json()
+              if (customShipImageResult.success && customShipImageResult.customShipImage) {
+                setSelectedPlayerCustomShipImage(customShipImageResult.customShipImage)
+                console.log('Loaded custom ship image for selected player:', customShipImageResult.customShipImage)
+              } else {
+                setSelectedPlayerCustomShipImage('')
+              }
+            }
+          } catch (error) {
+            console.log('No custom ship image found for selected player:', error)
+            setSelectedPlayerCustomShipImage('')
+          }
+          
+          // Fetch selected player's customization settings
+          try {
+            // For now, try localStorage (will only work if player used same device)
+            const savedProfile = localStorage.getItem(`profile_${targetUserId}`)
+            if (savedProfile) {
+              const { customization } = JSON.parse(savedProfile)
+              setSelectedPlayerCustomization(customization || null)
+              console.log('Loaded customization for selected player from localStorage:', customization)
+            } else {
+              // Set to null so we use default theme
+              setSelectedPlayerCustomization(null)
+              console.log('No customization found for selected player, using default theme')
+            }
+          } catch (error) {
+            console.log('No customization found for selected player:', error)
+            setSelectedPlayerCustomization(null)
+          }
+          
           // Clear current user data to avoid confusion
           setMemberData(null)
           setPatrolData([])
@@ -438,6 +543,10 @@ export default function Profile() {
           setSelectedPlayer(null)
           setSelectedPlayerPatrolData([])
           setSelectedPlayerStats(null)
+          setSelectedPlayerBackstory('')
+          setSelectedPlayerShip('')
+          setSelectedPlayerCustomShipImage('')
+          setSelectedPlayerCustomization(null)
         }
         
       } catch (err) {
