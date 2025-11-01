@@ -56,20 +56,30 @@ export class GoogleSheetsService {
               
               if (userRow) {
                 console.log('Found user row:', userRow);
+                console.log('Full user row data:', userRow.map((cell, index) => `Column ${String.fromCharCode(65 + index)} (${index}): ${cell}`).join('\n'));
                 
                 const stats = {
                   patrolCount: userRow[2] || '0', // Column C - PatrolCount
-                  totalLength: userRow[3] || '0', // Column D - TotalLength
-                  fpsKills: userRow[4] || '0', // Column E - FPS_Kills_Total
-                  shipKills: userRow[5] || '0', // Column F - Ship_Kills_Total
-                  crusades: userRow[6] || '0', // Column G - Crusades_Total
-                  turretKills: userRow[7] || '0', // Column H - Turret_Kills_Total
-                  quests: userRow[8] || '0', // Column I - Quest_Total
-                  ledQuests: userRow[9] || '0', // Column J - Led_Completed_Quests
-                  ledCrusades: userRow[10] || '0', // Column K - Led_Completed_Crusades
+                  totalLength: userRow[3] || '0', // Column D - Total Hours  
+                  fpsKills: userRow[4] || '0', // Column E - Ground Kills
+                  shipKills: userRow[5] || '0', // Column F - Pilot Kills  
+                  crusades: userRow[6] || '0', // Column G - Crusades
+                  turretKills: userRow[7] || '0', // Column H - Turret Kills
+                  quests: userRow[8] || '0', // Column I - Quests
+                  ledQuests: userRow[9] || '0', // Column J - Led Quests
+                  ledCrusades: userRow[10] || '0', // Column K - Led Crusades
                 };
                 
-                console.log('Extracted stats:', stats);
+                console.log('Extracted stats with detailed mapping:');
+                console.log(`Ground Kills (fpsKills): Column E (${userRow[4]}) = ${stats.fpsKills}`);
+                console.log(`Pilot Kills (shipKills): Column F (${userRow[5]}) = ${stats.shipKills}`);
+                console.log(`Total Hours (totalLength): Column D (${userRow[3]}) = ${stats.totalLength}`);
+                console.log(`Turret Kills (turretKills): Column H (${userRow[7]}) = ${stats.turretKills}`);
+                console.log(`Quests: Column I (${userRow[8]}) = ${stats.quests}`);
+                console.log(`Led Quests: Column J (${userRow[9]}) = ${stats.ledQuests}`);
+                console.log(`Crusades: Column G (${userRow[6]}) = ${stats.crusades}`);
+                console.log(`Led Crusades: Column K (${userRow[10]}) = ${stats.ledCrusades}`);
+                console.log('Final extracted stats:', stats);
                 return stats;
               } else {
                 console.log('User not found in spreadsheet, UserID:', userId);

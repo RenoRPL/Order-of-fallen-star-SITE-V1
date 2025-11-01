@@ -391,6 +391,17 @@ export default function Profile() {
           const stats = OFSDataService.formatPatrolStats(patrols)
           setSelectedPlayerStats(stats)
           
+          // Fetch selected player's Google Sheets stats
+          try {
+            console.log('Fetching Google Sheets stats for URL player:', targetUserId)
+            const playerGoogleStats = await googleSheetsService.fetchUserStats(targetUserId)
+            console.log('URL-based player Google stats:', playerGoogleStats)
+            setSelectedPlayerGoogleStats(playerGoogleStats)
+          } catch (error) {
+            console.log('No Google Sheets stats found for URL player:', error)
+            setSelectedPlayerGoogleStats(null)
+          }
+          
           // Fetch selected player's backstory from Google Sheets
           try {
             console.log('Fetching backstory for player:', targetUserId)
