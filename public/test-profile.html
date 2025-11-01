@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Profile Page - Order of the Fallen Star</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            color: white;
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+        }
+
+        .test-header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .profile-bio-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(20, 30, 50, 0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bio-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bio-header h3 {
+            margin: 0;
+            color: #4A90E2;
+            font-size: 24px;
+        }
+
+        .bio-content {
+            position: relative;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            margin: 0 20px 20px 20px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bio-text {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .bio-ship {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+        }
+
+        .ship-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .jump-to-top {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #4A90E2;
+            font-size: 14px;
+            text-decoration: underline;
+            cursor: pointer;
+            user-select: none;
+            z-index: 10;
+            display: none;
+        }
+
+        .jump-to-top.visible {
+            display: inline;
+        }
+
+        .test-info {
+            background: rgba(0, 100, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .scroll-debug {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            border: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-header">
+        <h1>🧪 Test Profile Page</h1>
+        <p>Testing backstory scroll functionality for Discord ID: <strong>527694877773922324</strong></p>
+    </div>
+
+    <div class="test-info">
+        <h4>Test Instructions:</h4>
+        <ul>
+            <li>Scroll down in the backstory content below</li>
+            <li>Watch for the "↑ Top" link to appear in the top-right corner</li>
+            <li>Click the link to test smooth scroll to top</li>
+            <li>Check the debug info in the top-right corner of the screen</li>
+        </ul>
+    </div>
+
+    <div class="profile-bio-section" id="backstory-top">
+        <div class="bio-header">
+            <h3>Back Story</h3>
+        </div>
+        <div class="bio-content" id="backstory-container">
+            <div class="bio-text">
+                <h4>Order of the Fallen Star — The Path of a Page</h4>
+                
+                <p>In the cold expanse between suns, where wreckage drifts like ghosts of forgotten wars, I found my calling—not in victory, but in silence. I am Oner, and I am a Page of the Order of the Fallen Star. Even the smallest light can cast a shadow across eternity.</p>
+
+                <p>Before the Order found me, I was nothing more than a pilot-for-hire—a name on mercenary rosters, a face behind a visor burned by re-entry heat. I flew wherever credits flowed: escort runs, salvage jobs, border patrols, even smuggling when hunger outlasted pride. The stars were vast, but life was small. Out there, survival meant everything; purpose meant nothing.</p>
+
+                <p>I thought I understood the void—its silence, its indifference. But then I heard the signal.</p>
+
+                <p>It came through the static of a dying comm array, orbiting the bones of a shattered station. At first, it seemed like another distress call—the kind spacers learn to ignore unless there's profit in rescue. But this was different. The transmission wasn't asking for help; it was offering something rarer than credits: meaning.</p>
+
+                <p>The voice spoke of the Fallen Star, of light born from collapse, of order emerging from the chaos between worlds. It spoke of Tenets—Duty, Loyalty, and Wisdom—not as commands, but as anchors in the endless drift. For the first time since I'd left atmosphere, I felt something other than the cold: purpose.</p>
+
+                <p>I followed the signal to a gathering of ships unlike any fleet I'd seen. No uniform hulls, no corporate insignia—just pilots from every corner of the 'verse, bound by something stronger than contracts. They called themselves the Order of the Fallen Star, and they offered me what no employer ever had: a place to belong.</p>
+
+                <h4>The Doctrine of Light</h4>
+
+                <p>Each dawn-cycle began in silence. We studied the Tenets—Duty, Loyalty, and Wisdom—and the Codex that preserved the Order's history. I learned the stories of the Three Primarchs: KrazNazty, who forged harmony from chaos; U-Gen-X, who guarded justice through law; and Vanderan, who carried the flame of exploration.</p>
+
+                <p>Their legacy was not conquest, but conviction. The Order teaches that every being carries a fragment of the Fallen Star—a spark of light born from struggle. To embrace it is to defy the void itself.</p>
+
+                <h4>Wings of the Skyward Flame</h4>
+
+                <p>I found my faith in flight. The hangars of the Celestial Bastion are temples of steel and fire, where even the hum of a reactor feels like prayer. We Pages train beside veterans whose ships have seen more stars than some worlds know exist. They teach us that war is not about victory; it's about the light we protect between battles.</p>
+
+                <p>My ship became my shrine, my missions my devotion. Every patrol, every escort, every moment spent watching the dark—it all serves the same purpose: ensuring that somewhere in the void, light endures.</p>
+
+                <p>The Order gave me more than purpose; it gave me brothers and sisters who understand that the smallest flame can illuminate eternity. We are not warriors seeking glory—we are guardians of something greater than ourselves.</p>
+
+                <h4>The Path Forward</h4>
+
+                <p>As a Page, I stand at the beginning of a journey that has no end. Each mission brings new lessons, each challenge new growth. The stars remain vast, but now I know my place among them: not as a drifter seeking credits, but as a keeper of the light.</p>
+
+                <p>The Fallen Star teaches us that even in collapse, there is beauty. Even in darkness, there is hope. And even in silence, there is purpose.</p>
+
+                <p>I am Oner. I am a Page of the Order of the Fallen Star. And wherever the void threatens to swallow light, I will be there—small perhaps, but unafraid.</p>
+
+                <p>The smallest light can cast a shadow across eternity. And in that shadow, others will find their way home.</p>
+            </div>
+            <div class="bio-ship">
+                <span class="ship-label">Primary Ship:</span>
+                <div class="ship-info">
+                    <span class="ship-name">Aegis Dynamics Avenger Stalker</span>
+                </div>
+            </div>
+            
+            <!-- Jump to Top Link -->
+            <span class="jump-to-top" id="jumpToTop" title="Jump to top of backstory">
+                ↑ Top
+            </span>
+        </div>
+    </div>
+
+    <!-- Debug Info -->
+    <div class="scroll-debug" id="debugInfo">
+        <div>Scroll Top: <span id="scrollTop">0</span>px</div>
+        <div>Show Button: <span id="showButton">NO</span></div>
+        <div>Scroll Height: <span id="scrollHeight">0</span>px</div>
+        <div>Client Height: <span id="clientHeight">0</span>px</div>
+    </div>
+
+    <script>
+        const backstoryContainer = document.getElementById('backstory-container');
+        const jumpToTop = document.getElementById('jumpToTop');
+        const debugInfo = {
+            scrollTop: document.getElementById('scrollTop'),
+            showButton: document.getElementById('showButton'),
+            scrollHeight: document.getElementById('scrollHeight'),
+            clientHeight: document.getElementById('clientHeight')
+        };
+
+        function handleBackstoryScroll() {
+            const { scrollTop, scrollHeight, clientHeight } = backstoryContainer;
+            
+            // Update debug info
+            debugInfo.scrollTop.textContent = scrollTop;
+            debugInfo.scrollHeight.textContent = scrollHeight;
+            debugInfo.clientHeight.textContent = clientHeight;
+            
+            // Show jump to top link if scrolled down more than 50px
+            const shouldShow = scrollTop > 50;
+            debugInfo.showButton.textContent = shouldShow ? 'YES' : 'NO';
+            
+            if (shouldShow) {
+                jumpToTop.classList.add('visible');
+            } else {
+                jumpToTop.classList.remove('visible');
+            }
+        }
+
+        function jumpToTopFunction() {
+            backstoryContainer.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Add event listeners
+        backstoryContainer.addEventListener('scroll', handleBackstoryScroll);
+        jumpToTop.addEventListener('click', jumpToTopFunction);
+
+        // Initial check
+        handleBackstoryScroll();
+
+        console.log('Test Profile Page Loaded');
+        console.log('Discord ID: 527694877773922324');
+        console.log('Testing backstory scroll functionality');
+    </script>
+</body>
+</html>
