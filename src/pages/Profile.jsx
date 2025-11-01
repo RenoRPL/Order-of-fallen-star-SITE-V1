@@ -1627,6 +1627,15 @@ export default function Profile() {
           </div>
 
           {/* Bio Section - Show for own profile or other players when backstory exists */}
+          {/* DEBUG: Add temporary logging */}
+          {console.log('=== BACKSTORY DEBUG ===')}
+          {console.log('isViewingOtherPlayer:', isViewingOtherPlayer)}
+          {console.log('selectedPlayerBackstory:', selectedPlayerBackstory)}
+          {console.log('selectedPlayerShip:', selectedPlayerShip)}
+          {console.log('profileBio:', profileBio)}
+          {console.log('profileShip:', profileShip)}
+          {console.log('Should show backstory section:', ((isViewingOtherPlayer && (selectedPlayerBackstory || selectedPlayerShip)) || (!isViewingOtherPlayer && (profileBio || profileShip))))}
+          {console.log('=== END BACKSTORY DEBUG ===')}
           {((isViewingOtherPlayer && (selectedPlayerBackstory || selectedPlayerShip)) || (!isViewingOtherPlayer && (profileBio || profileShip))) && (
             <div 
               className="profile-bio-section"
