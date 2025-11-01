@@ -42,6 +42,7 @@ export default function Profile() {
   const [selectedPlayerShip, setSelectedPlayerShip] = useState('')
   const [isViewingOtherPlayer, setIsViewingOtherPlayer] = useState(false)
   const [selectedPlayerLoading, setSelectedPlayerLoading] = useState(false)
+  const [clearPlayerSearch, setClearPlayerSearch] = useState(false)
 
   // Profile editing state
   const [showEditProfileModal, setShowEditProfileModal] = useState(false)
@@ -998,11 +999,15 @@ export default function Profile() {
 
   const switchBackToOwnProfile = () => {
     setIsViewingOtherPlayer(false)
+    setClearPlayerSearch(true) // Trigger search field clearing
     setNotification({
       type: 'success',
       message: 'Switched back to your profile'
     })
-    setTimeout(() => setNotification(null), 2000)
+    setTimeout(() => {
+      setNotification(null)
+      setClearPlayerSearch(false) // Reset the clear trigger
+    }, 100)
   }
 
   const handleEditProfile = () => {
@@ -1579,11 +1584,11 @@ export default function Profile() {
             </div>
           )}
 
-          {/* Three-column layout - Command Center / Player Information / Player Search */}
-          <div className="profile-three-column-layout">
-            {/* Left Column - Command Center */}
-            <div className="profile-left-column">
-              {!isViewingOtherPlayer && (
+          {/* Dynamic layout - 3 columns with Command Center, 2 columns without */}
+          <div className={isViewingOtherPlayer ? "profile-two-column-layout" : "profile-three-column-layout"}>
+            {/* Left Column - Command Center (only on personal profile) */}
+            {!isViewingOtherPlayer && (
+              <div className="profile-left-column">
                 <div className="command-center-section">
                   <div className="command-center-header">
                     <h3>Command Center</h3>
@@ -1610,11 +1615,11 @@ export default function Profile() {
                     </button>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            {/* Middle Column - Player Information */}
-            <div className="profile-middle-column">
+            {/* Middle Column (or Left when no Command Center) - Player Information */}
+            <div className={isViewingOtherPlayer ? "profile-left-column" : "profile-middle-column"}>
               <div className="viewed-player-info-section">
                 <div className="viewed-player-header">
                   <h3>Player Information</h3>
@@ -1655,7 +1660,10 @@ export default function Profile() {
             
             {/* Right Column - Player Search */}
             <div className="profile-right-column">
-              <PlayerSearch onPlayerSelect={handlePlayerSelect} />
+              <PlayerSearch 
+                onPlayerSelect={handlePlayerSelect} 
+                shouldClear={clearPlayerSearch}
+              />
             </div>
           </div>
 

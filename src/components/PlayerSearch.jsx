@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import OFSDataService from '../services/ofsDataService'
 import './PlayerSearch.css'
 
-export default function PlayerSearch({ onPlayerSelect }) {
+export default function PlayerSearch({ onPlayerSelect, shouldClear }) {
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
   const [members, setMembers] = useState([])
@@ -13,6 +13,16 @@ export default function PlayerSearch({ onPlayerSelect }) {
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const searchRef = useRef(null)
   const suggestionsRef = useRef(null)
+
+  // Clear search field when shouldClear prop is true
+  useEffect(() => {
+    if (shouldClear) {
+      setSearchTerm('')
+      setFilteredMembers([])
+      setShowSuggestions(false)
+      setSelectedIndex(-1)
+    }
+  }, [shouldClear])
 
   // Fetch all member data on component mount
   useEffect(() => {
