@@ -67,6 +67,17 @@ export default function Profile() {
   console.log('selectedPlayerGoogleStats:', selectedPlayerGoogleStats);
   console.log('googleStats (own stats):', googleStats);
   console.log('currentGoogleStats (what will be displayed):', currentGoogleStats);
+  if (currentGoogleStats) {
+    console.log('*** DETAILED CURRENT STATS VALUES ***');
+    console.log('fpsKills (Ground Kills):', currentGoogleStats.fpsKills);
+    console.log('shipKills (Pilot Kills):', currentGoogleStats.shipKills);
+    console.log('totalLength (Total Hours):', currentGoogleStats.totalLength);
+    console.log('turretKills (Turret Kills):', currentGoogleStats.turretKills);
+    console.log('quests (Quests):', currentGoogleStats.quests);
+    console.log('ledQuests (Led Quests):', currentGoogleStats.ledQuests);
+    console.log('crusades (Crusades):', currentGoogleStats.crusades);
+    console.log('ledCrusades (Led Crusades):', currentGoogleStats.ledCrusades);
+  }
   console.log('selectedPlayerLoading:', selectedPlayerLoading);
   console.log('=== END PROFILE STATS DEBUG ===');
 
