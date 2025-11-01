@@ -65,15 +65,15 @@ export class GoogleSheetsService {
                 });
                 
                 const stats = {
-                  patrolCount: userRow[2] || '0', // Column C - PatrolCount  
-                  totalLength: userRow[3] || '0', // Column D - Total Hours (35 in CSV)
-                  fpsKills: userRow[4] || '0', // Column E - Ground Kills (0 in CSV) 
-                  shipKills: userRow[5] || '0', // Column F - Pilot Kills (98 in CSV)
-                  crusades: userRow[6] || '0', // Column G - Crusades (73 in CSV)
-                  turretKills: userRow[7] || '0', // Column H - Turret Kills (6 in CSV)
-                  quests: userRow[8] || '0', // Column I - Quests (2 in CSV)
-                  ledQuests: userRow[9] || '0', // Column J - Led Quests (29 in CSV)
-                  ledCrusades: userRow[10] || '0', // Column K - Led Crusades (1 in CSV)
+                  patrolCount: userRow[2] || '0', // Column C - Contains rank title in this CSV
+                  totalLength: userRow[4] || '0', // Column E - Shows 0, matches expected Total Hours
+                  fpsKills: userRow[5] || '0', // Column F - Shows 98, matches expected Ground Kills
+                  shipKills: userRow[6] || '0', // Column G - Shows 73, matches expected Pilot Kills  
+                  crusades: userRow[7] || '0', // Column H - Need to verify this mapping
+                  turretKills: userRow[8] || '0', // Column I - Shows 2, might match expected Turret Kills
+                  quests: userRow[9] || '0', // Column J - Need to find correct value (should be 25)
+                  ledQuests: userRow[10] || '0', // Column K - Need to find correct value (should be 4)
+                  ledCrusades: userRow[11] || '0', // Column L - Try next column for Led Crusades
                 };
                 
                 console.log('=== EXPECTED VALUES (from your spreadsheet) ===');
