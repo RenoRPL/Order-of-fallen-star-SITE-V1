@@ -590,3 +590,43 @@
     max-height: 1000px;
   }
 }
+
+/* Collapsible Section Styles */
+.collapsible-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.collapsible-header:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(14, 165, 233, 0.4);
+}
+
+.collapsible-header .form-label {
+  margin: 0;
+  pointer-events: none;
+}
+
+.collapse-icon {
+  font-size: 14px;
+  color: rgba(14, 165, 233, 0.8);
+  transition: transform 0.2s ease;
+  user-select: none;
+}
+
+.collapse-icon.open {
+  transform: rotate(180deg);
+}
+
+.collapsible-content {
+  overflow: hidden;
+  animation: slideDown 0.3s ease;
+}

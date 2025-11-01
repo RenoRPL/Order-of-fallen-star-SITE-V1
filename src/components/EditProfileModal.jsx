@@ -18,6 +18,10 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
   const [profilePageTheme, setProfilePageTheme] = useState(currentCustomization?.profilePageTheme || 'default')
   const [profileCustomHue, setProfileCustomHue] = useState(currentCustomization?.profileCustomHue || 220) // Default to blue-ish hue
 
+  // Collapsible section states
+  const [isProgressBarThemeOpen, setIsProgressBarThemeOpen] = useState(false)
+  const [isProfilePageThemeOpen, setIsProfilePageThemeOpen] = useState(false)
+
   // Progress bar theme options
   const progressBarThemes = [
     { value: 'classic', name: 'Classic Blue', primary: '#39b9ff', secondary: '#00ff88' },
@@ -412,12 +416,24 @@ Use the toolbar above to format your text with different sizes, bold, underline,
 
           {/* Progress Bar Theme Customization */}
           <div className="form-section">
-            <label className="form-label">
-              Progress Bar Theme
-              <span className="form-note">Customize your rank progress bar appearance</span>
-            </label>
+            <div 
+              className="collapsible-header"
+              onClick={() => setIsProgressBarThemeOpen(!isProgressBarThemeOpen)}
+              style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+            >
+              <span className="form-label">
+                Progress Bar Theme
+                <span className="form-note">Customize your rank progress bar appearance</span>
+              </span>
+              <span className={`collapse-icon ${isProgressBarThemeOpen ? 'open' : ''}`} 
+                    style={{ transition: 'transform 0.2s', transform: isProgressBarThemeOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                ▼
+              </span>
+            </div>
             
-            <div className="theme-selection">
+            {isProgressBarThemeOpen && (
+              <div className="collapsible-content">
+                <div className="theme-selection">
               {progressBarThemes.map((theme) => {
                 const isCustom = theme.value === 'custom'
                 const customColors = isCustom ? getCustomColors(customHue) : null
@@ -515,16 +531,30 @@ Use the toolbar above to format your text with different sizes, bold, underline,
                 </div>
               </div>
             )}
+              </div>
+            )}
           </div>
 
           {/* Profile Page Theme Customization */}
           <div className="form-section">
-            <label className="form-label">
-              Profile Page Theme
-              <span className="form-note">Customize your entire profile page appearance</span>
-            </label>
+            <div 
+              className="collapsible-header"
+              onClick={() => setIsProfilePageThemeOpen(!isProfilePageThemeOpen)}
+              style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+            >
+              <span className="form-label">
+                Profile Page Theme
+                <span className="form-note">Customize your entire profile page appearance</span>
+              </span>
+              <span className={`collapse-icon ${isProfilePageThemeOpen ? 'open' : ''}`} 
+                    style={{ transition: 'transform 0.2s', transform: isProfilePageThemeOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                ▼
+              </span>
+            </div>
             
-            <div className="theme-selection">
+            {isProfilePageThemeOpen && (
+              <div className="collapsible-content">
+                <div className="theme-selection">
               {profilePageThemes.map((theme) => {
                 const isCustom = theme.value === 'custom'
                 const customColors = isCustom ? getCustomProfileColors(profileCustomHue) : null
@@ -620,6 +650,8 @@ Use the toolbar above to format your text with different sizes, bold, underline,
                     />
                   </div>
                 </div>
+              </div>
+            )}
               </div>
             )}
           </div>
