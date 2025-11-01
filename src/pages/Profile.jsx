@@ -1548,13 +1548,13 @@ export default function Profile() {
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {statsLoading ? '...' : (googleStats?.crusades || '0')}
+                  {(isViewingOtherPlayer ? selectedPlayerLoading : statsLoading) ? '...' : (currentGoogleStats?.crusades || '0')}
                 </div>
                 <div className="stat-label">Crusades</div>
               </div>
               <div className="stat-crystal">
                 <div className="stat-value">
-                  {statsLoading ? '...' : (googleStats?.ledCrusades || '0')}
+                  {(isViewingOtherPlayer ? selectedPlayerLoading : statsLoading) ? '...' : (currentGoogleStats?.ledCrusades || '0')}
                 </div>
                 <div className="stat-label">Led Crusades</div>
               </div>
