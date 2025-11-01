@@ -90,6 +90,37 @@ export default function Profile() {
     const loadProfileData = async () => {
       if (!user?.id) return
 
+      // For localhost testing - provide fallback data when APIs aren't available
+      if (window.location.hostname === 'localhost') {
+        console.log('Localhost detected - setting test profile data')
+        
+        const testBio = `Order of the Fallen Star — The Path of a Page
+
+In the cold expanse between suns, where wreckage drifts like ghosts of forgotten wars, I found my calling—not in victory, but in silence. I am Oner, and I am a Page of the Order of the Fallen Star. Even the smallest light can cast a shadow across eternity.
+
+Before the Order found me, I was nothing more than a pilot-for-hire—a name on mercenary rosters, a face behind a visor burned by re-entry heat. I flew wherever credits flowed: escort runs, salvage jobs, border patrols, even smuggling when hunger outlasted pride. The stars were vast, but life was small. Out there, survival meant everything; purpose meant nothing.
+
+I thought I understood the void—its silence, its indifference. But then I heard the signal.
+
+It came through the static of a dying comm array, orbiting the bones of a shattered station. At first, it seemed like another distress call—the kind spacers learn to ignore unless there's profit in rescue. But this was different. The transmission wasn't asking for help; it was offering something rarer than credits: meaning.
+
+The voice spoke of the Fallen Star, of light born from collapse, of order emerging from the chaos between worlds. It spoke of Tenets—Duty, Loyalty, and Wisdom—not as commands, but as anchors in the endless drift. For the first time since I'd left atmosphere, I felt something other than the cold: purpose.
+
+I followed the signal to a gathering of ships unlike any fleet I'd seen. No uniform hulls, no corporate insignia—just pilots from every corner of the 'verse, bound by something stronger than contracts. They called themselves the Order of the Fallen Star, and they offered me what no employer ever had: a place to belong.
+
+Wings of the Skyward Flame
+
+I found my faith in flight. The hangars of the Celestial Bastion are temples of steel and fire, where even the hum of a reactor feels like prayer. We Pages train beside veterans whose ships have seen more stars than some worlds know exist.`
+
+        const testShip = 'Aegis Dynamics Avenger Stalker'
+        
+        setProfileBio(testBio)
+        setProfileShip(testShip)
+        
+        console.log('Test profile data set:', { bio: testBio.length + ' characters', ship: testShip })
+        return // Skip API calls for localhost
+      }
+
       // Load from localStorage first (for immediate display)
       const savedProfile = localStorage.getItem(`profile_${user.id}`)
       if (savedProfile) {
