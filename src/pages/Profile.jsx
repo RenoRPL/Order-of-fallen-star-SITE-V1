@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import RSILinkModal from '../components/RSILinkModal'
@@ -13,6 +13,7 @@ import './Profile.css'
 export default function Profile() {
   const { user, isAuthenticated, logout } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [memberData, setMemberData] = useState(null)
   const [patrolData, setPatrolData] = useState([])
   const [patrolStats, setPatrolStats] = useState(null)
@@ -337,14 +338,19 @@ export default function Profile() {
   // Fetch member and patrol data
   useEffect(() => {
     const fetchData = async () => {
-      if (!user?.id) return
+      // Get playerId from URL params
+      const playerId = searchParams.get('playerId')
+      const targetUserId = playerId || user?.id
+      
+      if (!targetUserId) return
       
       setIsLoading(true)
       setError(null)
+      setIsViewingOtherPlayer(!!playerId)
       
       try {
-        // Fetch member data
-        const member = await OFSDataService.getMemberData(user.id)
+        // Fetch member data for the target user (either URL param or current user)
+        const member = await OFSDataService.getMemberData(targetUserId)
         console.log('Fetched member data:', member)
         console.log('Member data keys:', member ? Object.keys(member) : 'No member data')
         
@@ -356,56 +362,83 @@ export default function Profile() {
         
         console.log('Fetched member data:', member) // Debug log
         
-        // Preserve local RSI verification state if it exists
-        setMemberData(prevMemberData => {
-          const newMemberData = { ...member }
+        if (playerId) {
+          // If viewing another player, set their data in the selected player state
+          setSelectedPlayerData(member)
+          setSelectedPlayer(member) // Set the selected player for PlayerSearch component
           
-          // Check for RSI verification from Google Sheets (columns U and V)
-          // Column U should contain "Verified" and Column V should contain RSI handle
-          const hasSheetVerification = member && (
-            member['Verified'] === 'Verified' || // Column U
-            member['RSI User Name'] || // Column V  
-            member['RSI_Verified'] === true ||
-            member['RSI_Verified'] === 'true' ||
-            member['RSI_Verified'] === 'Verified'
-          )
+          // Fetch their patrol data
+          const patrols = await OFSDataService.getPatrolData(targetUserId)
+          setSelectedPlayerPatrolData(patrols)
           
-          if (hasSheetVerification) {
-            console.log('Found RSI verification in sheets data:', {
-              verified: member['Verified'],
-              rsiUserName: member['RSI User Name'],
-              rsiVerified: member['RSI_Verified']
-            })
+          // Calculate their patrol stats
+          const stats = OFSDataService.formatPatrolStats(patrols)
+          setSelectedPlayerStats(stats)
+          
+          // Clear current user data to avoid confusion
+          setMemberData(null)
+          setPatrolData([])
+          setPatrolStats(null)
+          setRankData(null)
+          
+        } else {
+          // Viewing current user - preserve local RSI verification state if it exists
+          setMemberData(prevMemberData => {
+            const newMemberData = { ...member }
             
-            newMemberData.RSI_Verified = true
-            newMemberData.RSI_Handle = member['RSI User Name'] || member['RSI_Handle']
+            // Check for RSI verification from Google Sheets (columns U and V)
+            // Column U should contain "Verified" and Column V should contain RSI handle
+            const hasSheetVerification = member && (
+              member['Verified'] === 'Verified' || // Column U
+              member['RSI User Name'] || // Column V  
+              member['RSI_Verified'] === true ||
+              member['RSI_Verified'] === 'true' ||
+              member['RSI_Verified'] === 'Verified'
+            )
+            
+            if (hasSheetVerification) {
+              console.log('Found RSI verification in sheets data:', {
+                verified: member['Verified'],
+                rsiUserName: member['RSI User Name'],
+                rsiVerified: member['RSI_Verified']
+              })
+              
+              newMemberData.RSI_Verified = true
+              newMemberData.RSI_Handle = member['RSI User Name'] || member['RSI_Handle']
+            }
+            
+            // If we have local RSI verification data, preserve it (this overrides sheets data)
+            if (prevMemberData?.RSI_Verified === true) {
+              newMemberData.RSI_Verified = prevMemberData.RSI_Verified
+              newMemberData.RSI_Handle = prevMemberData.RSI_Handle
+              newMemberData.RSI_Data = prevMemberData.RSI_Data
+              newMemberData.RSI_Organization = prevMemberData.RSI_Organization
+              newMemberData.RSI_Rank = prevMemberData.RSI_Rank
+            }
+            
+            return newMemberData
+          })
+          
+          // Fetch rank data if member exists
+          if (member?.Rank) {
+            const rank = await OFSDataService.getRankData(member.Rank)
+            setRankData(rank)
           }
           
-          // If we have local RSI verification data, preserve it (this overrides sheets data)
-          if (prevMemberData?.RSI_Verified === true) {
-            newMemberData.RSI_Verified = prevMemberData.RSI_Verified
-            newMemberData.RSI_Handle = prevMemberData.RSI_Handle
-            newMemberData.RSI_Data = prevMemberData.RSI_Data
-            newMemberData.RSI_Organization = prevMemberData.RSI_Organization
-            newMemberData.RSI_Rank = prevMemberData.RSI_Rank
-          }
+          // Fetch patrol data
+          const patrols = await OFSDataService.getPatrolData(targetUserId)
+          setPatrolData(patrols)
           
-          return newMemberData
-        })
-        
-        // Fetch rank data if member exists
-        if (member?.Rank) {
-          const rank = await OFSDataService.getRankData(member.Rank)
-          setRankData(rank)
+          // Calculate patrol stats
+          const stats = OFSDataService.formatPatrolStats(patrols)
+          setPatrolStats(stats)
+          
+          // Clear selected player data when viewing own profile
+          setSelectedPlayerData(null)
+          setSelectedPlayer(null)
+          setSelectedPlayerPatrolData([])
+          setSelectedPlayerStats(null)
         }
-        
-        // Fetch patrol data
-        const patrols = await OFSDataService.getPatrolData(user.id)
-        setPatrolData(patrols)
-        
-        // Calculate patrol stats
-        const stats = OFSDataService.formatPatrolStats(patrols)
-        setPatrolStats(stats)
         
       } catch (err) {
         console.error('Error fetching OFS data:', err)
@@ -415,34 +448,56 @@ export default function Profile() {
       }
     }
     
-    if (isAuthenticated && user?.id) {
+    // Only fetch if we have a user ID OR a playerId from URL
+    const playerId = searchParams.get('playerId')
+    if ((isAuthenticated && user?.id) || playerId) {
       fetchData()
     }
-  }, [user?.id, isAuthenticated])
+  }, [user?.id, isAuthenticated, searchParams])
 
   // Fetch Google Sheets patrol stats
   useEffect(() => {
     const fetchGoogleStats = async () => {
-      if (!user?.id) return
+      // Get playerId from URL params
+      const playerId = searchParams.get('playerId')
+      const targetUserId = playerId || user?.id
+      
+      if (!targetUserId) return
       
       setStatsLoading(true)
       try {
-        console.log('Fetching Google Sheets stats for user:', user.id)
-        const stats = await googleSheetsService.fetchUserStats(user.id)
-        setGoogleStats(stats)
+        console.log('Fetching Google Sheets stats for user:', targetUserId)
+        const stats = await googleSheetsService.fetchUserStats(targetUserId)
+        
+        if (playerId) {
+          // If viewing another player, set their Google stats
+          setSelectedPlayerGoogleStats(stats)
+          setGoogleStats(null) // Clear current user stats
+        } else {
+          // If viewing current user
+          setGoogleStats(stats)
+          setSelectedPlayerGoogleStats(null) // Clear selected player stats
+        }
+        
         console.log('Profile: Received Google stats:', stats)
       } catch (err) {
         console.error('Error fetching Google Sheets stats:', err)
-        setGoogleStats(null)
+        if (playerId) {
+          setSelectedPlayerGoogleStats(null)
+        } else {
+          setGoogleStats(null)
+        }
       } finally {
         setStatsLoading(false)
       }
     }
 
-    if (isAuthenticated && user?.id) {
+    // Only fetch if we have a user ID OR a playerId from URL
+    const playerId = searchParams.get('playerId')
+    if ((isAuthenticated && user?.id) || playerId) {
       fetchGoogleStats()
     }
-  }, [user?.id, isAuthenticated])
+  }, [user?.id, isAuthenticated, searchParams])
 
   // Redirect if not authenticated
   if (!isAuthenticated) {
