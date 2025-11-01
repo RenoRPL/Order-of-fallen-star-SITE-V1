@@ -751,19 +751,26 @@ export default function Profile() {
   useEffect(() => {
     const handleBackstoryScroll = () => {
       if (backstoryRef.current) {
-        const { scrollTop } = backstoryRef.current
+        const { scrollTop, scrollHeight, clientHeight } = backstoryRef.current
+        console.log('Backstory scroll debug:', { scrollTop, scrollHeight, clientHeight, hasScroll: scrollHeight > clientHeight })
         // Show jump to top link if scrolled down more than 50px
         const shouldShow = scrollTop > 50
+        console.log('Should show jump to top:', shouldShow)
         setShowBackstoryJumpToTop(shouldShow)
       }
     }
 
     const backstoryElement = backstoryRef.current
     if (backstoryElement) {
+      console.log('Backstory element found, adding scroll listener')
       backstoryElement.addEventListener('scroll', handleBackstoryScroll)
+      // Test initial scroll state
+      handleBackstoryScroll()
       return () => {
         backstoryElement.removeEventListener('scroll', handleBackstoryScroll)
       }
+    } else {
+      console.log('Backstory element NOT found')
     }
   }, [profileBio, selectedPlayerBackstory]) // Re-run when backstory content changes
 
@@ -1677,29 +1684,33 @@ export default function Profile() {
                 )}
                 
                 {/* Jump to Top Link - simple text in top-right corner */}
-                {showBackstoryJumpToTop && (
+                {(showBackstoryJumpToTop || true) && ( /* Temporarily always show for debugging */
                   <span
                     onClick={handleBackstoryJumpToTop}
                     style={{
                       position: 'absolute',
                       top: '10px',
                       right: '15px',
-                      color: '#4A90E2',
-                      fontSize: '14px',
+                      color: showBackstoryJumpToTop ? '#4A90E2' : '#FF6B6B', /* Blue when should show, red when debugging */
+                      fontSize: '16px', /* Made slightly larger */
+                      fontWeight: 'bold', /* Made bold for visibility */
                       textDecoration: 'underline',
                       cursor: 'pointer',
                       userSelect: 'none',
-                      zIndex: 10
+                      zIndex: 1000, /* Higher z-index */
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)', /* Dark background for visibility */
+                      padding: '4px 8px',
+                      borderRadius: '4px'
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.color = '#357ABD'
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.color = '#4A90E2'
+                      e.target.style.color = showBackstoryJumpToTop ? '#4A90E2' : '#FF6B6B'
                     }}
                     title="Jump to top of backstory"
                   >
-                    ↑ Top
+                    ↑ Top {showBackstoryJumpToTop ? '(ACTIVE)' : '(DEBUG)'}
                   </span>
                 )}
               </div>
