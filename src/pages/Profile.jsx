@@ -751,11 +751,9 @@ export default function Profile() {
   useEffect(() => {
     const handleBackstoryScroll = () => {
       if (backstoryRef.current) {
-        const { scrollTop, scrollHeight, clientHeight } = backstoryRef.current
-        console.log('Backstory scroll:', { scrollTop, scrollHeight, clientHeight })
-        // Show jump to top button if scrolled down more than 50px
+        const { scrollTop } = backstoryRef.current
+        // Show jump to top link if scrolled down more than 50px
         const shouldShow = scrollTop > 50
-        console.log('Should show jump to top:', shouldShow)
         setShowBackstoryJumpToTop(shouldShow)
       }
     }
@@ -1678,45 +1676,31 @@ export default function Profile() {
                   </div>
                 )}
                 
-                {/* Debug info */}
-                <div style={{ position: 'absolute', top: '10px', left: '10px', color: 'yellow', fontSize: '12px', backgroundColor: 'rgba(0,0,0,0.7)', padding: '5px', borderRadius: '3px' }}>
-                  Show Button: {showBackstoryJumpToTop ? 'YES' : 'NO'}
-                </div>
-                
-                {/* Jump to Top Button - appears when scrolling down */}
-                {(showBackstoryJumpToTop || true) && ( 
-                  <button
-                    className="backstory-jump-to-top"
+                {/* Jump to Top Link - simple text in top-right corner */}
+                {showBackstoryJumpToTop && (
+                  <span
                     onClick={handleBackstoryJumpToTop}
                     style={{
                       position: 'absolute',
-                      bottom: '20px',
-                      right: '20px',
-                      backgroundColor: showBackstoryJumpToTop ? 'rgba(0, 150, 255, 0.9)' : 'rgba(255, 0, 0, 0.5)',
-                      border: 'none',
-                      borderRadius: '50%',
-                      width: '50px',
-                      height: '50px',
-                      color: 'white',
+                      top: '10px',
+                      right: '15px',
+                      color: '#4A90E2',
+                      fontSize: '14px',
+                      textDecoration: 'underline',
                       cursor: 'pointer',
-                      fontSize: '18px',
-                      fontWeight: 'bold',
-                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)',
-                      transition: 'all 0.3s ease',
-                      zIndex: 1000
+                      userSelect: 'none',
+                      zIndex: 10
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = 'rgba(0, 150, 255, 1)'
-                      e.target.style.transform = 'scale(1.1)'
+                      e.target.style.color = '#357ABD'
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'rgba(0, 150, 255, 0.8)'
-                      e.target.style.transform = 'scale(1)'
+                      e.target.style.color = '#4A90E2'
                     }}
                     title="Jump to top of backstory"
                   >
-                    ↑
-                  </button>
+                    ↑ Top
+                  </span>
                 )}
               </div>
             </div>
