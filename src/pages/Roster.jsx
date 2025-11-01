@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import OFSDataService from '../services/ofsDataService'
 import Header from '../components/Header'
@@ -7,6 +8,7 @@ import './Roster.css'
 
 export default function Roster() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [members, setMembers] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [sortBy, setSortBy] = useState('Username')
@@ -101,6 +103,13 @@ export default function Roster() {
       })
     } catch (error) {
       return dateString
+    }
+  }
+
+  const handleMemberClick = (member) => {
+    // Navigate to profile page with the member's User ID as a query parameter
+    if (member['User ID']) {
+      navigate(`/profile?playerId=${member['User ID']}`)
     }
   }
 
@@ -205,7 +214,12 @@ export default function Roster() {
               </thead>
               <tbody>
                 {filteredAndSortedMembers.map((member, index) => (
-                  <tr key={member['User ID'] || index}>
+                  <tr 
+                    key={member['User ID'] || index}
+                    className="roster-row clickable"
+                    onClick={() => handleMemberClick(member)}
+                    title={`View ${member.Username || 'Unknown'}'s profile`}
+                  >
                     <td className="username-cell">
                       <div className="member-info">
                         <span className="username">{member.Username || 'Unknown'}</span>
