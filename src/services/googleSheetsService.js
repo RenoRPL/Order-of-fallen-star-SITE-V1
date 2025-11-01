@@ -65,15 +65,15 @@ export class GoogleSheetsService {
                 });
                 
                 const stats = {
-                  patrolCount: userRow[2] || '0', // Column C - PatrolCount
-                  totalLength: userRow[3] || '0', // Column D - TotalLength_Hours
-                  fpsKills: userRow[4] || '0', // Column E - FPS_Kills_Total (Ground Kills)
-                  shipKills: userRow[5] || '0', // Column F - Ship_Kills_Total (Pilot Kills)
-                  crusades: userRow[6] || '0', // Column G - Crusades_Total
-                  turretKills: userRow[7] || '0', // Column H - Turret_Kills_Total
-                  quests: userRow[8] || '0', // Column I - Quest_Total
-                  ledQuests: userRow[9] || '0', // Column J - Led_Completed_Quests
-                  ledCrusades: userRow[10] || '0', // Column K - Led_Completed_Crusades
+                  patrolCount: userRow[2] || '0', // Column C - PatrolCount  
+                  totalLength: userRow[3] || '0', // Column D - Total Hours (35 in CSV)
+                  fpsKills: userRow[4] || '0', // Column E - Ground Kills (0 in CSV) 
+                  shipKills: userRow[5] || '0', // Column F - Pilot Kills (98 in CSV)
+                  crusades: userRow[6] || '0', // Column G - Crusades (73 in CSV)
+                  turretKills: userRow[7] || '0', // Column H - Turret Kills (6 in CSV)
+                  quests: userRow[8] || '0', // Column I - Quests (2 in CSV)
+                  ledQuests: userRow[9] || '0', // Column J - Led Quests (29 in CSV)
+                  ledCrusades: userRow[10] || '0', // Column K - Led Crusades (1 in CSV)
                 };
                 
                 console.log('=== EXPECTED VALUES (from your spreadsheet) ===');
