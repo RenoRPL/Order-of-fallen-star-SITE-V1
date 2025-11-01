@@ -135,6 +135,42 @@ class OFSDataService {
     }
   }
 
+  static async getRankTier(rankName) {
+    try {
+      const rankData = await this.getRankData(rankName)
+      return rankData ? parseInt(rankData.Tier || rankData.tier || 999) : 999
+    } catch (error) {
+      console.error('Error fetching rank tier:', error)
+      return 999 // Default to high number for unknown ranks
+    }
+  }
+
+  static async sortMembersByRankTier(members) {
+    try {
+      const ranksData = await this.getAllRanks()
+      const rankTierMap = {}
+      
+      // Create a map of rank name to tier
+      ranksData.forEach(rank => {
+        const rankName = rank['Rank Name'] || rank.name
+        const tier = parseInt(rank.Tier || rank.tier || 999)
+        if (rankName) {
+          rankTierMap[rankName] = tier
+        }
+      })
+
+      // Sort members by rank tier (lower tier = higher rank)
+      return members.sort((a, b) => {
+        const aTier = rankTierMap[a.Rank] || 999
+        const bTier = rankTierMap[b.Rank] || 999
+        return aTier - bTier
+      })
+    } catch (error) {
+      console.error('Error sorting by rank tier:', error)
+      return members // Return unsorted if error
+    }
+  }
+
   static async getAllPaths() {
     try {
       const pathsData = await this.fetchCSV(PATHS_URL)

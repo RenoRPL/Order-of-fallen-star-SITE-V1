@@ -10,7 +10,9 @@ export default function Roster() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [members, setMembers] = useState([])
+  const [sortedMembers, setSortedMembers] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isSorting, setIsSorting] = useState(false)
   const [sortBy, setSortBy] = useState('Username')
   const [sortOrder, setSortOrder] = useState('asc')
   const [filterRank, setFilterRank] = useState('All')
@@ -42,46 +44,72 @@ export default function Roster() {
   const uniqueRanks = [...new Set(members.map(member => member.Rank).filter(Boolean))].sort()
   const uniqueRoles = [...new Set(members.map(member => member.Role).filter(Boolean))].sort()
 
-  // Filter and sort members
-  const filteredAndSortedMembers = members
-    .filter(member => {
-      // Search filter
-      if (searchTerm) {
-        const search = searchTerm.toLowerCase()
-        const username = member.Username?.toLowerCase() || ''
-        const rank = member.Rank?.toLowerCase() || ''
-        const role = member.Role?.toLowerCase() || ''
-        if (!username.includes(search) && !rank.includes(search) && !role.includes(search)) {
+  // Effect to handle filtering and sorting
+  useEffect(() => {
+    const filterAndSort = async () => {
+      setIsSorting(true)
+      
+      // Filter members
+      const filtered = members.filter(member => {
+        // Search filter
+        if (searchTerm) {
+          const search = searchTerm.toLowerCase()
+          const username = member.Username?.toLowerCase() || ''
+          const rank = member.Rank?.toLowerCase() || ''
+          const role = member.Role?.toLowerCase() || ''
+          if (!username.includes(search) && !rank.includes(search) && !role.includes(search)) {
+            return false
+          }
+        }
+        
+        // Rank filter
+        if (filterRank !== 'All' && member.Rank !== filterRank) {
           return false
         }
-      }
-      
-      // Rank filter
-      if (filterRank !== 'All' && member.Rank !== filterRank) {
-        return false
-      }
-      
-      // Role filter
-      if (filterRole !== 'All' && member.Role !== filterRole) {
-        return false
-      }
-      
-      return true
-    })
-    .sort((a, b) => {
-      let aValue = a[sortBy] || ''
-      let bValue = b[sortBy] || ''
-      
-      // Convert to strings for comparison
-      aValue = aValue.toString().toLowerCase()
-      bValue = bValue.toString().toLowerCase()
-      
-      if (sortOrder === 'asc') {
-        return aValue.localeCompare(bValue)
+        
+        // Role filter
+        if (filterRole !== 'All' && member.Role !== filterRole) {
+          return false
+        }
+        
+        return true
+      })
+
+      // Sort members
+      let sorted
+      if (sortBy === 'Rank') {
+        // Use tier-based sorting for ranks
+        sorted = await OFSDataService.sortMembersByRankTier(filtered)
+        if (sortOrder === 'desc') {
+          sorted = sorted.reverse()
+        }
       } else {
-        return bValue.localeCompare(aValue)
+        // Regular sorting for other columns
+        sorted = filtered.sort((a, b) => {
+          let aValue = a[sortBy] || ''
+          let bValue = b[sortBy] || ''
+          
+          // Convert to strings for comparison
+          aValue = aValue.toString().toLowerCase()
+          bValue = bValue.toString().toLowerCase()
+          
+          if (sortOrder === 'asc') {
+            return aValue.localeCompare(bValue)
+          } else {
+            return bValue.localeCompare(aValue)
+          }
+        })
       }
-    })
+
+      setSortedMembers(sorted)
+      setIsSorting(false)
+    }
+
+    filterAndSort()
+  }, [members, sortBy, sortOrder, filterRank, filterRole, searchTerm])
+
+  // Filter and sort members
+  const filteredAndSortedMembers = sortedMembers
 
   const handleSort = (column) => {
     if (sortBy === column) {
@@ -121,7 +149,9 @@ export default function Roster() {
         <div className="roster-header">
           <h1>Order of the Fallen Star - Roster</h1>
           <p className="roster-subtitle">
-            {isLoading ? 'Loading members...' : `${filteredAndSortedMembers.length} of ${members.length} members`}
+            {isLoading ? 'Loading members...' : 
+             isSorting ? 'Sorting by rank tier...' : 
+             `${filteredAndSortedMembers.length} of ${members.length} members`}
           </p>
         </div>
 
@@ -168,6 +198,11 @@ export default function Roster() {
           <div className="loading-state">
             <div className="loading-spinner"></div>
             <p>Loading roster data...</p>
+          </div>
+        ) : isSorting ? (
+          <div className="loading-state">
+            <div className="loading-spinner"></div>
+            <p>Sorting by rank tier...</p>
           </div>
         ) : (
           <div className="roster-table-container">
@@ -251,7 +286,7 @@ export default function Roster() {
               </tbody>
             </table>
             
-            {filteredAndSortedMembers.length === 0 && !isLoading && (
+            {filteredAndSortedMembers.length === 0 && !isLoading && !isSorting && (
               <div className="no-results">
                 <p>No members found matching your filters.</p>
               </div>

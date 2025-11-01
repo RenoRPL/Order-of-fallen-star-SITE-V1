@@ -43,20 +43,28 @@ export default function PlayerSearch({ onPlayerSelect }) {
       return
     }
 
-    const filtered = members.filter(member => {
-      const username = member.Username?.toLowerCase() || ''
-      const rank = member.Rank?.toLowerCase() || ''
-      const role = member.Role?.toLowerCase() || ''
-      const search = searchTerm.toLowerCase()
+    const filterAndSort = async () => {
+      const filtered = members.filter(member => {
+        const username = member.Username?.toLowerCase() || ''
+        const rank = member.Rank?.toLowerCase() || ''
+        const role = member.Role?.toLowerCase() || ''
+        const search = searchTerm.toLowerCase()
 
-      return username.includes(search) || 
-             rank.includes(search) || 
-             role.includes(search)
-    }).slice(0, 10) // Limit to 10 suggestions
+        return username.includes(search) || 
+               rank.includes(search) || 
+               role.includes(search)
+      })
 
-    setFilteredMembers(filtered)
-    setShowSuggestions(filtered.length > 0)
-    setSelectedIndex(-1)
+      // Sort by rank tier, then limit to 10 suggestions
+      const sortedByTier = await OFSDataService.sortMembersByRankTier(filtered)
+      const limitedResults = sortedByTier.slice(0, 10)
+
+      setFilteredMembers(limitedResults)
+      setShowSuggestions(limitedResults.length > 0)
+      setSelectedIndex(-1)
+    }
+
+    filterAndSort()
   }, [searchTerm, members])
 
   const handleInputChange = (e) => {
