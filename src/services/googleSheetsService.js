@@ -65,36 +65,37 @@ export class GoogleSheetsService {
                 });
                 
                 const stats = {
-                  patrolCount: userRow[2] || '0', // Column C - Contains rank title in this CSV
-                  totalLength: userRow[4] || '0', // Column E - Shows 0, matches expected Total Hours
-                  fpsKills: userRow[5] || '0', // Column F - Shows 98, matches expected Ground Kills
-                  shipKills: userRow[6] || '0', // Column G - Shows 73, matches expected Pilot Kills  
-                  crusades: userRow[7] || '0', // Column H - Need to verify this mapping
-                  turretKills: userRow[8] || '0', // Column I - Shows 2, might match expected Turret Kills
-                  quests: userRow[9] || '0', // Column J - Need to find correct value (should be 25)
-                  ledQuests: userRow[10] || '0', // Column K - Need to find correct value (should be 4)
-                  ledCrusades: userRow[11] || '0', // Column L - Try next column for Led Crusades
+                  patrolCount: userRow[2] || '0', // Column C - PatrolCount from CSV header
+                  totalLength: userRow[3] || '0', // Column D - TotalLength from CSV header
+                  fpsKills: userRow[4] || '0', // Column E - FPS_Kills_Total from CSV header
+                  shipKills: userRow[5] || '0', // Column F - Ship_Kills_Total from CSV header  
+                  crusades: userRow[6] || '0', // Column G - Crusades_Total from CSV header
+                  turretKills: userRow[7] || '0', // Column H - Turret_Kills_Total from CSV header
+                  quests: userRow[8] || '0', // Column I - Quest_Total from CSV header
+                  ledQuests: userRow[9] || '0', // Column J - Led_Completed_Quests from CSV header
+                  ledCrusades: userRow[10] || '0', // Column K - Led_Completed_Crusades from CSV header
                 };
                 
-                console.log('=== EXPECTED VALUES (from your spreadsheet) ===');
-                console.log('Ground Kills should be: 98 (Column E)');
-                console.log('Pilot Kills should be: 73 (Column F)');
-                console.log('Total Hours should be: 0 (Column D)');
-                console.log('Turret Kills should be: 2 (Column H)');
-                console.log('Quests should be: 25 (Column I)');
-                console.log('Led Quests should be: 4 (Column J)');
-                console.log('Crusades should be: 5 (Column G)');
-                console.log('Led Crusades should be: 0 (Column K)');
+                console.log('=== ACTUAL CSV STRUCTURE ===');
+                console.log('PatrolCount: Column C (index 2) =', userRow[2]);
+                console.log('TotalLength: Column D (index 3) =', userRow[3]);
+                console.log('FPS_Kills_Total: Column E (index 4) =', userRow[4]);
+                console.log('Ship_Kills_Total: Column F (index 5) =', userRow[5]);
+                console.log('Crusades_Total: Column G (index 6) =', userRow[6]);
+                console.log('Turret_Kills_Total: Column H (index 7) =', userRow[7]);
+                console.log('Quest_Total: Column I (index 8) =', userRow[8]);
+                console.log('Led_Completed_Quests: Column J (index 9) =', userRow[9]);
+                console.log('Led_Completed_Crusades: Column K (index 10) =', userRow[10]);
                 
-                console.log('=== ACTUAL EXTRACTED VALUES ===');
-                console.log(`Ground Kills (fpsKills): Column E (${userRow[4]}) = ${stats.fpsKills}`);
-                console.log(`Pilot Kills (shipKills): Column F (${userRow[5]}) = ${stats.shipKills}`);
-                console.log(`Total Hours (totalLength): Column D (${userRow[3]}) = ${stats.totalLength}`);
-                console.log(`Turret Kills (turretKills): Column H (${userRow[7]}) = ${stats.turretKills}`);
-                console.log(`Quests: Column I (${userRow[8]}) = ${stats.quests}`);
-                console.log(`Led Quests: Column J (${userRow[9]}) = ${stats.ledQuests}`);
-                console.log(`Crusades: Column G (${userRow[6]}) = ${stats.crusades}`);
-                console.log(`Led Crusades: Column K (${userRow[10]}) = ${stats.ledCrusades}`);
+                console.log('=== EXTRACTED STATS VALUES ===');
+                console.log(`Ground Kills (fpsKills): ${stats.fpsKills}`);
+                console.log(`Pilot Kills (shipKills): ${stats.shipKills}`);
+                console.log(`Total Hours (totalLength): ${stats.totalLength}`);
+                console.log(`Turret Kills (turretKills): ${stats.turretKills}`);
+                console.log(`Quests: ${stats.quests}`);
+                console.log(`Led Quests: ${stats.ledQuests}`);
+                console.log(`Crusades: ${stats.crusades}`);
+                console.log(`Led Crusades: ${stats.ledCrusades}`);
                 console.log('Final extracted stats:', stats);
                 console.log('=== END DEBUG ===');
                 return stats;
