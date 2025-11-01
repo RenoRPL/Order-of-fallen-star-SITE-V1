@@ -54,6 +54,10 @@ export default function Profile() {
   const [selectedPlayerCustomShipImage, setSelectedPlayerCustomShipImage] = useState('')
   const [shipRegistry, setShipRegistry] = useState([])
 
+  // Back story scroll state
+  const [showBackstoryJumpToTop, setShowBackstoryJumpToTop] = useState(false)
+  const backstoryRef = React.useRef(null)
+
   // Get current displayed data (either logged-in user or selected player)
   const currentDisplayData = isViewingOtherPlayer && selectedPlayerData ? selectedPlayerData : memberData
   const currentCustomization = isViewingOtherPlayer && selectedPlayerCustomization ? selectedPlayerCustomization : profileCustomization
@@ -743,6 +747,26 @@ export default function Profile() {
     }
   }, [user?.id, isAuthenticated, searchParams])
 
+  // Back story scroll handler
+  useEffect(() => {
+    const handleBackstoryScroll = () => {
+      if (backstoryRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = backstoryRef.current
+        // Show jump to top button if scrolled down more than 100px and not at bottom
+        const shouldShow = scrollTop > 100 && (scrollTop + clientHeight) < scrollHeight - 10
+        setShowBackstoryJumpToTop(shouldShow)
+      }
+    }
+
+    const backstoryElement = backstoryRef.current
+    if (backstoryElement) {
+      backstoryElement.addEventListener('scroll', handleBackstoryScroll)
+      return () => {
+        backstoryElement.removeEventListener('scroll', handleBackstoryScroll)
+      }
+    }
+  }, [profileBio, selectedPlayerBackstory]) // Re-run when backstory content changes
+
   // Redirect if not authenticated
   if (!isAuthenticated) {
     navigate('/')
@@ -752,6 +776,15 @@ export default function Profile() {
   const handleLogout = () => {
     logout()
     navigate('/')
+  }
+
+  const handleBackstoryJumpToTop = () => {
+    if (backstoryRef.current) {
+      backstoryRef.current.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    }
   }
 
   // RSI Account Linking Functions
@@ -1612,22 +1645,70 @@ export default function Profile() {
                 backgroundRepeat: 'no-repeat'
               }}
             >
-              <div className="bio-header">
+              <div className="bio-header" id="backstory-top">
                 <h3>Back Story</h3>
               </div>
-              <div className="bio-content">
+              <div 
+                className="bio-content"
+                ref={backstoryRef}
+                style={{
+                  position: 'relative',
+                  maxHeight: '400px',
+                  overflowY: 'auto',
+                  padding: '20px',
+                  margin: '0 20px 20px 20px',
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                }}
+              >
                 {(isViewingOtherPlayer ? selectedPlayerBackstory : profileBio) && (
-                  <div className="bio-text">
+                  <div className="bio-text" style={{ marginBottom: '20px', lineHeight: '1.6' }}>
                     {formatBackstoryText(isViewingOtherPlayer ? selectedPlayerBackstory : profileBio)}
                   </div>
                 )}
                 {(isViewingOtherPlayer ? selectedPlayerShip : profileShip) && (
-                  <div className="bio-ship">
-                    <span className="ship-label">Primary Ship:</span>
+                  <div className="bio-ship" style={{ marginTop: '20px', padding: '15px', backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: '6px' }}>
+                    <span className="ship-label" style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Primary Ship:</span>
                     <div className="ship-info">
                       <span className="ship-name">{getShipDisplayName(isViewingOtherPlayer ? selectedPlayerShip : profileShip)}</span>
                     </div>
                   </div>
+                )}
+                
+                {/* Jump to Top Button - appears when scrolling down */}
+                {showBackstoryJumpToTop && (
+                  <button
+                    className="backstory-jump-to-top"
+                    onClick={handleBackstoryJumpToTop}
+                    style={{
+                      position: 'absolute',
+                      bottom: '20px',
+                      right: '20px',
+                      backgroundColor: 'rgba(0, 150, 255, 0.8)',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: '50px',
+                      height: '50px',
+                      color: 'white',
+                      cursor: 'pointer',
+                      fontSize: '18px',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+                      transition: 'all 0.3s ease',
+                      zIndex: 10
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'rgba(0, 150, 255, 1)'
+                      e.target.style.transform = 'scale(1.1)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'rgba(0, 150, 255, 0.8)'
+                      e.target.style.transform = 'scale(1)'
+                    }}
+                    title="Jump to top of backstory"
+                  >
+                    ↑
+                  </button>
                 )}
               </div>
             </div>
