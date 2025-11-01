@@ -1662,6 +1662,49 @@ export default function Profile() {
             )}
 
           </div>
+
+          {/* Bio Section - Show for own profile or other players when backstory exists */}
+          {((isViewingOtherPlayer && (selectedPlayerBackstory || selectedPlayerShip)) || (!isViewingOtherPlayer && (profileBio || profileShip))) && (
+            <div 
+              className="profile-bio-section"
+              style={{
+                backgroundImage: getShipBackgroundUrl(
+                  isViewingOtherPlayer ? selectedPlayerShip : profileShip,
+                  isViewingOtherPlayer ? selectedPlayerCustomShipImage : profileCustomShipImage
+                ) 
+                  ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${getShipBackgroundUrl(
+                      isViewingOtherPlayer ? selectedPlayerShip : profileShip,
+                      isViewingOtherPlayer ? selectedPlayerCustomShipImage : profileCustomShipImage
+                    )})` 
+                  : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
+            >
+              <div className="bio-header">
+                <h3>Back Story</h3>
+              </div>
+              <div className="bio-content">
+                {(isViewingOtherPlayer ? selectedPlayerBackstory : profileBio) && (
+                  <div className="bio-text">
+                    {formatBackstoryText(isViewingOtherPlayer ? selectedPlayerBackstory : profileBio)}
+                  </div>
+                )}
+                {(isViewingOtherPlayer ? selectedPlayerShip : profileShip) && (
+                  <div className="ship-info">
+                    <h4>Ship of Choice</h4>
+                    <div className="ship-display">
+                      <span className="ship-name">
+                        {getShipDisplayName(isViewingOtherPlayer ? selectedPlayerShip : profileShip)}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
         </div>
       </main>
 
