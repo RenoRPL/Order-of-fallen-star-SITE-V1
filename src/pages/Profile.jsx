@@ -307,6 +307,21 @@ export default function Profile() {
     }
   }, [shipRegistry, profileShip, user?.id])
 
+  // Re-process selected player ship when ship registry loads
+  useEffect(() => {
+    if (shipRegistry.length > 0 && selectedPlayerShip && isViewingOtherPlayer) {
+      const currentShip = shipRegistry.find(ship => ship.value === selectedPlayerShip)
+      if (!currentShip) {
+        // selectedPlayerShip might be a full name, try to find by fullName  
+        const shipByFullName = shipRegistry.find(ship => ship.fullName === selectedPlayerShip)
+        if (shipByFullName) {
+          console.log('Converting selected player ship from full name to value:', selectedPlayerShip, '->', shipByFullName.value)
+          setSelectedPlayerShip(shipByFullName.value)
+        }
+      }
+    }
+  }, [shipRegistry, selectedPlayerShip, isViewingOtherPlayer])
+
   // Apply profile theme colors as CSS custom properties
   useEffect(() => {
     let themeToUse = currentCustomization
@@ -998,6 +1013,8 @@ export default function Profile() {
   }
 
   const switchBackToOwnProfile = () => {
+    // Navigate back to profile without parameters
+    navigate('/profile')
     setIsViewingOtherPlayer(false)
     setClearPlayerSearch(true) // Trigger search field clearing
     setNotification({
