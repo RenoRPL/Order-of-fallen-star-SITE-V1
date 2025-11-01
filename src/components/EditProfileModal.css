@@ -546,3 +546,47 @@
   background-size: 8px 8px;
   opacity: 0.3;
 }
+
+/* Collapsible Section Styles */
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+}
+
+.collapsible-header:hover {
+  background: rgba(14, 165, 233, 0.1);
+  padding: 8px 12px;
+}
+
+.collapse-icon {
+  color: #0ea5e9;
+  font-size: 12px;
+  transition: transform 0.3s ease;
+  margin-left: 8px;
+}
+
+.collapse-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.collapsible-content {
+  margin-top: 16px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
+}

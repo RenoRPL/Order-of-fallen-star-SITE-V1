@@ -23,6 +23,38 @@
   font-weight: 600;
 }
 
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.roster-button {
+  background: rgba(14, 165, 233, 0.2);
+  border: 1px solid rgba(14, 165, 233, 0.4);
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: #0ea5e9;
+  font-family: 'Orbitron', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.roster-button:hover {
+  background: rgba(14, 165, 233, 0.3);
+  border-color: rgba(14, 165, 233, 0.6);
+  transform: translateY(-1px);
+}
+
+.roster-button:active {
+  transform: translateY(0);
+}
+
 .member-count {
   color: #94a3b8;
   font-size: 12px;
@@ -205,8 +237,24 @@
     padding: 12px;
   }
   
+  .player-search-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
   .player-search-header h3 {
     font-size: 14px;
+  }
+  
+  .header-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .roster-button {
+    font-size: 11px;
+    padding: 5px 10px;
   }
   
   .member-count {

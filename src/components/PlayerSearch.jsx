@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import OFSDataService from '../services/ofsDataService'
 import './PlayerSearch.css'
 
 export default function PlayerSearch({ onPlayerSelect }) {
+  const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
   const [members, setMembers] = useState([])
   const [filteredMembers, setFilteredMembers] = useState([])
@@ -124,9 +126,18 @@ export default function PlayerSearch({ onPlayerSelect }) {
     <div className="player-search-container" ref={searchRef}>
       <div className="player-search-header">
         <h3>Player Search</h3>
-        <span className="member-count">
-          {isLoading ? 'Loading...' : `${members.length} ranked members`}
-        </span>
+        <div className="header-controls">
+          <button 
+            className="roster-button"
+            onClick={() => navigate('/roster')}
+            title="View Full Roster"
+          >
+            📋 Roster
+          </button>
+          <span className="member-count">
+            {isLoading ? 'Loading...' : `${members.length} ranked members`}
+          </span>
+        </div>
       </div>
       
       <div className="search-input-wrapper">

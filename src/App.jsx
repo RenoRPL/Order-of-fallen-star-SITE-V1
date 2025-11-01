@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
+import Roster from './pages/Roster'
 import ContentManagement from './pages/ContentManagement'
 import TermsPrivacy from './pages/TermsPrivacy'
 import AuthCallback from './pages/AuthCallback'
@@ -44,6 +45,9 @@ export default function App() {
           
           {/* Profile Route */}
           <Route path="/profile" element={<Profile />} />
+          
+          {/* Roster Route */}
+          <Route path="/roster" element={<Roster />} />
           
           {/* Main Site Route */}
         <Route path="/" element={
