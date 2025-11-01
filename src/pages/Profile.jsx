@@ -1612,58 +1612,46 @@ export default function Profile() {
               </div>
             )}
             
-            {/* Player Search Section - Always visible */}
-            <PlayerSearch onPlayerSelect={handlePlayerSelect} />
-            
-            {/* Player Profile Info Section - Show when viewing another player */}
-            {isViewingOtherPlayer && selectedPlayer && (
-              <div className="viewed-player-info-section">
-                <div className="viewed-player-header">
-                  <h3>Player Information</h3>
-                </div>
-                <div className="viewed-player-details">
-                  <div className="player-detail-row">
-                    <span className="detail-label">Discord ID:</span>
-                    <span className="detail-value">{selectedPlayer['User ID'] || 'Unknown'}</span>
-                  </div>
-                  <div className="player-detail-row">
-                    <span className="detail-label">Join Date:</span>
-                    <span className="detail-value">{selectedPlayer['Join Date'] || 'Unknown'}</span>
-                  </div>
-                  <div className="player-detail-row">
-                    <span className="detail-label">Time in Service:</span>
-                    <span className="detail-value">
-                      {OFSDataService.calculateTimeInService(selectedPlayer['Join Date'])}
-                    </span>
-                  </div>
-                  <div className="player-detail-row">
-                    <span className="detail-label">Total Patrols:</span>
-                    <span className="detail-value">{currentPatrolStats?.totalPatrols || 0}</span>
-                  </div>
-                  <div className="player-detail-row">
-                    <span className="detail-label">Patrols Led:</span>
-                    <span className="detail-value">{currentPatrolStats?.patrolsLed || 0}</span>
-                  </div>
-                  <div className="player-detail-row">
-                    <span className="detail-label">Ground Kills:</span>
-                    <span className="detail-value">{currentGoogleStats?.fpsKills || 'N/A'}</span>
-                  </div>
-                  <div className="player-detail-row">
-                    <span className="detail-label">Ship Kills:</span>
-                    <span className="detail-value">{currentGoogleStats?.shipKills || 'N/A'}</span>
-                  </div>
-                  <div className="player-detail-row">
-                    <span className="detail-label">Total Quests:</span>
-                    <span className="detail-value">{currentGoogleStats?.quests || 'N/A'}</span>
-                  </div>
-                  {selectedPlayerData?.['RSI User Name'] && (
-                    <div className="player-detail-row">
-                      <span className="detail-label">RSI Handle:</span>
-                      <span className="detail-value">{selectedPlayerData['RSI User Name']}</span>
+            {/* Two-column layout for viewing other players */}
+            {isViewingOtherPlayer ? (
+              <div className="profile-two-column-layout">
+                {/* Left Column - Player Information */}
+                <div className="profile-left-column">
+                  {selectedPlayer && (
+                    <div className="viewed-player-info-section">
+                      <div className="viewed-player-header">
+                        <h3>Player Information</h3>
+                      </div>
+                      <div className="viewed-player-details">
+                        <div className="player-detail-row">
+                          <span className="detail-label">Join Date:</span>
+                          <span className="detail-value">{selectedPlayer['Join Date'] || 'Unknown'}</span>
+                        </div>
+                        <div className="player-detail-row">
+                          <span className="detail-label">Time in Service:</span>
+                          <span className="detail-value">
+                            {OFSDataService.calculateTimeInService(selectedPlayer['Join Date'])}
+                          </span>
+                        </div>
+                        {selectedPlayerData?.['RSI User Name'] && (
+                          <div className="player-detail-row">
+                            <span className="detail-label">RSI Handle:</span>
+                            <span className="detail-value">{selectedPlayerData['RSI User Name']}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
+                
+                {/* Right Column - Player Search */}
+                <div className="profile-right-column">
+                  <PlayerSearch onPlayerSelect={handlePlayerSelect} />
+                </div>
               </div>
+            ) : (
+              /* Single column layout for own profile - Player Search only */
+              <PlayerSearch onPlayerSelect={handlePlayerSelect} />
             )}
             
             {/* Error Display */}

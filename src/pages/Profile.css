@@ -1878,6 +1878,32 @@
     0 0 15px color-mix(in srgb, var(--profile-primary), transparent 85%);
 }
 
+/* Two-column layout for viewing other players */
+.profile-two-column-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 20px;
+}
+
+.profile-left-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-right-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .profile-two-column-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 .viewed-player-header {
   margin-bottom: 16px;
   border-bottom: 1px solid rgba(71, 85, 105, 0.3);

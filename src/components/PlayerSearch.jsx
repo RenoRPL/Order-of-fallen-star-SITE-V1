@@ -37,7 +37,7 @@ export default function PlayerSearch({ onPlayerSelect }) {
 
   // Filter members based on search term
   useEffect(() => {
-    if (searchTerm.length < 2) {
+    if (searchTerm.length < 1) {
       setFilteredMembers([])
       setShowSuggestions(false)
       return
