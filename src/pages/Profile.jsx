@@ -1302,15 +1302,18 @@ export default function Profile() {
   }
 
   const getShipImageUrl = (shipValue) => {
-    if (!shipValue) return null
+    if (!shipValue) {
+      return '/Nebula BG.jpeg'
+    }
     
     // Try to find in ship registry
     const ship = shipRegistry.find(s => s.value === shipValue)
+    
     if (ship && ship.imageUrl) {
       return ship.imageUrl
     }
     
-    return null
+    return '/Nebula BG.jpeg'
   }
 
   // Get ship background image, prioritizing custom images over registry images
@@ -1321,7 +1324,14 @@ export default function Profile() {
     }
     
     // Fallback to registry ship image
-    return getShipImageUrl(shipValue)
+    const registryImageUrl = getShipImageUrl(shipValue)
+    
+    // If we got a registry image URL, use it, otherwise use nebula background
+    if (registryImageUrl && registryImageUrl.trim() !== '') {
+      return registryImageUrl
+    }
+    
+    return '/Nebula BG.jpeg'
   }
 
   const formatJoinDate = (timestamp) => {
@@ -1602,10 +1612,8 @@ export default function Profile() {
               </div>
             )}
             
-            {/* Player Search Section - Only show for own profile */}
-            {!isViewingOtherPlayer && (
-              <PlayerSearch onPlayerSelect={handlePlayerSelect} />
-            )}
+            {/* Player Search Section - Always visible */}
+            <PlayerSearch onPlayerSelect={handlePlayerSelect} />
             
             {/* Player Profile Info Section - Show when viewing another player */}
             {isViewingOtherPlayer && selectedPlayer && (
