@@ -64,28 +64,37 @@ export class GoogleSheetsService {
                   console.log(`  Index ${index} (Column ${String.fromCharCode(65 + index)}): "${cell}"`);
                 });
                 
+                // Detect row format: some users have name split into 2 columns (Name + Title), others have just DisplayName
+                // Check if index 2 is a number (PatrolCount) or text (rank/title)
+                const isExtendedFormat = isNaN(parseInt(userRow[2]));
+                const offset = isExtendedFormat ? 1 : 0; // Add 1 to all indices for extended format
+                
+                console.log('Row format detection: isExtendedFormat =', isExtendedFormat, 'offset =', offset);
+                console.log('userRow[2] =', userRow[2], 'isNaN(parseInt(userRow[2])) =', isNaN(parseInt(userRow[2])));
+                
                 const stats = {
-                  patrolCount: userRow[2] || '0', // Column C - PatrolCount from CSV header
-                  totalLength: userRow[3] || '0', // Column D - TotalLength from CSV header
-                  fpsKills: userRow[4] || '0', // Column E - FPS_Kills_Total from CSV header
-                  shipKills: userRow[5] || '0', // Column F - Ship_Kills_Total from CSV header  
-                  crusades: userRow[6] || '0', // Column G - Crusades_Total from CSV header
-                  turretKills: userRow[7] || '0', // Column H - Turret_Kills_Total from CSV header
-                  quests: userRow[8] || '0', // Column I - Quest_Total from CSV header
-                  ledQuests: userRow[9] || '0', // Column J - Led_Completed_Quests from CSV header
-                  ledCrusades: userRow[10] || '0', // Column K - Led_Completed_Crusades from CSV header
+                  patrolCount: userRow[2 + offset] || '0', // Column C/D - PatrolCount
+                  totalLength: userRow[3 + offset] || '0', // Column D/E - TotalLength 
+                  fpsKills: userRow[4 + offset] || '0', // Column E/F - FPS_Kills_Total
+                  shipKills: userRow[5 + offset] || '0', // Column F/G - Ship_Kills_Total  
+                  crusades: userRow[6 + offset] || '0', // Column G/H - Crusades_Total
+                  turretKills: userRow[7 + offset] || '0', // Column H/I - Turret_Kills_Total
+                  quests: userRow[8 + offset] || '0', // Column I/J - Quest_Total
+                  ledQuests: userRow[9 + offset] || '0', // Column J/K - Led_Completed_Quests
+                  ledCrusades: userRow[10 + offset] || '0', // Column K/L - Led_Completed_Crusades
                 };
                 
                 console.log('=== ACTUAL CSV STRUCTURE ===');
-                console.log('PatrolCount: Column C (index 2) =', userRow[2]);
-                console.log('TotalLength: Column D (index 3) =', userRow[3]);
-                console.log('FPS_Kills_Total: Column E (index 4) =', userRow[4]);
-                console.log('Ship_Kills_Total: Column F (index 5) =', userRow[5]);
-                console.log('Crusades_Total: Column G (index 6) =', userRow[6]);
-                console.log('Turret_Kills_Total: Column H (index 7) =', userRow[7]);
-                console.log('Quest_Total: Column I (index 8) =', userRow[8]);
-                console.log('Led_Completed_Quests: Column J (index 9) =', userRow[9]);
-                console.log('Led_Completed_Crusades: Column K (index 10) =', userRow[10]);
+                console.log('Row format: ' + (isExtendedFormat ? 'Extended (Name + Title)' : 'Standard (DisplayName)'));
+                console.log('PatrolCount: Index', 2 + offset, '=', userRow[2 + offset]);
+                console.log('TotalLength: Index', 3 + offset, '=', userRow[3 + offset]);
+                console.log('FPS_Kills_Total: Index', 4 + offset, '=', userRow[4 + offset]);
+                console.log('Ship_Kills_Total: Index', 5 + offset, '=', userRow[5 + offset]);
+                console.log('Crusades_Total: Index', 6 + offset, '=', userRow[6 + offset]);
+                console.log('Turret_Kills_Total: Index', 7 + offset, '=', userRow[7 + offset]);
+                console.log('Quest_Total: Index', 8 + offset, '=', userRow[8 + offset]);
+                console.log('Led_Completed_Quests: Index', 9 + offset, '=', userRow[9 + offset]);
+                console.log('Led_Completed_Crusades: Index', 10 + offset, '=', userRow[10 + offset]);
                 
                 console.log('=== EXTRACTED STATS VALUES ===');
                 console.log(`Ground Kills (fpsKills): ${stats.fpsKills}`);
