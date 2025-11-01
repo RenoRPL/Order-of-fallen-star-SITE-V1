@@ -1886,7 +1886,20 @@
   margin-bottom: 20px;
 }
 
+/* Three-column layout - Command Center / Player Information / Player Search */
+.profile-three-column-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 20px;
+}
+
 .profile-left-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-middle-column {
   display: flex;
   flex-direction: column;
 }
@@ -1897,6 +1910,13 @@
 }
 
 /* Responsive layout */
+@media (max-width: 1024px) {
+  .profile-three-column-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .profile-two-column-layout {
     grid-template-columns: 1fr;

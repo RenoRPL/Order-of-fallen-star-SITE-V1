@@ -1579,129 +1579,90 @@ export default function Profile() {
             </div>
           )}
 
-          {/* Content Grid - Compact Layout */}
-          <div className="profile-content">
-            
-            {/* Command Center Tab - Only show for own profile */}
-            {!isViewingOtherPlayer && (
-              <div className="command-center-section">
-                <div className="command-center-header">
-                  <h3>Command Center</h3>
-                </div>
-                <div className="command-actions">
-                  {(memberData?.RSI_Verified === true || rsiData) ? (
-                    <div className="command-action success">
-                      <span className="action-icon">✓</span>
-                      <span className="action-text">RSI Verified</span>
-                    </div>
-                  ) : (
-                    <button className="command-action primary" onClick={openRsiModal}>
-                      <span className="action-icon">🔗</span>
-                      <span className="action-text">Link RSI</span>
-                    </button>
-                  )}
-                  <button className="command-action secondary" onClick={handleEditProfile}>
-                    <span className="action-icon">✏️</span>
-                    <span className="action-text">Edit Profile</span>
-                  </button>
-                  <button className="command-action danger" onClick={handleLogout}>
-                    <span className="action-icon">🚪</span>
-                    <span className="action-text">Logout</span>
-                  </button>
-                </div>
-              </div>
-            )}
-            
-            {/* Two-column layout for viewing other players */}
-            {isViewingOtherPlayer ? (
-              <div className="profile-two-column-layout">
-                {/* Left Column - Player Information */}
-                <div className="profile-left-column">
-                  {selectedPlayer && (
-                    <div className="viewed-player-info-section">
-                      <div className="viewed-player-header">
-                        <h3>Player Information</h3>
-                      </div>
-                      <div className="viewed-player-details">
-                        <div className="player-detail-row">
-                          <span className="detail-label">Join Date:</span>
-                          <span className="detail-value">{selectedPlayer['Join Date'] || 'Unknown'}</span>
-                        </div>
-                        <div className="player-detail-row">
-                          <span className="detail-label">Time in Service:</span>
-                          <span className="detail-value">
-                            {OFSDataService.calculateTimeInService(selectedPlayer['Join Date'])}
-                          </span>
-                        </div>
-                        {selectedPlayerData?.['RSI User Name'] && (
-                          <div className="player-detail-row">
-                            <span className="detail-label">RSI Handle:</span>
-                            <span className="detail-value">{selectedPlayerData['RSI User Name']}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Right Column - Player Search */}
-                <div className="profile-right-column">
-                  <PlayerSearch onPlayerSelect={handlePlayerSelect} />
-                </div>
-              </div>
-            ) : (
-              /* Single column layout for own profile - Player Search only */
-              <PlayerSearch onPlayerSelect={handlePlayerSelect} />
-            )}
-            
-            {/* Error Display */}
-            {error && (
-              <div className="error-section">
-                <p className="error-message">⚠️ {error}</p>
-              </div>
-            )}
-
-          </div>
-
-          {/* Bio Section - Show for own profile or other players when backstory exists */}
-          {((isViewingOtherPlayer && (selectedPlayerBackstory || selectedPlayerShip)) || (!isViewingOtherPlayer && (profileBio || profileShip))) && (
-            <div 
-              className="profile-bio-section"
-              style={{
-                backgroundImage: getShipBackgroundUrl(
-                  isViewingOtherPlayer ? selectedPlayerShip : profileShip,
-                  isViewingOtherPlayer ? selectedPlayerCustomShipImage : profileCustomShipImage
-                ) 
-                  ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${getShipBackgroundUrl(
-                      isViewingOtherPlayer ? selectedPlayerShip : profileShip,
-                      isViewingOtherPlayer ? selectedPlayerCustomShipImage : profileCustomShipImage
-                    )})` 
-                  : 'none',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
-              }}
-            >
-              <div className="bio-header">
-                <h3>Back Story</h3>
-              </div>
-              <div className="bio-content">
-                {(isViewingOtherPlayer ? selectedPlayerBackstory : profileBio) && (
-                  <div className="bio-text">
-                    {formatBackstoryText(isViewingOtherPlayer ? selectedPlayerBackstory : profileBio)}
+          {/* Three-column layout - Command Center / Player Information / Player Search */}
+          <div className="profile-three-column-layout">
+            {/* Left Column - Command Center */}
+            <div className="profile-left-column">
+              {!isViewingOtherPlayer && (
+                <div className="command-center-section">
+                  <div className="command-center-header">
+                    <h3>Command Center</h3>
                   </div>
-                )}
-                {(isViewingOtherPlayer ? selectedPlayerShip : profileShip) && (
-                  <div className="ship-info">
-                    <h4>Ship of Choice</h4>
-                    <div className="ship-display">
-                      <span className="ship-name">
-                        {getShipDisplayName(isViewingOtherPlayer ? selectedPlayerShip : profileShip)}
+                  <div className="command-actions">
+                    {(memberData?.RSI_Verified === true || rsiData) ? (
+                      <div className="command-action success">
+                        <span className="action-icon">✓</span>
+                        <span className="action-text">RSI Verified</span>
+                      </div>
+                    ) : (
+                      <button className="command-action primary" onClick={openRsiModal}>
+                        <span className="action-icon">🔗</span>
+                        <span className="action-text">Link RSI</span>
+                      </button>
+                    )}
+                    <button className="command-action secondary" onClick={handleEditProfile}>
+                      <span className="action-icon">✏️</span>
+                      <span className="action-text">Edit Profile</span>
+                    </button>
+                    <button className="command-action danger" onClick={handleLogout}>
+                      <span className="action-icon">🚪</span>
+                      <span className="action-text">Logout</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Middle Column - Player Information */}
+            <div className="profile-middle-column">
+              <div className="viewed-player-info-section">
+                <div className="viewed-player-header">
+                  <h3>Player Information</h3>
+                </div>
+                <div className="viewed-player-details">
+                  <div className="player-detail-row">
+                    <span className="detail-label">Join Date:</span>
+                    <span className="detail-value">
+                      {isViewingOtherPlayer 
+                        ? (selectedPlayer?.['Join Date'] || 'Unknown')
+                        : (memberData?.['Join Date'] || 'Unknown')
+                      }
+                    </span>
+                  </div>
+                  <div className="player-detail-row">
+                    <span className="detail-label">Time in Service:</span>
+                    <span className="detail-value">
+                      {isViewingOtherPlayer 
+                        ? OFSDataService.calculateTimeInService(selectedPlayer?.['Join Date'])
+                        : OFSDataService.calculateTimeInService(memberData?.['Join Date'])
+                      }
+                    </span>
+                  </div>
+                  {((isViewingOtherPlayer ? selectedPlayerData?.['RSI User Name'] : memberData?.['RSI User Name']) || rsiData?.handle) && (
+                    <div className="player-detail-row">
+                      <span className="detail-label">RSI Handle:</span>
+                      <span className="detail-value">
+                        {isViewingOtherPlayer 
+                          ? selectedPlayerData?.['RSI User Name']
+                          : (memberData?.['RSI User Name'] || rsiData?.handle)
+                        }
                       </span>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
+            </div>
+            
+            {/* Right Column - Player Search */}
+            <div className="profile-right-column">
+              <PlayerSearch onPlayerSelect={handlePlayerSelect} />
+            </div>
+          </div>
+
+          {/* Error Display */}
+          {error && (
+            <div className="error-section">
+              <p className="error-message">⚠️ {error}</p>
             </div>
           )}
 
