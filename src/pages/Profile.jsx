@@ -1914,10 +1914,10 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       <BackstoryModal
         isOpen={showBackstoryModal}
         onClose={() => setShowBackstoryModal(false)}
-        playerName={isViewingOtherPlayer ? (selectedPlayerData?.username || 'Unknown Player') : (memberData?.username || 'Your')}
+        playerName={isViewingOtherPlayer ? (selectedPlayerData?.Username || 'Unknown Player') : (currentDisplayData?.Username || user?.username || 'Warrior')}
+        playerRole={isViewingOtherPlayer ? selectedPlayerData?.Role : currentDisplayData?.Role}
         backstory={isViewingOtherPlayer ? selectedPlayerBackstory : profileBio}
         pathImage={getPathImageUrl(isViewingOtherPlayer ? selectedPlayerData?.['Role Path'] : currentDisplayData?.['Role Path'])}
-        customBannerImage={isViewingOtherPlayer ? selectedPlayerCustomBannerImage : profileCustomBannerImage}
         formatBackstoryText={formatBackstoryText}
       />
 

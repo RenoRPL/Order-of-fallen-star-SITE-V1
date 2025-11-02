@@ -5,14 +5,12 @@ const BackstoryModal = ({
   isOpen, 
   onClose, 
   playerName, 
+  playerRole,
   backstory, 
   pathImage, 
-  customBannerImage,
   formatBackstoryText 
 }) => {
   if (!isOpen) return null
-
-  const backgroundImage = customBannerImage || pathImage
 
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -25,12 +23,8 @@ const BackstoryModal = ({
       <div 
         className="backstory-modal-container"
         style={{
-          backgroundImage: backgroundImage 
-            ? `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${backgroundImage})`
-            : 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundColor: '#000000',
+          backgroundImage: 'none'
         }}
       >
         <button className="backstory-modal-close" onClick={onClose}>
@@ -66,6 +60,13 @@ const BackstoryModal = ({
                     ))}
                   </p>
                 ))}
+              </div>
+            )}
+            
+            {/* Signature at bottom */}
+            {playerName && playerRole && (
+              <div className="backstory-signature">
+                {playerName} - {playerRole}
               </div>
             )}
           </div>
