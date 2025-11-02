@@ -37,18 +37,20 @@ const BackstoryModal = ({
           ✕
         </button>
         
+        {/* Full width hero image at top */}
+        {pathImage && (
+          <div className="backstory-hero-image-container">
+            <img 
+              src={pathImage} 
+              alt="Role Hero" 
+              className="backstory-hero-image"
+            />
+          </div>
+        )}
+        
         <div className="backstory-modal-content">
           <div className="backstory-modal-header">
             <h2 className="backstory-modal-title">{playerName}</h2>
-            {pathImage && (
-              <div className="backstory-role-image">
-                <img 
-                  src={pathImage} 
-                  alt="Role Hero" 
-                  className="role-hero-image"
-                />
-              </div>
-            )}
           </div>
           
           <div className="backstory-modal-text">
