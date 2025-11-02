@@ -585,7 +585,7 @@
   font-weight: 600;
 }
 
-/* Recent Quest Overview - Center */
+/* Recent Quest Overview - Center-Left */
 .recent-quest-overview {
   display: flex;
   flex-direction: column;
@@ -596,6 +596,7 @@
   max-width: 300px;
   margin-top: 1rem;
   padding: 0 1rem;
+  justify-self: end;
 }
 
 .quest-display {
@@ -684,6 +685,7 @@
   max-width: 300px;
   margin-top: 1rem;
   padding: 0 1rem;
+  justify-self: start;
 }
 
 .active-quest-display {
