@@ -23,7 +23,7 @@ const BackstoryModal = ({
       <div 
         className="backstory-modal-container"
         style={{
-          backgroundColor: '#000000',
+          backgroundColor: 'rgba(0, 0, 0, 0.85)',
           backgroundImage: 'none'
         }}
       >
