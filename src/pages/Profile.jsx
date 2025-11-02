@@ -1090,6 +1090,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         
         // Switch to viewing the other player
         setIsViewingOtherPlayer(true)
+        setClearPlayerSearch(true) // Trigger search field clearing
         
         // Update notification to show success
         setNotification({
@@ -1098,7 +1099,10 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         })
         
         // Clear notification after 3 seconds
-        setTimeout(() => setNotification(null), 3000)
+        setTimeout(() => {
+          setNotification(null)
+          setClearPlayerSearch(false) // Reset the clear trigger after clearing
+        }, 3000)
         
       } catch (error) {
         console.error('Error fetching selected player data:', error)
@@ -1529,23 +1533,23 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             shouldClear={clearPlayerSearch}
           />
           
+          {/* Profile Switch Banner - Between Search and Welcome */}
+          {isViewingOtherPlayer && selectedPlayer && (
+            <div className="profile-switch-banner">
+              <span className="switch-text">
+                Viewing {selectedPlayer.Username}'s Profile
+              </span>
+              <button 
+                className="switch-back-button"
+                onClick={switchBackToOwnProfile}
+              >
+                ← Back to My Profile
+              </button>
+            </div>
+          )}
+          
           {/* Welcome Section - Top of Page */}
           <div className="profile-welcome">
-            {/* Profile Switch Banner */}
-            {isViewingOtherPlayer && selectedPlayer && (
-              <div className="profile-switch-banner">
-                <span className="switch-text">
-                  Viewing {selectedPlayer.Username}'s Profile
-                </span>
-                <button 
-                  className="switch-back-button"
-                  onClick={switchBackToOwnProfile}
-                >
-                  ← Back to My Profile
-                </button>
-              </div>
-            )}
-            
             <div className="welcome-layout">
               {/* Left: Rank Icon and Rank */}
               <div className="welcome-rank-section">
