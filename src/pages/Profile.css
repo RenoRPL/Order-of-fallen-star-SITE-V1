@@ -2790,10 +2790,17 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.3rem;
+    min-height: 50px;
+  }
+
+  .requirements-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    max-height: 160px;
   }
 
   .requirement-label {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   .requirement-value {
@@ -2898,9 +2905,9 @@
 
 .requirements-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 0.8rem;
-  max-height: 300px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  max-height: 180px;
   overflow-y: auto;
   padding-right: 0.5rem;
   margin-bottom: 1rem;
@@ -2926,13 +2933,15 @@
 
 .requirement-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.8rem 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 0.6rem 0.8rem;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
+  min-height: 60px;
 }
 
 .requirement-item.req-met {
@@ -2984,8 +2993,10 @@
 
 .requirement-label {
   color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 500;
+  line-height: 1.2;
+  width: 100%;
 }
 
 .requirement-value {
@@ -3076,4 +3087,22 @@
 .next-rank-preview {
   opacity: 0.7;
   filter: brightness(1.2);
+}
+
+/* Extra small screens - single column for requirements */
+@media (max-width: 480px) {
+  .requirements-list {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    max-height: 140px;
+  }
+
+  .requirement-item {
+    min-height: 45px;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .requirement-label {
+    font-size: 0.75rem;
+  }
 }
