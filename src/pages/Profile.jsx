@@ -237,15 +237,21 @@ export default function Profile() {
       return null
     }
 
+    console.log('Looking for rank:', rankName)
+    console.log('Available progress requirements:', progressRequirements)
+
     // Find the rank requirements in the Progress sheet
-    // The Progress sheet uses column A for rank names
-    return progressRequirements.find(req => 
+    // Try multiple column name variations
+    const requirement = progressRequirements.find(req => 
       req.Rank === rankName || 
       req.rank === rankName ||
       (req['Rank Name'] && req['Rank Name'] === rankName) ||
-      // Handle variations in column names
+      // Handle the first column (index 0) which should be the rank name
       Object.values(req)[0] === rankName
     )
+
+    console.log('Found requirement for', rankName, ':', requirement)
+    return requirement
   }
 
   // Function to calculate progress percentage towards next rank
@@ -257,10 +263,13 @@ export default function Profile() {
 
     // Check each requirement and calculate progress
     const requirements = [
-      { key: 'G', userValue: parseInt(currentUserStats.fpsKills || 0), label: 'Ground Kills' },
-      { key: 'H', userValue: parseInt(currentUserStats.pilotKills || 0), label: 'Pilot Kills' },
-      { key: 'I', userValue: parseInt(currentUserStats.turretKills || 0), label: 'Turret Kills' },
-      // Add more requirements as needed
+      { key: 'Ground Kills', userValue: parseInt(currentUserStats.fpsKills || 0), label: 'Ground Kills' },
+      { key: 'Pilot Kills', userValue: parseInt(currentUserStats.pilotKills || 0), label: 'Pilot Kills' },
+      { key: 'Turret Kills', userValue: parseInt(currentUserStats.turretKills || 0), label: 'Turret Kills' },
+      { key: 'Quests Led', userValue: parseInt(currentUserStats.questsLed || 0), label: 'Quests Led' },
+      { key: 'Crusade Led', userValue: parseInt(currentUserStats.crusadesLed || 0), label: 'Crusades Led' },
+      { key: 'Quests Completed', userValue: parseInt(currentUserStats.questsCompleted || 0), label: 'Quests Completed' },
+      { key: 'Crusade Completed', userValue: parseInt(currentUserStats.crusadesCompleted || 0), label: 'Crusades Completed' },
     ]
 
     requirements.forEach(req => {
@@ -273,8 +282,8 @@ export default function Profile() {
       }
     })
 
-    // If no requirements found, return 0
-    if (totalRequirements === 0) return 0
+    // If no requirements found, return 50% as placeholder
+    if (totalRequirements === 0) return 50
 
     // Calculate percentage
     return Math.round((metRequirements / totalRequirements) * 100)
@@ -1956,99 +1965,112 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                               return (
                                 <div className="requirements-list">
                                   <div className="requirement-item">
-                                    <span className="requirement-value">Requirements data not available</span>
+                                    <span className="requirement-label">Requirements data:</span>
+                                    <span className="requirement-value">
+                                      {progressRequirements.length > 0 
+                                        ? `Loaded ${progressRequirements.length} ranks, but no match for "${nextRankData['Rank Name']}"` 
+                                        : 'Progress sheet not loaded'}
+                                    </span>
                                   </div>
+                                  {progressRequirements.length > 0 && (
+                                    <div className="requirement-item">
+                                      <span className="requirement-label">Available ranks:</span>
+                                      <span className="requirement-value">
+                                        {progressRequirements.map(req => Object.values(req)[0]).join(', ')}
+                                      </span>
+                                    </div>
+                                  )}
                                 </div>
                               )
                             }
                             
                             return (
                               <div className="requirements-list">
-                                {/* Detail Requirements - Column C */}
-                                {nextRankRequirements.C && (
+                                {/* Detail Requirements */}
+                                {nextRankRequirements['Detail Req'] && (
                                   <div className="requirement-item">
                                     <span className="requirement-label">Step Requirements:</span>
-                                    <span className="requirement-value">{nextRankRequirements.C}</span>
+                                    <span className="requirement-value">{nextRankRequirements['Detail Req']}</span>
                                   </div>
                                 )}
                                 
-                                {/* Time in Service - Column M */}
-                                {nextRankRequirements.M && (
+                                {/* Time in Service */}
+                                {nextRankRequirements['Time in Service'] && (
                                   <div className="requirement-item">
                                     <span className="requirement-label">Time in Service:</span>
-                                    <span className="requirement-value">{nextRankRequirements.M}</span>
+                                    <span className="requirement-value">{nextRankRequirements['Time in Service']}</span>
                                   </div>
                                 )}
                                 
-                                {/* Crusade/Quest Led Total - Column D */}
-                                {nextRankRequirements.D && (
+                                {/* Crusade/Quest Led Total */}
+                                {nextRankRequirements['Crusade/Quest Led Total'] && (
                                   <div className="requirement-item">
                                     <span className="requirement-label">Total Led (Quests/Crusades):</span>
-                                    <span className="requirement-value">{nextRankRequirements.D}</span>
+                                    <span className="requirement-value">{nextRankRequirements['Crusade/Quest Led Total']}</span>
                                   </div>
                                 )}
                                 
-                                {/* Crusade Led - Column E */}
-                                {nextRankRequirements.E && (
+                                {/* Crusade Led */}
+                                {nextRankRequirements['Crusade Led'] && (
                                   <div className="requirement-item">
                                     <span className="requirement-label">Crusades Led:</span>
-                                    <span className="requirement-value">{nextRankRequirements.E}</span>
+                                    <span className="requirement-value">{nextRankRequirements['Crusade Led']}</span>
                                   </div>
                                 )}
                                 
-                                {/* Quests Led - Column F */}
-                                {nextRankRequirements.F && (
+                                {/* Quests Led */}
+                                {nextRankRequirements['Quests Led'] && (
                                   <div className="requirement-item">
                                     <span className="requirement-label">Quests Led:</span>
-                                    <span className="requirement-value">{nextRankRequirements.F}</span>
+                                    <span className="requirement-value">{nextRankRequirements['Quests Led']}</span>
                                   </div>
                                 )}
                                 
-                                {/* Pilot Kills - Column G */}
-                                {nextRankRequirements.G && (
+                                {/* Pilot Kills */}
+                                {nextRankRequirements['Pilot Kills'] && (
                                   <div className="requirement-item">
                                     <span className="requirement-label">Pilot Kills:</span>
-                                    <span className="requirement-value">{nextRankRequirements.G}</span>
+                                    <span className="requirement-value">{nextRankRequirements['Pilot Kills']}</span>
                                   </div>
                                 )}
                                 
-                                {/* Ground Kills - Column H */}
-                                {nextRankRequirements.H && (
+                                {/* Ground Kills */}
+                                {nextRankRequirements['Ground Kills'] && (
                                   <div className="requirement-item">
                                     <span className="requirement-label">Ground Kills:</span>
-                                    <span className="requirement-value">{nextRankRequirements.H}</span>
+                                    <span className="requirement-value">{nextRankRequirements['Ground Kills']}</span>
                                   </div>
                                 )}
                                 
-                                {/* Turret Kills - Column I */}
-                                {nextRankRequirements.I && (
+                                {/* Turret Kills */}
+                                {nextRankRequirements['Turret Kills'] && (
                                   <div className="requirement-item">
                                     <span className="requirement-label">Turret Kills:</span>
-                                    <span className="requirement-value">{nextRankRequirements.I}</span>
+                                    <span className="requirement-value">{nextRankRequirements['Turret Kills']}</span>
                                   </div>
                                 )}
                                 
-                                {/* Crusade/Quest Total - Column J */}
-                                {nextRankRequirements.J && (
+                                {/* Crusade/Quest Total */}
+                                {nextRankRequirements['Crusade/Quest Total'] && (
                                   <div className="requirement-item">
                                     <span className="requirement-label">Total Quests & Crusades:</span>
-                                    <span className="requirement-value">{nextRankRequirements.J}</span>
+                                    <span className="requirement-value">{nextRankRequirements['Crusade/Quest Total']}</span>
                                   </div>
                                 )}
                                 
-                                {/* Quests Completed - Column K */}
-                                {nextRankRequirements.K && (
+                                {/* Quests Completed */}
+                                {nextRankRequirements['Quests Completed'] && (
                                   <div className="requirement-item">
                                     <span className="requirement-label">Quests Completed:</span>
-                                    <span className="requirement-value">{nextRankRequirements.K}</span>
+                                    <span className="requirement-value">{nextRankRequirements['Quests Completed']}</span>
                                   </div>
                                 )}
                                 
-                                {/* Crusade Completed - Column L */}
-                                {nextRankRequirements.L && (
+                                {/* Crusade Completed */}
+                                {nextRankRequirements['Crusade Completed'] && (
                                   <div className="requirement-item">
                                     <span className="requirement-label">Crusades Completed:</span>
-                                    <span className="requirement-value">{nextRankRequirements.L}</span>
+                                    <span className="requirement-value">{nextRankRequirements['Crusade Completed']}</span>
                                   </div>
                                 )}
                               </div>
