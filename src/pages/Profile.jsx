@@ -72,6 +72,7 @@ export default function Profile() {
   const [tooltipParticipants, setTooltipParticipants] = useState([])
   const [tooltipQuestName, setTooltipQuestName] = useState('')
   const [tooltipLocked, setTooltipLocked] = useState(false)
+  const activeQuestRef = React.useRef(null)
 
   // Get current displayed data (either logged-in user or selected player)
   const currentDisplayData = isViewingOtherPlayer && selectedPlayerData ? selectedPlayerData : memberData
@@ -172,8 +173,39 @@ export default function Profile() {
   
   // Tooltip control functions
   const handleTooltipToggleLock = () => {
+    if (!tooltipLocked && activeQuestRef.current) {
+      // Calculate position relative to quest element when locking
+      const rect = activeQuestRef.current.getBoundingClientRect()
+      setTooltipPosition({ 
+        x: rect.right + 10, 
+        y: rect.top 
+      })
+    }
     setTooltipLocked(prev => !prev)
   }
+  
+  // Update tooltip position when scrolling if locked
+  React.useEffect(() => {
+    const updateTooltipPosition = () => {
+      if (tooltipLocked && activeQuestRef.current) {
+        const rect = activeQuestRef.current.getBoundingClientRect()
+        setTooltipPosition({ 
+          x: rect.right + 10, 
+          y: rect.top 
+        })
+      }
+    }
+    
+    if (tooltipLocked) {
+      window.addEventListener('scroll', updateTooltipPosition)
+      window.addEventListener('resize', updateTooltipPosition)
+      
+      return () => {
+        window.removeEventListener('scroll', updateTooltipPosition)
+        window.removeEventListener('resize', updateTooltipPosition)
+      }
+    }
+  }, [tooltipLocked])
   
   const handleTooltipClose = () => {
     setShowTooltip(false)
@@ -1847,6 +1879,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                 const activeQuest = getActiveQuest()
                 return activeQuest ? (
                   <div 
+                    ref={activeQuestRef}
                     className="quest-display active-quest-display"
                     onMouseEnter={(e) => handleTooltipMouseEnter(e, activeQuest)}
                     onMouseMove={handleTooltipMouseMove}

@@ -21,6 +21,8 @@
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(34, 197, 94, 0.2);
   border-color: rgba(34, 197, 94, 0.5);
   max-height: 500px;
+  position: fixed !important;
+  z-index: 10000;
 }
 
 .quest-participants-tooltip:not(.locked):hover {

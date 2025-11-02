@@ -63,8 +63,9 @@ const QuestParticipantsTooltip = ({
       ref={tooltipRef}
       className={`quest-participants-tooltip ${isLocked ? 'locked' : ''}`}
       style={{
-        left: position.x + 10,
-        top: position.y - 10,
+        left: isLocked ? position.x : position.x + 10,
+        top: isLocked ? position.y : position.y - 10,
+        position: 'fixed'
       }}
       onClick={(e) => {
         e.stopPropagation()
