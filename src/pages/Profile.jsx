@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import RSILinkModal from '../components/RSILinkModal'
@@ -16,6 +16,7 @@ export default function Profile() {
   const { user, isAuthenticated, logout } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { discordId: urlDiscordId } = useParams() // Get Discord ID from URL parameter
   const [memberData, setMemberData] = useState(null)
   const [allMemberData, setAllMemberData] = useState([])
   const [allRankData, setAllRankData] = useState([])
@@ -267,7 +268,9 @@ export default function Profile() {
   // Load profile data from localStorage and Google Sheets
   useEffect(() => {
     const loadProfileData = async () => {
-      if (!user?.id) return
+      // Determine which Discord ID to use: URL parameter or authenticated user
+      const targetDiscordId = urlDiscordId || user?.id
+      if (!targetDiscordId) return
 
       // For localhost testing - provide fallback data when APIs aren't available
       if (window.location.hostname === 'localhost') {
@@ -309,18 +312,20 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         return // Skip API calls for localhost
       }
 
-      // Load from localStorage first (for immediate display)
-      const savedProfile = localStorage.getItem(`profile_${user.id}`)
-      if (savedProfile) {
-        try {
-          const { bio, ship, customShipImage, customBannerImage, customization } = JSON.parse(savedProfile)
-          setProfileBio(bio || '')
-          setProfileShip(ship || '')
-          setProfileCustomShipImage(customShipImage || '')
-          setProfileCustomBannerImage(customBannerImage || '')
-          setProfileCustomization(customization || null)
-        } catch (error) {
-          console.error('Error loading profile data from localStorage:', error)
+      // Load from localStorage first (for immediate display) - only for authenticated user's own profile
+      if (!urlDiscordId && user?.id) {
+        const savedProfile = localStorage.getItem(`profile_${user.id}`)
+        if (savedProfile) {
+          try {
+            const { bio, ship, customShipImage, customBannerImage, customization } = JSON.parse(savedProfile)
+            setProfileBio(bio || '')
+            setProfileShip(ship || '')
+            setProfileCustomShipImage(customShipImage || '')
+            setProfileCustomBannerImage(customBannerImage || '')
+            setProfileCustomization(customization || null)
+          } catch (error) {
+            console.error('Error loading profile data from localStorage:', error)
+          }
         }
       }
 
@@ -332,7 +337,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            discordId: user.id,
+            discordId: targetDiscordId,
             action: 'get'
           })
         })
@@ -365,10 +370,12 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
           // Update ship from Google Sheets if it exists
           setProfileShip(shipValueForUI)
           
-          // Update localStorage to keep it in sync
-          const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
-          currentProfile.ship = shipValueForUI
-          localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
+          // Update localStorage to keep it in sync (only for authenticated user)
+          if (!urlDiscordId && user?.id) {
+            const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
+            currentProfile.ship = shipValueForUI
+            localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
+          }
         }
       } catch (error) {
         console.error('Error loading ship from Google Sheets:', error)
@@ -383,7 +390,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            discordId: user.id,
+            discordId: targetDiscordId,
             action: 'get'
           })
         })
@@ -395,10 +402,12 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
           // Update backstory from Google Sheets if it exists
           setProfileBio(backstoryResult.backstory)
           
-          // Update localStorage to keep it in sync
-          const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
-          currentProfile.bio = backstoryResult.backstory
-          localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
+          // Update localStorage to keep it in sync (only for authenticated user)
+          if (!urlDiscordId && user?.id) {
+            const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
+            currentProfile.bio = backstoryResult.backstory
+            localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
+          }
         }
       } catch (error) {
         console.error('Error loading backstory from Google Sheets:', error)
@@ -413,7 +422,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            discordId: user.id
+            discordId: targetDiscordId
           })
         })
 
@@ -426,10 +435,12 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
           // Update custom ship image from Google Sheets
           setProfileCustomShipImage(customShipImageResult.customShipImage)
           
-          // Update localStorage to keep it in sync
-          const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
-          currentProfile.customShipImage = customShipImageResult.customShipImage
-          localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
+          // Update localStorage to keep it in sync (only for authenticated user)
+          if (!urlDiscordId && user?.id) {
+            const currentProfile = savedProfile ? JSON.parse(savedProfile) : {}
+            currentProfile.customShipImage = customShipImageResult.customShipImage
+            localStorage.setItem(`profile_${user.id}`, JSON.stringify(currentProfile))
+          }
         } else {
           console.log('No custom ship image found in Google Sheets')
           setProfileCustomShipImage('')
@@ -441,7 +452,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
     }
 
     loadProfileData()
-  }, [user?.id])
+  }, [user?.id, urlDiscordId])
 
   // Progress bar color theme function
   const getProgressBarColors = (customization) => {
@@ -599,8 +610,8 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
   // Fetch member and patrol data
   useEffect(() => {
     const fetchData = async () => {
-      // Get playerId from URL params
-      const playerId = searchParams.get('playerId')
+      // Get playerId from URL params or URL route parameter
+      const playerId = searchParams.get('playerId') || urlDiscordId
       const targetUserId = playerId || user?.id
       
       if (!targetUserId) return
@@ -937,12 +948,12 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       }
     }
     
-    // Only fetch if we have a user ID OR a playerId from URL
-    const playerId = searchParams.get('playerId')
+    // Only fetch if we have a user ID OR a playerId from URL OR URL Discord ID
+    const playerId = searchParams.get('playerId') || urlDiscordId
     if ((isAuthenticated && user?.id) || playerId) {
       fetchData()
     }
-  }, [user?.id, isAuthenticated, searchParams])
+  }, [user?.id, isAuthenticated, searchParams, urlDiscordId])
 
   // Fetch Google Sheets patrol stats
   useEffect(() => {

@@ -16,9 +16,15 @@ const QuestParticipantsTooltip = ({
 
   // Handle participant click to navigate to profile
   const handleParticipantClick = (participant) => {
+    console.log('Participant clicked:', participant)
+    console.log('Discord ID:', participant.discordId)
+    
     if (participant.discordId) {
+      console.log('Navigating to profile:', `/profile?playerId=${participant.discordId}`)
       navigate(`/profile?playerId=${participant.discordId}`)
       onClose() // Close tooltip when navigating
+    } else {
+      console.log('No Discord ID available for participant:', participant.name)
     }
   }
 

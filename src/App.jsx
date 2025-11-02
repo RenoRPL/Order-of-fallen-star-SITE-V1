@@ -46,6 +46,9 @@ export default function App() {
           {/* Profile Route */}
           <Route path="/profile" element={<Profile />} />
           
+          {/* Individual Profile Route with Discord ID */}
+          <Route path="/profile/:discordId" element={<Profile />} />
+          
           {/* Roster Route */}
           <Route path="/roster" element={<Roster />} />
           
