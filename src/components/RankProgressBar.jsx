@@ -16,6 +16,7 @@ export default function RankProgressBar({
   const [currentProgressData, setCurrentProgressData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showTooltip, setShowTooltip] = useState(false)
+  const [tooltipLocked, setTooltipLocked] = useState(false)
   const [dataLoaded, setDataLoaded] = useState(false)
 
   // Define rank order for progression (from lowest to highest)
@@ -393,8 +394,12 @@ export default function RankProgressBar({
       <div className="progress-label">Next Rank Progress</div>
       <div 
         className="welcome-progress-bar-container"
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
+        onMouseEnter={() => !tooltipLocked && setShowTooltip(true)}
+        onMouseLeave={() => !tooltipLocked && setShowTooltip(false)}
+        onClick={() => {
+          setTooltipLocked(!tooltipLocked)
+          setShowTooltip(true)
+        }}
         style={{ 
           position: 'relative',
           cursor: 'help',
@@ -422,58 +427,108 @@ export default function RankProgressBar({
         </div>
         <span className="next-rank-welcome">{nextRankData?.['Rank Name'] || 'Unknown'}</span>
 
-        {/* Hover Tooltip */}
-        {showTooltip && (
+        {/* Hover/Click Tooltip */}
+        {(showTooltip || tooltipLocked) && (
           <div className="requirements-tooltip" style={{
             position: 'absolute',
-            top: '-10px',
+            top: '100%',
             left: '50%',
-            transform: 'translateX(-50%) translateY(-100%)',
+            transform: 'translateX(-50%)',
+            marginTop: '12px',
             backgroundColor: 'linear-gradient(135deg, rgba(10, 20, 40, 0.98) 0%, rgba(20, 30, 50, 0.98) 100%)',
             border: '1px solid rgba(57, 185, 255, 0.4)',
-            borderRadius: '10px',
-            padding: '1.2rem',
-            minWidth: '320px',
-            maxWidth: '400px',
+            borderRadius: '12px',
+            padding: '1.5rem',
+            minWidth: '500px',
+            maxWidth: '700px',
+            width: 'max-content',
             zIndex: 1000,
             backdropFilter: 'blur(15px)',
-            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(57, 185, 255, 0.3)',
-            fontSize: '0.85rem'
+            boxShadow: '0 15px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(57, 185, 255, 0.4)',
+            fontSize: '0.9rem'
           }}>
-            {/* Tooltip arrow */}
+            {/* Tooltip arrow pointing up */}
             <div style={{
               content: '',
               position: 'absolute',
-              top: '100%',
+              top: '-8px',
               left: '50%',
               transform: 'translateX(-50%)',
-              border: '6px solid transparent',
-              borderTopColor: 'rgba(57, 185, 255, 0.4)'
+              border: '8px solid transparent',
+              borderBottomColor: 'rgba(57, 185, 255, 0.4)'
             }}></div>
+            
+            {/* Close button for locked tooltip */}
+            {tooltipLocked && (
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setTooltipLocked(false)
+                  setShowTooltip(false)
+                }}
+                style={{
+                  position: 'absolute',
+                  top: '8px',
+                  right: '8px',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '50%',
+                  width: '24px',
+                  height: '24px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: '#ffffff',
+                  fontSize: '12px',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.2)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.1)'
+                }}
+              >
+                ×
+              </button>
+            )}
             
             <div className="tooltip-header" style={{
               color: '#ffffff',
-              fontSize: '1rem',
+              fontSize: '1.1rem',
               fontWeight: '700',
-              marginBottom: '1rem',
+              marginBottom: '1.2rem',
               textAlign: 'center',
               borderBottom: '2px solid rgba(57, 185, 255, 0.3)',
-              paddingBottom: '0.7rem',
-              textShadow: '0 0 10px rgba(57, 185, 255, 0.5)'
+              paddingBottom: '0.8rem',
+              textShadow: '0 0 10px rgba(57, 185, 255, 0.5)',
+              paddingRight: tooltipLocked ? '30px' : '0'
             }}>
               {nextRankData ? `Requirements for ${nextRankData['Rank Name']}` : 'Rank Progress Information'}
+              {!tooltipLocked && (
+                <div style={{
+                  fontSize: '0.7rem',
+                  color: '#888',
+                  fontWeight: '400',
+                  marginTop: '4px',
+                  textShadow: 'none'
+                }}>
+                  Click to pin this tooltip
+                </div>
+              )}
             </div>
             
             {currentProgressData?.['Detail Req'] && (
               <div className="tooltip-step" style={{
                 color: '#00ff88',
-                marginBottom: '1rem',
-                fontSize: '0.9em',
+                marginBottom: '1.2rem',
+                fontSize: '0.95em',
                 textAlign: 'center',
                 fontStyle: 'italic',
-                padding: '0.5rem',
+                padding: '0.8rem',
                 backgroundColor: 'rgba(0, 255, 136, 0.1)',
-                borderRadius: '6px',
+                borderRadius: '8px',
                 border: '1px solid rgba(0, 255, 136, 0.2)'
               }}>
                 📋 {currentProgressData['Detail Req']}
@@ -481,74 +536,82 @@ export default function RankProgressBar({
             )}
             
             {requirementsBreakdown && requirementsBreakdown.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '0.8rem',
+                marginBottom: '1rem'
+              }}>
                 {requirementsBreakdown.map((req, index) => (
                   <div key={index} className={`tooltip-requirement ${req.met ? 'completed' : ''}`} style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    padding: '0.6rem',
+                    padding: '0.8rem',
                     backgroundColor: req.met ? 'rgba(0, 255, 136, 0.08)' : 'rgba(255, 255, 255, 0.03)',
-                    borderRadius: '6px',
+                    borderRadius: '8px',
                     border: `1px solid ${req.met ? 'rgba(0, 255, 136, 0.2)' : 'rgba(255, 255, 255, 0.1)'}`,
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.2s ease',
+                    minHeight: '50px'
                   }}>
                     <span className="req-type" style={{
                       color: req.met ? '#00ff88' : '#39b9ff',
                       fontWeight: '600',
                       flex: 1,
-                      fontSize: '0.85rem'
+                      fontSize: '0.9rem',
+                      marginRight: '1rem'
                     }}>{req.label}</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
                       <span className="req-progress" style={{
                         color: '#ffffff',
                         fontWeight: '700',
-                        fontSize: '0.9rem'
+                        fontSize: '1rem',
+                        minWidth: '60px',
+                        textAlign: 'center'
                       }}>{req.current}/{req.required}</span>
                       <span className="req-percentage" style={{
                         color: req.met ? '#00ff88' : req.progress >= 50 ? '#ffaa00' : '#ff6b35',
                         fontWeight: '600',
-                        minWidth: '50px',
+                        minWidth: '55px',
                         textAlign: 'right',
-                        fontSize: '0.8rem'
+                        fontSize: '0.85rem'
                       }}>({Math.round(req.progress)}%)</span>
                       {req.met && <span className="req-checkmark" style={{ 
                         color: '#00ff88',
                         fontWeight: 'bold',
-                        fontSize: '1.1rem',
-                        textShadow: '0 0 5px rgba(0, 255, 136, 0.5)'
+                        fontSize: '1.2rem',
+                        textShadow: '0 0 5px rgba(0, 255, 136, 0.5)',
+                        width: '20px',
+                        textAlign: 'center'
                       }}>✓</span>}
                     </div>
                   </div>
                 ))}
-                <div style={{
-                  marginTop: '0.5rem',
-                  padding: '0.6rem',
-                  backgroundColor: 'rgba(57, 185, 255, 0.1)',
-                  borderRadius: '6px',
-                  border: '1px solid rgba(57, 185, 255, 0.2)',
-                  textAlign: 'center'
-                }}>
-                  <span style={{
-                    color: '#39b9ff',
-                    fontWeight: '600',
-                    fontSize: '0.85rem'
-                  }}>
-                    Overall Progress: {Math.round(overallProgress)}%
-                  </span>
-                </div>
               </div>
-            ) : (
-              <div style={{ color: '#ffffff', textAlign: 'center' }}>
-                {currentProgressData ? 'No requirements configured' : 'Using fallback requirements (Progress sheet unavailable)'}
-                <br />
-                <small style={{ color: '#888' }}>
-                  Data loaded: {dataLoaded ? 'Yes' : 'No'}<br />
-                  Progress sheet data: {currentProgressData ? 'Available' : 'Not available'}<br />
-                  Requirements count: {requirementsBreakdown?.length || 0}
-                </small>
+            ) : null}
+            
+            <div style={{
+              padding: '1rem',
+              backgroundColor: 'rgba(57, 185, 255, 0.1)',
+              borderRadius: '8px',
+              border: '1px solid rgba(57, 185, 255, 0.2)',
+              textAlign: 'center'
+            }}>
+              <span style={{
+                color: '#39b9ff',
+                fontWeight: '700',
+                fontSize: '1rem'
+              }}>
+                Overall Progress: {Math.round(overallProgress)}%
+              </span>
+              <div style={{
+                marginTop: '0.5rem',
+                fontSize: '0.8rem',
+                color: '#888'
+              }}>
+                {requirementsBreakdown?.filter(req => req.met).length || 0} of {requirementsBreakdown?.length || 0} requirements completed
               </div>
-            )}
+            </div>
           </div>
         )}
       </div>
