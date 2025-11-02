@@ -18,6 +18,7 @@ export default function Profile() {
   const [searchParams] = useSearchParams()
   const [memberData, setMemberData] = useState(null)
   const [allMemberData, setAllMemberData] = useState([])
+  const [allRankData, setAllRankData] = useState([])
   const [patrolData, setPatrolData] = useState([])
   const [patrolStats, setPatrolStats] = useState(null)
   const [rankData, setRankData] = useState(null)
@@ -167,45 +168,44 @@ export default function Profile() {
       }
     })
     
-    console.log(`Found ${participants.length} participants for quest "${questName}":`, participants)
+    // Sort participants by rank tier (lowest tier number = highest rank)
+    if (allRankData && allRankData.length > 0) {
+      participants.sort((a, b) => {
+        const rankA = allRankData.find(rank => rank['Rank Name'] === a.rank)
+        const rankB = allRankData.find(rank => rank['Rank Name'] === b.rank)
+        
+        const tierA = rankA ? parseInt(rankA.Tier || 999) : 999
+        const tierB = rankB ? parseInt(rankB.Tier || 999) : 999
+        
+        // Sort by tier (lower tier number = higher rank = appears first)
+        if (tierA !== tierB) {
+          return tierA - tierB
+        }
+        
+        // If same tier, sort alphabetically by name
+        return a.name.localeCompare(b.name)
+      })
+    }
+    
+    console.log(`Found ${participants.length} participants for quest "${questName}" (sorted by tier):`, participants)
     return participants
   }
   
   // Tooltip control functions
   const handleTooltipToggleLock = () => {
     if (!tooltipLocked && activeQuestRef.current) {
-      // Calculate position relative to quest element when locking
+      // Calculate position relative to document (not viewport) when locking
       const rect = activeQuestRef.current.getBoundingClientRect()
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
+      
       setTooltipPosition({ 
-        x: rect.right + 10, 
-        y: rect.top 
+        x: rect.right + scrollLeft + 10, 
+        y: rect.top + scrollTop 
       })
     }
     setTooltipLocked(prev => !prev)
   }
-  
-  // Update tooltip position when scrolling if locked
-  React.useEffect(() => {
-    const updateTooltipPosition = () => {
-      if (tooltipLocked && activeQuestRef.current) {
-        const rect = activeQuestRef.current.getBoundingClientRect()
-        setTooltipPosition({ 
-          x: rect.right + 10, 
-          y: rect.top 
-        })
-      }
-    }
-    
-    if (tooltipLocked) {
-      window.addEventListener('scroll', updateTooltipPosition)
-      window.addEventListener('resize', updateTooltipPosition)
-      
-      return () => {
-        window.removeEventListener('scroll', updateTooltipPosition)
-        window.removeEventListener('resize', updateTooltipPosition)
-      }
-    }
-  }, [tooltipLocked])
   
   const handleTooltipClose = () => {
     setShowTooltip(false)
@@ -911,6 +911,16 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         } catch (error) {
           console.error('Error loading all member data:', error)
           setAllMemberData([])
+        }
+        
+        // Fetch all rank data for tier sorting
+        try {
+          const allRanks = await OFSDataService.getAllRanks()
+          setAllRankData(allRanks)
+          console.log('Loaded all rank data for tier sorting:', allRanks.length, 'ranks')
+        } catch (error) {
+          console.error('Error loading all rank data:', error)
+          setAllRankData([])
         }
         
       } catch (err) {

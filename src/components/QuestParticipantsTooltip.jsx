@@ -65,7 +65,7 @@ const QuestParticipantsTooltip = ({
       style={{
         left: isLocked ? position.x : position.x + 10,
         top: isLocked ? position.y : position.y - 10,
-        position: 'fixed'
+        position: isLocked ? 'absolute' : 'fixed'
       }}
       onClick={(e) => {
         e.stopPropagation()
