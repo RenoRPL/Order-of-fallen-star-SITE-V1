@@ -646,11 +646,23 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       
       if (!targetUserId) return
       
+      // Determine if we're viewing another player
+      const viewingOtherPlayer = !!playerId
+      
+      console.log('=== FETCH DATA DEBUG ===')
+      console.log('urlDiscordId:', urlDiscordId)
+      console.log('playerId from searchParams:', searchParams.get('playerId'))
+      console.log('user?.id:', user?.id)
+      console.log('targetUserId:', targetUserId)
+      console.log('viewingOtherPlayer:', viewingOtherPlayer)
+      console.log('isAuthenticated:', isAuthenticated)
+      console.log('========================')
+      
       // Only update loading state if not cancelled
       if (!isCancelled) {
         setIsLoading(true)
         setError(null)
-        setIsViewingOtherPlayer(!!playerId)
+        setIsViewingOtherPlayer(viewingOtherPlayer)
       }
       
       try {
@@ -1029,17 +1041,24 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       }
     }
     
-    // Only fetch if we have a user ID OR a playerId from URL OR URL Discord ID
+    // Only fetch if we have a target user ID
     const playerId = searchParams.get('playerId') || urlDiscordId
-    if ((isAuthenticated && user?.id) || playerId) {
-      fetchData()
+    const targetUserId = playerId || user?.id
+    
+    if (targetUserId) {
+      // If viewing another player (via URL), always fetch regardless of auth state
+      // If viewing own profile, only fetch if authenticated
+      if (playerId || (isAuthenticated && user?.id)) {
+        console.log('Triggering fetchData for:', targetUserId, 'viewingOther:', !!playerId)
+        fetchData()
+      }
     }
     
     // Cleanup function to cancel the effect if dependencies change
     return () => {
       isCancelled = true
     }
-  }, [user?.id, isAuthenticated, searchParams, urlDiscordId])
+  }, [urlDiscordId, searchParams, user?.id, isAuthenticated])
 
   // Fetch Google Sheets patrol stats
   useEffect(() => {
@@ -1224,17 +1243,14 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         // Clear search field first
         setClearPlayerSearch(true)
         
-        // Add a small delay to ensure authentication state is stable
-        // This prevents race conditions on first page load
+        // Navigate immediately - the useEffect is now more stable
+        console.log('Navigating to player profile:', playerDiscordId)
+        navigate(`/profile/${playerDiscordId}`)
+        
+        // Reset the clear trigger after navigation
         setTimeout(() => {
-          console.log('Navigating to player profile:', playerDiscordId)
-          navigate(`/profile/${playerDiscordId}`)
-          
-          // Reset the clear trigger after navigation
-          setTimeout(() => {
-            setClearPlayerSearch(false)
-          }, 200)
-        }, isAuthLoading ? 500 : 100) // Longer delay if auth is still loading
+          setClearPlayerSearch(false)
+        }, 200)
         
       } else {
         console.error('No Discord ID found for player:', player)
@@ -1248,12 +1264,10 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       // Deselect player - go back to own profile
       setClearPlayerSearch(true)
       
+      navigate('/profile')
       setTimeout(() => {
-        navigate('/profile')
-        setTimeout(() => {
-          setClearPlayerSearch(false)
-        }, 200)
-      }, isAuthLoading ? 500 : 100)
+        setClearPlayerSearch(false)
+      }, 200)
     }
   }
 
