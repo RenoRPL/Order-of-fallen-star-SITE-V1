@@ -165,15 +165,6 @@
   object-fit: contain;
 }
 
-.leader-crown {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  font-size: 16px;
-  z-index: 1;
-  filter: drop-shadow(0 0 3px rgba(251, 191, 36, 0.8));
-}
-
 .participant-info {
   flex: 1;
   min-width: 0;
@@ -187,27 +178,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.leader-badge {
-  font-size: 10px;
-  font-weight: 700;
-  color: #fbbf24;
-  background: rgba(251, 191, 36, 0.2);
-  padding: 1px 4px;
-  border-radius: 3px;
-  border: 1px solid rgba(251, 191, 36, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .participant-details {
   display: flex;
   gap: 8px;
   font-size: 11px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .participant-rank {
@@ -226,6 +204,19 @@
   padding: 1px 6px;
   border-radius: 4px;
   border: 1px solid rgba(96, 165, 250, 0.2);
+}
+
+.leader-pill {
+  color: #fbbf24;
+  font-weight: 700;
+  background: rgba(251, 191, 36, 0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 10px;
+  text-shadow: 0 0 4px rgba(251, 191, 36, 0.3);
 }
 
 .no-participants {

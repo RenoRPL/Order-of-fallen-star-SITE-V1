@@ -111,7 +111,10 @@ const QuestParticipantsTooltip = ({
           <div 
             key={participant.discordId || index} 
             className={`participant-item ${participant.isLeader ? 'leader' : ''} ${participant.discordId ? 'clickable' : ''}`}
-            onClick={() => handleParticipantClick(participant)}
+            onClick={(e) => {
+              e.stopPropagation()
+              handleParticipantClick(participant)
+            }}
             title={participant.discordId ? `Click to view ${participant.name}'s profile` : 'Profile not available'}
           >
             <div className="participant-avatar">
@@ -122,19 +125,16 @@ const QuestParticipantsTooltip = ({
                   e.target.src = '/Ranks/Page.png' // Fallback to Page rank
                 }}
               />
-              {participant.isLeader && (
-                <div className="leader-crown">👑</div>
-              )}
             </div>
             
             <div className="participant-info">
-              <div className="participant-name">
-                {participant.name}
-                {participant.isLeader && <span className="leader-badge">LEADER</span>}
-              </div>
+              <div className="participant-name">{participant.name}</div>
               <div className="participant-details">
                 <span className="participant-rank">{participant.rank}</span>
                 <span className="participant-role">{participant.role}</span>
+                {participant.isLeader && (
+                  <span className="leader-pill">LEADER</span>
+                )}
               </div>
             </div>
           </div>
