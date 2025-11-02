@@ -113,9 +113,9 @@
 
 /* Profile Welcome Section - Top of Page */
 .profile-welcome {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   padding: 1.5rem 2rem;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 26, 46, 0.5) 100%);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(26, 26, 46, 0.3) 100%);
   border-radius: 15px;
   border: 1px solid color-mix(in srgb, var(--profile-accent, #39b9ff) 20%, transparent);
   box-shadow: 0 0 30px color-mix(in srgb, var(--profile-accent, #39b9ff) 10%, transparent);
