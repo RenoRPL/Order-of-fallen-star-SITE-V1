@@ -234,6 +234,13 @@
   width: 100%;
   max-width: 450px; /* Increased from 300px */
   margin: 0 auto;
+  transition: all 0.3s ease;
+}
+
+.welcome-progress-bar-container:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 4px 15px rgba(57, 185, 255, 0.2);
 }
 
 .current-rank-welcome {
@@ -275,6 +282,14 @@
   position: relative;
   overflow: hidden;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.welcome-progress-bar-container:hover .welcome-progress-bar {
+  border-color: color-mix(in srgb, var(--profile-accent, #39b9ff) 40%, transparent);
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.4),
+    0 0 10px rgba(57, 185, 255, 0.3);
 }
 
 .welcome-progress-fill {
@@ -304,6 +319,200 @@
 }
 
 @keyframes welcomeShimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Rank Progression Section Styles */
+.rank-progression-layout {
+  position: relative;
+}
+
+.rank-progression-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.rank-progression-close:hover {
+  background: rgba(255, 100, 100, 0.2);
+  border-color: rgba(255, 100, 100, 0.4);
+  transform: scale(1.1);
+}
+
+.rank-progression-content {
+  text-align: center;
+}
+
+.rank-requirements-section {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.requirements-title {
+  color: var(--profile-accent, #39b9ff);
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px rgba(57, 185, 255, 0.3);
+}
+
+.max-rank-info {
+  text-align: center;
+  padding: 2rem;
+}
+
+.rank-achievement {
+  font-size: 1.5rem;
+  color: #ffd700;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.rank-description {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.next-rank-requirements {
+  text-align: left;
+}
+
+.next-rank-title {
+  color: var(--profile-accent, #39b9ff);
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 8px rgba(57, 185, 255, 0.3);
+}
+
+.requirements-list {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.requirement-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.requirement-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.requirement-value {
+  color: var(--profile-accent, #39b9ff);
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(57, 185, 255, 0.3);
+}
+
+.progress-indicators {
+  margin-top: 1.5rem;
+}
+
+.progress-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progress-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.progress-bar-small {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill-small {
+  height: 100%;
+  border-radius: 4px;
+  position: relative;
+  transition: width 0.5s ease;
+}
+
+.progress-fill-small::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.15) 50%, 
+    transparent 100%
+  );
+  animation: progressShimmer 2s ease-in-out infinite;
+}
+
+.progress-percentage {
+  color: var(--profile-accent, #39b9ff);
+  font-weight: bold;
+  min-width: 40px;
+  text-align: right;
+  text-shadow: 0 0 5px rgba(57, 185, 255, 0.3);
+}
+
+.next-rank-preview {
+  opacity: 0.8;
+  filter: brightness(1.2);
+}
+
+.max-rank-crown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.crown-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+}
+
+@keyframes progressShimmer {
   0% { left: -100%; }
   100% { left: 100%; }
 }
@@ -2550,5 +2759,79 @@
   .player-stats {
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+}
+
+/* Mobile responsive styles for rank progression */
+@media (max-width: 768px) {
+  .rank-progression-close {
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+
+  .rank-requirements-section {
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+
+  .requirements-title {
+    font-size: 1.1rem;
+  }
+
+  .next-rank-title {
+    font-size: 1rem;
+  }
+
+  .requirement-item {
+    padding: 0.6rem 0.8rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .requirement-label {
+    font-size: 0.9rem;
+  }
+
+  .requirement-value {
+    font-size: 0.9rem;
+    align-self: flex-end;
+  }
+
+  .progress-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0.8rem;
+  }
+
+  .progress-label {
+    min-width: auto;
+    font-size: 0.9rem;
+  }
+
+  .progress-bar-small {
+    width: 100%;
+  }
+
+  .progress-percentage {
+    align-self: flex-end;
+    min-width: auto;
+  }
+
+  .rank-achievement {
+    font-size: 1.3rem;
+  }
+
+  .max-rank-crown {
+    width: 50px;
+    height: 50px;
+  }
+
+  .crown-icon {
+    font-size: 1.5rem;
   }
 }

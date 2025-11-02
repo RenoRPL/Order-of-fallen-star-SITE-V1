@@ -68,6 +68,9 @@ export default function Profile() {
   
   // Backstory modal state
   const [showBackstoryModal, setShowBackstoryModal] = useState(false)
+  
+  // Rank progression section toggle state
+  const [showRankProgression, setShowRankProgression] = useState(false)
 
   // Quest participants tooltip state
   const [showTooltip, setShowTooltip] = useState(false)
@@ -1706,52 +1709,87 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
           )}
           
           {/* Welcome Section - Top of Page */}
-          <div className="profile-welcome">
-            <div className="welcome-layout">
-              {/* Left: Rank Icon and Rank */}
-              <div className="welcome-rank-section">
-                {currentDisplayData?.Rank && (
-                  <div className="welcome-rank-icon-container">
-                    <img 
-                      src={`/Ranks/${currentDisplayData.Rank}.png`}
-                      alt={`${currentDisplayData.Rank} Rank`}
-                      className="welcome-rank-icon"
-                      onError={(e) => {
-                        e.target.style.display = 'none'
-                      }}
-                    />
-                  </div>
-                )}
-                <span className="rank-badge">{currentDisplayData?.Rank || 'Unranked'}</span>
-              </div>
-              
-              {/* Center: Welcome Text */}
-              <div className="welcome-content">
-                <h2 className="welcome-title">
-                  {currentDisplayData?.Username || user?.username || 'Warrior'}
-                </h2>
-                <p className="welcome-subtitle">
-                  Order of the Fallen Star • {OFSDataService.calculateTimeInService(currentDisplayData?.['Join Date']) || 'New Recruit'}
-                </p>
-                {/* Path badge moved to bottom center */}
-                <span className="path-badge">{currentDisplayData?.['Role Path'] || 'Unassigned'}</span>
+          {!showRankProgression ? (
+            <div className="profile-welcome">
+              <div className="welcome-layout">
+                {/* Left: Rank Icon and Rank */}
+                <div className="welcome-rank-section">
+                  {currentDisplayData?.Rank && (
+                    <div className="welcome-rank-icon-container">
+                      <img 
+                        src={`/Ranks/${currentDisplayData.Rank}.png`}
+                        alt={`${currentDisplayData.Rank} Rank`}
+                        className="welcome-rank-icon"
+                        onError={(e) => {
+                          e.target.style.display = 'none'
+                        }}
+                      />
+                    </div>
+                  )}
+                  <span className="rank-badge">{currentDisplayData?.Rank || 'Unranked'}</span>
+                </div>
                 
-                {/* Integrated Progress Bar - Show when user has rank data */}
-                {currentDisplayData?.Rank && (() => {
-                  const nextRankData = getNextRankFromTier(currentDisplayData.Rank)
+                {/* Center: Welcome Text */}
+                <div className="welcome-content">
+                  <h2 className="welcome-title">
+                    {currentDisplayData?.Username || user?.username || 'Warrior'}
+                  </h2>
+                  <p className="welcome-subtitle">
+                    Order of the Fallen Star • {OFSDataService.calculateTimeInService(currentDisplayData?.['Join Date']) || 'New Recruit'}
+                  </p>
+                  {/* Path badge moved to bottom center */}
+                  <span className="path-badge">{currentDisplayData?.['Role Path'] || 'Unassigned'}</span>
                   
-                  if (!nextRankData) {
-                    // At max rank - show "Max Rank" instead
+                  {/* Integrated Progress Bar - Show when user has rank data */}
+                  {currentDisplayData?.Rank && (() => {
+                    const nextRankData = getNextRankFromTier(currentDisplayData.Rank)
+                    
+                    if (!nextRankData) {
+                      // At max rank - show "Max Rank" instead
+                      return (
+                        <div className="welcome-progress-section">
+                          <div className="progress-label">Max Rank</div>
+                          <div 
+                            className="welcome-progress-bar-container"
+                            onClick={() => setShowRankProgression(true)}
+                            style={{ cursor: 'pointer' }}
+                            title="Click to view rank progression details"
+                          >
+                            <span className="current-rank-welcome">{currentDisplayData.Rank}</span>
+                            <div className="welcome-progress-bar">
+                              <div 
+                                className="welcome-progress-fill"
+                                style={{ 
+                                  width: '100%',
+                                  background: (() => {
+                                    const colors = getProgressBarColors(currentCustomization)
+                                    return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
+                                  })()
+                                }}
+                              />
+                            </div>
+                            <span className="next-rank-welcome">👑 Max</span>
+                          </div>
+                        </div>
+                      )
+                    }
+                    
+                    // Show progress to next rank
                     return (
                       <div className="welcome-progress-section">
-                        <div className="progress-label">Max Rank</div>
-                        <div className="welcome-progress-bar-container">
+                        <div className="progress-label">Next Rank Progress</div>
+                        <div 
+                          className="welcome-progress-bar-container"
+                          onClick={() => setShowRankProgression(true)}
+                          style={{ cursor: 'pointer' }}
+                          title="Click to view rank progression requirements"
+                        >
                           <span className="current-rank-welcome">{currentDisplayData.Rank}</span>
                           <div className="welcome-progress-bar">
                             <div 
                               className="welcome-progress-fill"
                               style={{ 
-                                width: '100%',
+                                width: '60%',
                                 background: (() => {
                                   const colors = getProgressBarColors(currentCustomization)
                                   return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
@@ -1759,55 +1797,180 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                               }}
                             />
                           </div>
-                          <span className="next-rank-welcome">👑 Max</span>
+                          <span className="next-rank-welcome">{nextRankData['Rank Name']}</span>
                         </div>
                       </div>
                     )
-                  }
+                  })()}
+                </div>
+                
+                {/* Right: Rank Icon and Role Badge */}
+                <div className="welcome-badges">
+                  {currentDisplayData?.Rank && (
+                    <div className="welcome-rank-icon-container">
+                      <img 
+                        src={`/Ranks/${currentDisplayData.Rank}.png`}
+                        alt={`${currentDisplayData.Rank} Rank`}
+                        className="welcome-rank-icon"
+                        onError={(e) => {
+                          e.target.style.display = 'none'
+                        }}
+                      />
+                    </div>
+                  )}
+                  <span className="role-badge">{currentDisplayData?.Role || 'Member'}</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Rank Progression Requirements Section */
+            <div className="profile-welcome">
+              <div className="welcome-layout rank-progression-layout">
+                {/* Close Button - Top Right */}
+                <button 
+                  className="rank-progression-close"
+                  onClick={() => setShowRankProgression(false)}
+                  title="Back to profile"
+                >
+                  ✕
+                </button>
+                
+                {/* Left: Current Rank Icon */}
+                <div className="welcome-rank-section">
+                  {currentDisplayData?.Rank && (
+                    <div className="welcome-rank-icon-container">
+                      <img 
+                        src={`/Ranks/${currentDisplayData.Rank}.png`}
+                        alt={`${currentDisplayData.Rank} Rank`}
+                        className="welcome-rank-icon"
+                        onError={(e) => {
+                          e.target.style.display = 'none'
+                        }}
+                      />
+                    </div>
+                  )}
+                  <span className="rank-badge">{currentDisplayData?.Rank || 'Unranked'}</span>
+                </div>
+                
+                {/* Center: Rank Progression Details */}
+                <div className="welcome-content rank-progression-content">
+                  <h2 className="welcome-title">Rank Progression</h2>
+                  <p className="welcome-subtitle">Your Path to Advancement</p>
                   
-                  // Show progress to next rank
-                  return (
-                    <div className="welcome-progress-section">
-                      <div className="progress-label">Next Rank Progress</div>
-                      <div className="welcome-progress-bar-container">
-                        <span className="current-rank-welcome">{currentDisplayData.Rank}</span>
-                        <div className="welcome-progress-bar">
-                          <div 
-                            className="welcome-progress-fill"
-                            style={{ 
-                              width: '60%',
-                              background: (() => {
-                                const colors = getProgressBarColors(currentCustomization)
-                                return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
-                              })()
+                  {/* Current Rank Requirements */}
+                  <div className="rank-requirements-section">
+                    <h3 className="requirements-title">Current Rank: {currentDisplayData?.Rank || 'Unranked'}</h3>
+                    
+                    {(() => {
+                      const nextRankData = getNextRankFromTier(currentDisplayData?.Rank)
+                      
+                      if (!nextRankData) {
+                        return (
+                          <div className="max-rank-info">
+                            <div className="rank-achievement">🏆 Maximum Rank Achieved!</div>
+                            <p className="rank-description">
+                              You have reached the highest rank in the Order of the Fallen Star. 
+                              Continue to serve with honor and lead by example.
+                            </p>
+                          </div>
+                        )
+                      }
+                      
+                      return (
+                        <div className="next-rank-requirements">
+                          <h4 className="next-rank-title">Next Rank: {nextRankData['Rank Name']}</h4>
+                          <div className="requirements-list">
+                            <div className="requirement-item">
+                              <span className="requirement-label">Time in Service:</span>
+                              <span className="requirement-value">
+                                {nextRankData['Time in Service (Days)'] || 'N/A'} days
+                              </span>
+                            </div>
+                            <div className="requirement-item">
+                              <span className="requirement-label">Patrol Hours:</span>
+                              <span className="requirement-value">
+                                {nextRankData['Total Patrol Length (Hours)'] || 'N/A'} hours
+                              </span>
+                            </div>
+                            <div className="requirement-item">
+                              <span className="requirement-label">FPS Kills:</span>
+                              <span className="requirement-value">
+                                {nextRankData['FPS Kills'] || 'N/A'} kills
+                              </span>
+                            </div>
+                            <div className="requirement-item">
+                              <span className="requirement-label">Ship Kills:</span>
+                              <span className="requirement-value">
+                                {nextRankData['Ship Kills'] || 'N/A'} kills
+                              </span>
+                            </div>
+                            <div className="requirement-item">
+                              <span className="requirement-label">Led Patrols:</span>
+                              <span className="requirement-value">
+                                {nextRankData['Led Patrols'] || 'N/A'} patrols
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {/* Progress Indicators */}
+                          <div className="progress-indicators">
+                            <div className="progress-item">
+                              <span className="progress-label">Your Progress</span>
+                              <div className="progress-bar-small">
+                                <div 
+                                  className="progress-fill-small"
+                                  style={{ 
+                                    width: '60%',
+                                    background: (() => {
+                                      const colors = getProgressBarColors(currentCustomization)
+                                      return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
+                                    })()
+                                  }}
+                                />
+                              </div>
+                              <span className="progress-percentage">60%</span>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })()}
+                  </div>
+                </div>
+                
+                {/* Right: Next Rank Icon */}
+                <div className="welcome-badges">
+                  {(() => {
+                    const nextRankData = getNextRankFromTier(currentDisplayData?.Rank)
+                    if (nextRankData) {
+                      return (
+                        <div className="welcome-rank-icon-container">
+                          <img 
+                            src={`/Ranks/${nextRankData['Rank Name']}.png`}
+                            alt={`${nextRankData['Rank Name']} Rank`}
+                            className="welcome-rank-icon next-rank-preview"
+                            onError={(e) => {
+                              e.target.style.display = 'none'
                             }}
                           />
                         </div>
-                        <span className="next-rank-welcome">{nextRankData['Rank Name']}</span>
+                      )
+                    }
+                    return (
+                      <div className="max-rank-crown">
+                        <span className="crown-icon">👑</span>
                       </div>
-                    </div>
-                  )
-                })()}
-              </div>
-              
-              {/* Right: Rank Icon and Role Badge */}
-              <div className="welcome-badges">
-                {currentDisplayData?.Rank && (
-                  <div className="welcome-rank-icon-container">
-                    <img 
-                      src={`/Ranks/${currentDisplayData.Rank}.png`}
-                      alt={`${currentDisplayData.Rank} Rank`}
-                      className="welcome-rank-icon"
-                      onError={(e) => {
-                        e.target.style.display = 'none'
-                      }}
-                    />
-                  </div>
-                )}
-                <span className="role-badge">{currentDisplayData?.Role || 'Member'}</span>
+                    )
+                  })()}
+                  <span className="role-badge">
+                    {(() => {
+                      const nextRankData = getNextRankFromTier(currentDisplayData?.Rank)
+                      return nextRankData ? nextRankData['Rank Name'] : 'Max Rank'
+                    })()}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
+          )}
           
           {/* Epic Profile Header with Rank Display - Compact */}
           <div className="profile-hero" style={{
