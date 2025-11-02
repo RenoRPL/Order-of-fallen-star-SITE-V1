@@ -389,7 +389,9 @@ export default function RankProgressBar({
       alignItems: 'center',
       width: '100%',
       maxWidth: '500px',
-      margin: '0 auto'
+      margin: '0 auto',
+      position: 'relative',
+      pointerEvents: 'auto'
     }}>
       <div className="progress-label">Next Rank Progress</div>
       <div 
@@ -409,7 +411,8 @@ export default function RankProgressBar({
           borderRadius: '8px',
           transition: 'background-color 0.2s ease',
           width: '100%',
-          maxWidth: '450px'
+          maxWidth: '450px',
+          pointerEvents: 'auto'
         }}
       >
         <span className="current-rank-welcome">{currentRank || 'Unranked'}</span>
@@ -427,7 +430,7 @@ export default function RankProgressBar({
         </div>
         <span className="next-rank-welcome">{nextRankData?.['Rank Name'] || 'Unknown'}</span>
 
-        {/* Hover/Click Tooltip */}
+        {/* Temporarily disabled for testing
         {(showRankTooltip || rankTooltipLocked) && (
           <div className="requirements-tooltip" style={{
             position: 'absolute',
@@ -445,7 +448,8 @@ export default function RankProgressBar({
             zIndex: 900,
             backdropFilter: 'blur(15px)',
             boxShadow: '0 15px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(57, 185, 255, 0.4)',
-            fontSize: '0.9rem'
+            fontSize: '0.9rem',
+            pointerEvents: 'auto'
           }}>
             {/* Tooltip arrow pointing up */}
             <div style={{
@@ -614,6 +618,7 @@ export default function RankProgressBar({
             </div>
           </div>
         )}
+        Temporarily disabled for testing */}
       </div>
     </div>
   )
