@@ -9,14 +9,6 @@ export default function RankProgressBar({
   className = '',
   customization = null
 }) {
-  // Debug the incoming props
-  console.log('RankProgressBar Props:', {
-    currentRank,
-    currentStats,
-    memberData,
-    customization
-  })
-
   const [allRanks, setAllRanks] = useState([])
   const [progressRequirements, setProgressRequirements] = useState([])
   const [currentRankData, setCurrentRankData] = useState(null)
@@ -84,42 +76,33 @@ export default function RankProgressBar({
 
   const loadRankData = async () => {
     try {
-      console.log('Starting to load rank data...')
       setLoading(true)
       const [ranks, progressData] = await Promise.all([
         OFSDataService.getAllRanks(),
         OFSDataService.getProgressRequirements()
       ])
       
-      console.log('Loaded data:', { ranks, progressData })
-      
       setAllRanks(ranks)
       setProgressRequirements(progressData)
 
       if (currentRank) {
-        console.log('Processing rank:', currentRank)
         // Find current rank info from ranks sheet
         const currentRankInfo = ranks.find(rank => rank['Rank Name'] === currentRank)
-        console.log('Current rank info:', currentRankInfo)
         setCurrentRankData(currentRankInfo)
 
         // Find current rank progress requirements from progress sheet  
         const currentProgressInfo = progressData.find(progress => progress['Rank'] === currentRank)
-        console.log('Current progress info:', currentProgressInfo)
         setCurrentProgressData(currentProgressInfo)
 
         // Find next rank in progression based on tier system
         if (currentRankInfo?.Tier) {
           const currentTier = parseInt(currentRankInfo.Tier)
           const nextTier = currentTier - 1 // Lower tier number = higher rank
-          console.log('Current tier:', currentTier, 'Next tier:', nextTier)
           
           if (nextTier >= 1) {
             const nextRankInfo = ranks.find(rank => parseInt(rank.Tier) === nextTier)
-            console.log('Next rank info:', nextRankInfo)
             setNextRankData(nextRankInfo)
           } else {
-            console.log('Already at max rank')
             setNextRankData(null) // Already at max rank
           }
         }
@@ -127,98 +110,190 @@ export default function RankProgressBar({
     } catch (error) {
       console.error('Error loading rank data:', error)
     } finally {
-      console.log('Finished loading rank data')
       setLoading(false)
       setDataLoaded(true)
     }
   }
 
-  // Calculate progress based on the Progress sheet requirements
-  const calculateProgressFromSheet = (progressData, stats, memberData) => {
-    if (!progressData || !stats || !memberData) return { progress: 0, requirements: [] }
-
-    const requirements = []
-    let totalRequirements = 0
-    let metRequirements = 0
-
-    // Get time in service from Member Log (column G)
-    const timeInService = memberData['Time in Service'] || '0 days'
-    const serviceDays = parseInt(timeInService.replace(/\D/g, '')) || 0
-
-    // Parse each requirement from the Progress sheet
-    const requirementChecks = [
-      {
-        field: 'Crusade/Quest Led Total',
-        current: (parseInt(stats.ledQuests) || 0) + (parseInt(stats.ledCrusades) || 0),
-        label: 'Total Led (Quests + Crusades)'
-      },
-      {
-        field: 'Crusade Led',  
-        current: parseInt(stats.ledCrusades) || 0,
-        label: 'Crusades Led'
-      },
-      {
-        field: 'Quests Led',
-        current: parseInt(stats.ledQuests) || 0,
-        label: 'Quests Led'
-      },
-      {
-        field: 'Pilot Kills',
-        current: parseInt(stats.shipKills) || 0,
-        label: 'Pilot Kills'
-      },
-      {
-        field: 'Ground Kills',
-        current: parseInt(stats.fpsKills) || 0,
-        label: 'Ground Kills'
-      },
-      {
-        field: 'Turret Kills',
-        current: parseInt(stats.turretKills) || 0,
-        label: 'Turret Kills'
-      },
-      {
-        field: 'Crusade/Quest Total',
-        current: (parseInt(stats.quests) || 0) + (parseInt(stats.crusades) || 0),
-        label: 'Total Completed (Quests + Crusades)'
-      },
-      {
-        field: 'Quests Completed',
-        current: parseInt(stats.quests) || 0,
-        label: 'Quests Completed'
-      },
-      {
-        field: 'Crusade Completed',
-        current: parseInt(stats.crusades) || 0,
-        label: 'Crusades Completed'
-      },
-      {
-        field: 'Time in Service',
-        current: serviceDays,
-        label: 'Days in Service'
-      }
-    ]
-
-    requirementChecks.forEach(check => {
-      const required = parseInt(progressData[check.field]) || 0
-      if (required > 0) {
-        totalRequirements++
-        const isMet = check.current >= required
-        if (isMet) metRequirements++
-        
-        requirements.push({
-          label: check.label,
-          current: check.current,
-          required: required,
-          progress: Math.min(100, (check.current / required) * 100),
-          met: isMet
-        })
-      }
-    })
-
-    const overallProgress = totalRequirements > 0 ? Math.round((metRequirements / totalRequirements) * 100) : 100
+  // Fallback rank requirements when Progress sheet is not available
+  const getFallbackRequirements = (currentRank, nextRank) => {
+    const rankRequirements = {
+      'Serf': { 'Quests Completed': 5, 'Time in Service': 7 },
+      'Page': { 'Quests Completed': 10, 'Crusade Completed': 2, 'Time in Service': 30 },
+      'Squire': { 'Quests Completed': 20, 'Crusade Completed': 5, 'Pilot Kills': 10, 'Time in Service': 60 },
+      'Knight': { 'Quests Completed': 35, 'Crusade Completed': 10, 'Pilot Kills': 25, 'Quests Led': 3, 'Time in Service': 90 },
+      'Templar': { 'Quests Completed': 50, 'Crusade Completed': 15, 'Pilot Kills': 50, 'Quests Led': 8, 'Crusade Led': 2, 'Time in Service': 120 },
+      'Lord': { 'Quests Completed': 75, 'Crusade Completed': 25, 'Pilot Kills': 100, 'Quests Led': 15, 'Crusade Led': 5, 'Time in Service': 180 },
+      'Marshal': { 'Quests Completed': 100, 'Crusade Completed': 40, 'Pilot Kills': 200, 'Quests Led': 25, 'Crusade Led': 10, 'Time in Service': 240 },
+      'Commander': { 'Quests Completed': 150, 'Crusade Completed': 60, 'Pilot Kills': 350, 'Quests Led': 40, 'Crusade Led': 15, 'Time in Service': 300 },
+      'Lord Commander': { 'Quests Completed': 200, 'Crusade Completed': 80, 'Pilot Kills': 500, 'Quests Led': 60, 'Crusade Led': 25, 'Time in Service': 365 },
+      'Chapter Master': { 'Quests Completed': 300, 'Crusade Completed': 120, 'Pilot Kills': 750, 'Quests Led': 100, 'Crusade Led': 40, 'Time in Service': 500 }
+    }
     
-    return { progress: overallProgress, requirements, metRequirements, totalRequirements }
+    return rankRequirements[nextRank] || {}
+  }
+
+  // Calculate progress using fallback requirements if Progress sheet data is not available
+  const calculateProgressFromSheet = (progressData, stats, memberData) => {
+    if (!stats || !memberData) return { progress: 0, requirements: [] }
+
+    let requirements = {}
+    
+    // Use Progress sheet data if available, otherwise use fallback
+    if (progressData) {
+      // Original Progress sheet logic (keep existing code)
+      const requirementChecks = [
+        {
+          field: 'Crusade/Quest Led Total',
+          current: (parseInt(stats.ledQuests) || 0) + (parseInt(stats.ledCrusades) || 0),
+          label: 'Total Led (Quests + Crusades)'
+        },
+        {
+          field: 'Crusade Led',  
+          current: parseInt(stats.ledCrusades) || 0,
+          label: 'Crusades Led'
+        },
+        {
+          field: 'Quests Led',
+          current: parseInt(stats.ledQuests) || 0,
+          label: 'Quests Led'
+        },
+        {
+          field: 'Pilot Kills',
+          current: parseInt(stats.shipKills) || 0,
+          label: 'Pilot Kills'
+        },
+        {
+          field: 'Ground Kills',
+          current: parseInt(stats.fpsKills) || 0,
+          label: 'Ground Kills'
+        },
+        {
+          field: 'Turret Kills',
+          current: parseInt(stats.turretKills) || 0,
+          label: 'Turret Kills'
+        },
+        {
+          field: 'Crusade/Quest Total',
+          current: (parseInt(stats.quests) || 0) + (parseInt(stats.crusades) || 0),
+          label: 'Total Completed (Quests + Crusades)'
+        },
+        {
+          field: 'Quests Completed',
+          current: parseInt(stats.quests) || 0,
+          label: 'Quests Completed'
+        },
+        {
+          field: 'Crusade Completed',
+          current: parseInt(stats.crusades) || 0,
+          label: 'Crusades Completed'
+        },
+        {
+          field: 'Time in Service',
+          current: parseInt(memberData['Time in Service']?.replace(/\D/g, '')) || 0,
+          label: 'Days in Service'
+        }
+      ]
+
+      const requirementsArray = []
+      let totalRequirements = 0
+      let metRequirements = 0
+
+      requirementChecks.forEach(check => {
+        const required = parseInt(progressData[check.field]) || 0
+        if (required > 0) {
+          totalRequirements++
+          const isMet = check.current >= required
+          if (isMet) metRequirements++
+          
+          requirementsArray.push({
+            label: check.label,
+            current: check.current,
+            required: required,
+            progress: Math.min(100, (check.current / required) * 100),
+            met: isMet
+          })
+        }
+      })
+
+      const overallProgress = totalRequirements > 0 ? Math.round((metRequirements / totalRequirements) * 100) : 100
+      return { progress: overallProgress, requirements: requirementsArray, metRequirements, totalRequirements }
+    } else {
+      // Fallback logic using hardcoded requirements
+      console.log('Using fallback requirements - Progress sheet not available')
+      const fallbackReqs = getFallbackRequirements(currentRank, nextRankData?.['Rank Name'])
+      
+      const requirementsArray = []
+      let totalRequirements = 0
+      let metRequirements = 0
+
+      // Get time in service from Member Log (column G)
+      const timeInService = memberData['Time in Service'] || '0 days'
+      const serviceDays = parseInt(timeInService.replace(/\D/g, '')) || 0
+
+      const statChecks = [
+        {
+          key: 'Quests Completed',
+          current: parseInt(stats.quests) || 0,
+          label: 'Quests Completed'
+        },
+        {
+          key: 'Crusade Completed',
+          current: parseInt(stats.crusades) || 0,
+          label: 'Crusades Completed'
+        },
+        {
+          key: 'Pilot Kills',
+          current: parseInt(stats.shipKills) || 0,
+          label: 'Pilot Kills'
+        },
+        {
+          key: 'Ground Kills',
+          current: parseInt(stats.fpsKills) || 0,
+          label: 'Ground Kills'
+        },
+        {
+          key: 'Turret Kills',
+          current: parseInt(stats.turretKills) || 0,
+          label: 'Turret Kills'
+        },
+        {
+          key: 'Quests Led',
+          current: parseInt(stats.ledQuests) || 0,
+          label: 'Quests Led'
+        },
+        {
+          key: 'Crusade Led',
+          current: parseInt(stats.ledCrusades) || 0,
+          label: 'Crusades Led'
+        },
+        {
+          key: 'Time in Service',
+          current: serviceDays,
+          label: 'Days in Service'
+        }
+      ]
+
+      statChecks.forEach(check => {
+        const required = fallbackReqs[check.key] || 0
+        if (required > 0) {
+          totalRequirements++
+          const isMet = check.current >= required
+          if (isMet) metRequirements++
+          
+          requirementsArray.push({
+            label: check.label,
+            current: check.current,
+            required: required,
+            progress: Math.min(100, (check.current / required) * 100),
+            met: isMet
+          })
+        }
+      })
+
+      const overallProgress = totalRequirements > 0 ? Math.round((metRequirements / totalRequirements) * 100) : 100
+      return { progress: overallProgress, requirements: requirementsArray, metRequirements, totalRequirements }
+    }
   }
 
   const getProgressColor = (progress) => {
@@ -306,38 +381,30 @@ export default function RankProgressBar({
   const { progress: overallProgress, requirements: requirementsBreakdown } = progressResult || { progress: 0, requirements: [] }
   const overallProgressColor = currentTheme.primary
 
-  // Debug logging
-  console.log('RankProgressBar Debug:', {
-    showTooltip,
-    requirementsBreakdown,
-    requirementsLength: requirementsBreakdown?.length,
-    currentProgressData,
-    nextRankData,
-    dataLoaded,
-    loading,
-    progressResult
-  })
-
   return (
-    <div className="welcome-progress-section">
+    <div className="welcome-progress-section" style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center',
+      width: '100%',
+      maxWidth: '500px',
+      margin: '0 auto'
+    }}>
       <div className="progress-label">Next Rank Progress</div>
       <div 
         className="welcome-progress-bar-container"
-        onMouseEnter={() => {
-          console.log('Mouse entered progress bar')
-          setShowTooltip(true)
-        }}
-        onMouseLeave={() => {
-          console.log('Mouse left progress bar')
-          setShowTooltip(false)
-        }}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
         style={{ 
           position: 'relative',
           cursor: 'help',
-          backgroundColor: showTooltip ? 'rgba(57, 185, 255, 0.1)' : 'transparent',
-          padding: '5px',
-          margin: '-5px',
-          borderRadius: '4px'
+          backgroundColor: showTooltip ? 'rgba(57, 185, 255, 0.05)' : 'transparent',
+          padding: '8px',
+          margin: '-8px',
+          borderRadius: '8px',
+          transition: 'background-color 0.2s ease',
+          width: '100%',
+          maxWidth: '450px'
         }}
       >
         <span className="current-rank-welcome">{currentRank || 'Unranked'}</span>
@@ -362,14 +429,16 @@ export default function RankProgressBar({
             top: '-10px',
             left: '50%',
             transform: 'translateX(-50%) translateY(-100%)',
-            backgroundColor: 'rgba(10, 20, 40, 0.95)',
+            backgroundColor: 'linear-gradient(135deg, rgba(10, 20, 40, 0.98) 0%, rgba(20, 30, 50, 0.98) 100%)',
             border: '1px solid rgba(57, 185, 255, 0.4)',
-            borderRadius: '8px',
-            padding: '1rem',
-            minWidth: '250px',
+            borderRadius: '10px',
+            padding: '1.2rem',
+            minWidth: '320px',
+            maxWidth: '400px',
             zIndex: 1000,
-            backdropFilter: 'blur(10px)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(57, 185, 255, 0.2)'
+            backdropFilter: 'blur(15px)',
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(57, 185, 255, 0.3)',
+            fontSize: '0.85rem'
           }}>
             {/* Tooltip arrow */}
             <div style={{
@@ -384,12 +453,13 @@ export default function RankProgressBar({
             
             <div className="tooltip-header" style={{
               color: '#ffffff',
-              fontSize: '0.9rem',
-              fontWeight: '600',
-              marginBottom: '0.8rem',
+              fontSize: '1rem',
+              fontWeight: '700',
+              marginBottom: '1rem',
               textAlign: 'center',
-              borderBottom: '1px solid rgba(57, 185, 255, 0.2)',
-              paddingBottom: '0.5rem'
+              borderBottom: '2px solid rgba(57, 185, 255, 0.3)',
+              paddingBottom: '0.7rem',
+              textShadow: '0 0 10px rgba(57, 185, 255, 0.5)'
             }}>
               {nextRankData ? `Requirements for ${nextRankData['Rank Name']}` : 'Rank Progress Information'}
             </div>
@@ -397,54 +467,84 @@ export default function RankProgressBar({
             {currentProgressData?.['Detail Req'] && (
               <div className="tooltip-step" style={{
                 color: '#00ff88',
-                marginBottom: '8px',
-                fontSize: '0.85em',
+                marginBottom: '1rem',
+                fontSize: '0.9em',
                 textAlign: 'center',
-                fontStyle: 'italic'
+                fontStyle: 'italic',
+                padding: '0.5rem',
+                backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                borderRadius: '6px',
+                border: '1px solid rgba(0, 255, 136, 0.2)'
               }}>
                 📋 {currentProgressData['Detail Req']}
               </div>
             )}
             
             {requirementsBreakdown && requirementsBreakdown.length > 0 ? (
-              requirementsBreakdown.map((req, index) => (
-                <div key={index} className={`tooltip-requirement ${req.met ? 'completed' : ''}`} style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '0.5rem',
-                  fontSize: '0.85rem'
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+                {requirementsBreakdown.map((req, index) => (
+                  <div key={index} className={`tooltip-requirement ${req.met ? 'completed' : ''}`} style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '0.6rem',
+                    backgroundColor: req.met ? 'rgba(0, 255, 136, 0.08)' : 'rgba(255, 255, 255, 0.03)',
+                    borderRadius: '6px',
+                    border: `1px solid ${req.met ? 'rgba(0, 255, 136, 0.2)' : 'rgba(255, 255, 255, 0.1)'}`,
+                    transition: 'all 0.2s ease'
+                  }}>
+                    <span className="req-type" style={{
+                      color: req.met ? '#00ff88' : '#39b9ff',
+                      fontWeight: '600',
+                      flex: 1,
+                      fontSize: '0.85rem'
+                    }}>{req.label}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                      <span className="req-progress" style={{
+                        color: '#ffffff',
+                        fontWeight: '700',
+                        fontSize: '0.9rem'
+                      }}>{req.current}/{req.required}</span>
+                      <span className="req-percentage" style={{
+                        color: req.met ? '#00ff88' : req.progress >= 50 ? '#ffaa00' : '#ff6b35',
+                        fontWeight: '600',
+                        minWidth: '50px',
+                        textAlign: 'right',
+                        fontSize: '0.8rem'
+                      }}>({Math.round(req.progress)}%)</span>
+                      {req.met && <span className="req-checkmark" style={{ 
+                        color: '#00ff88',
+                        fontWeight: 'bold',
+                        fontSize: '1.1rem',
+                        textShadow: '0 0 5px rgba(0, 255, 136, 0.5)'
+                      }}>✓</span>}
+                    </div>
+                  </div>
+                ))}
+                <div style={{
+                  marginTop: '0.5rem',
+                  padding: '0.6rem',
+                  backgroundColor: 'rgba(57, 185, 255, 0.1)',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(57, 185, 255, 0.2)',
+                  textAlign: 'center'
                 }}>
-                  <span className="req-type" style={{
+                  <span style={{
                     color: '#39b9ff',
-                    fontWeight: '500',
-                    flex: 1
-                  }}>{req.label}:</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span className="req-progress" style={{
-                      color: '#ffffff',
-                      fontWeight: '600'
-                    }}>{req.current}/{req.required}</span>
-                    <span className="req-percentage" style={{
-                      color: req.met ? '#00ff88' : '#ffffff',
-                      fontWeight: '500',
-                      minWidth: '50px',
-                      textAlign: 'right'
-                    }}>({Math.round(req.progress)}%)</span>
-                    {req.met && <span className="req-checkmark" style={{ 
-                      color: '#00ff88',
-                      fontWeight: 'bold'
-                    }}>✓</span>}
+                    fontWeight: '600',
+                    fontSize: '0.85rem'
+                  }}>
+                    Overall Progress: {Math.round(overallProgress)}%
                   </span>
                 </div>
-              ))
+              </div>
             ) : (
               <div style={{ color: '#ffffff', textAlign: 'center' }}>
-                No requirements data available
+                {currentProgressData ? 'No requirements configured' : 'Using fallback requirements (Progress sheet unavailable)'}
                 <br />
                 <small style={{ color: '#888' }}>
                   Data loaded: {dataLoaded ? 'Yes' : 'No'}<br />
-                  Current progress data: {currentProgressData ? 'Yes' : 'No'}<br />
+                  Progress sheet data: {currentProgressData ? 'Available' : 'Not available'}<br />
                   Requirements count: {requirementsBreakdown?.length || 0}
                 </small>
               </div>
