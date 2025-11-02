@@ -6,6 +6,7 @@ const PATROL_STATS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0
 const PATHS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1288322893&single=true&output=csv'
 const WHAT_WE_OFFER_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1449801333&single=true&output=csv'
 const SHIP_REGISTRY_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1333995409&single=true&output=csv'
+const PROGRESS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=1620961882&single=true&output=csv'
 
 class OFSDataService {
   static async fetchCSV(url) {
@@ -71,6 +72,23 @@ class OFSDataService {
       return members.find(member => member['User ID'] === discordId) || null
     } catch (error) {
       console.error('Error fetching member data:', error)
+      return null
+    }
+  }
+
+  static async getMemberTimeInService(discordId) {
+    try {
+      const memberData = await this.getMemberData(discordId)
+      if (!memberData) return null
+      
+      // Get Time in Service from column G (the 7th column)
+      // This could be stored as 'Time in Service' or 'G' depending on CSV headers
+      return memberData['Time in Service'] || 
+             memberData['Time in service'] || 
+             memberData.G || 
+             null
+    } catch (error) {
+      console.error('Error fetching member time in service:', error)
       return null
     }
   }
@@ -142,6 +160,25 @@ class OFSDataService {
     } catch (error) {
       console.error('Error fetching rank tier:', error)
       return 999 // Default to high number for unknown ranks
+    }
+  }
+
+  static async getProgressRequirements() {
+    try {
+      return await this.fetchCSV(PROGRESS_URL)
+    } catch (error) {
+      console.error('Error fetching progress requirements:', error)
+      return []
+    }
+  }
+
+  static async getRankProgressRequirements(rankName) {
+    try {
+      const progressData = await this.getProgressRequirements()
+      return progressData.find(rank => rank.Rank === rankName || rank.rank === rankName) || null
+    } catch (error) {
+      console.error('Error fetching rank progress requirements:', error)
+      return null
     }
   }
 

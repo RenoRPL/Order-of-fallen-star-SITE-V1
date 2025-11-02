@@ -20,6 +20,7 @@ export default function Profile() {
   const [memberData, setMemberData] = useState(null)
   const [allMemberData, setAllMemberData] = useState([])
   const [allRankData, setAllRankData] = useState([])
+  const [progressRequirements, setProgressRequirements] = useState([])
   const [patrolData, setPatrolData] = useState([])
   const [patrolStats, setPatrolStats] = useState(null)
   const [rankData, setRankData] = useState(null)
@@ -228,6 +229,55 @@ export default function Profile() {
     const nextRankData = allRankData.find(rank => parseInt(rank.Tier) === nextTier)
     
     return nextRankData
+  }
+
+  // Function to get progress requirements for a specific rank from Progress sheet
+  const getProgressRequirementsForRank = (rankName) => {
+    if (!progressRequirements || progressRequirements.length === 0 || !rankName) {
+      return null
+    }
+
+    // Find the rank requirements in the Progress sheet
+    // The Progress sheet uses column A for rank names
+    return progressRequirements.find(req => 
+      req.Rank === rankName || 
+      req.rank === rankName ||
+      (req['Rank Name'] && req['Rank Name'] === rankName) ||
+      // Handle variations in column names
+      Object.values(req)[0] === rankName
+    )
+  }
+
+  // Function to calculate progress percentage towards next rank
+  const calculateRankProgress = (nextRankRequirements, currentUserStats) => {
+    if (!nextRankRequirements || !currentUserStats) return 0
+
+    let totalRequirements = 0
+    let metRequirements = 0
+
+    // Check each requirement and calculate progress
+    const requirements = [
+      { key: 'G', userValue: parseInt(currentUserStats.fpsKills || 0), label: 'Ground Kills' },
+      { key: 'H', userValue: parseInt(currentUserStats.pilotKills || 0), label: 'Pilot Kills' },
+      { key: 'I', userValue: parseInt(currentUserStats.turretKills || 0), label: 'Turret Kills' },
+      // Add more requirements as needed
+    ]
+
+    requirements.forEach(req => {
+      const requiredValue = parseInt(nextRankRequirements[req.key] || 0)
+      if (requiredValue > 0) {
+        totalRequirements++
+        if (req.userValue >= requiredValue) {
+          metRequirements++
+        }
+      }
+    })
+
+    // If no requirements found, return 0
+    if (totalRequirements === 0) return 0
+
+    // Calculate percentage
+    return Math.round((metRequirements / totalRequirements) * 100)
   }
   
   // Tooltip control functions
@@ -1041,6 +1091,16 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
           console.error('Error loading all rank data:', error)
           setAllRankData([])
         }
+
+        // Fetch progress requirements data
+        try {
+          const progressReqs = await OFSDataService.getProgressRequirements()
+          setProgressRequirements(progressReqs)
+          console.log('Loaded progress requirements:', progressReqs.length, 'ranks')
+        } catch (error) {
+          console.error('Error loading progress requirements:', error)
+          setProgressRequirements([])
+        }
         
       } catch (err) {
         console.error('Error fetching OFS data:', err)
@@ -1789,7 +1849,15 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                             <div 
                               className="welcome-progress-fill"
                               style={{ 
-                                width: '60%',
+                                width: `${(() => {
+                                  const nextRankRequirements = getProgressRequirementsForRank(nextRankData['Rank Name'])
+                                  const currentStats = {
+                                    fpsKills: currentGoogleStats?.fpsKills || 0,
+                                    pilotKills: currentGoogleStats?.shipKills || 0,
+                                    turretKills: currentGoogleStats?.turretKills || 0
+                                  }
+                                  return calculateRankProgress(nextRankRequirements, currentStats)
+                                })()}%`,
                                 background: (() => {
                                   const colors = getProgressBarColors(currentCustomization)
                                   return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
@@ -1879,38 +1947,113 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                       return (
                         <div className="next-rank-requirements">
                           <h4 className="next-rank-title">Next Rank: {nextRankData['Rank Name']}</h4>
-                          <div className="requirements-list">
-                            <div className="requirement-item">
-                              <span className="requirement-label">Time in Service:</span>
-                              <span className="requirement-value">
-                                {nextRankData['Time in Service (Days)'] || 'N/A'} days
-                              </span>
-                            </div>
-                            <div className="requirement-item">
-                              <span className="requirement-label">Patrol Hours:</span>
-                              <span className="requirement-value">
-                                {nextRankData['Total Patrol Length (Hours)'] || 'N/A'} hours
-                              </span>
-                            </div>
-                            <div className="requirement-item">
-                              <span className="requirement-label">FPS Kills:</span>
-                              <span className="requirement-value">
-                                {nextRankData['FPS Kills'] || 'N/A'} kills
-                              </span>
-                            </div>
-                            <div className="requirement-item">
-                              <span className="requirement-label">Ship Kills:</span>
-                              <span className="requirement-value">
-                                {nextRankData['Ship Kills'] || 'N/A'} kills
-                              </span>
-                            </div>
-                            <div className="requirement-item">
-                              <span className="requirement-label">Led Patrols:</span>
-                              <span className="requirement-value">
-                                {nextRankData['Led Patrols'] || 'N/A'} patrols
-                              </span>
-                            </div>
-                          </div>
+                          
+                          {(() => {
+                            // Get progress requirements for the next rank
+                            const nextRankRequirements = getProgressRequirementsForRank(nextRankData['Rank Name'])
+                            
+                            if (!nextRankRequirements) {
+                              return (
+                                <div className="requirements-list">
+                                  <div className="requirement-item">
+                                    <span className="requirement-value">Requirements data not available</span>
+                                  </div>
+                                </div>
+                              )
+                            }
+                            
+                            return (
+                              <div className="requirements-list">
+                                {/* Detail Requirements - Column C */}
+                                {nextRankRequirements.C && (
+                                  <div className="requirement-item">
+                                    <span className="requirement-label">Step Requirements:</span>
+                                    <span className="requirement-value">{nextRankRequirements.C}</span>
+                                  </div>
+                                )}
+                                
+                                {/* Time in Service - Column M */}
+                                {nextRankRequirements.M && (
+                                  <div className="requirement-item">
+                                    <span className="requirement-label">Time in Service:</span>
+                                    <span className="requirement-value">{nextRankRequirements.M}</span>
+                                  </div>
+                                )}
+                                
+                                {/* Crusade/Quest Led Total - Column D */}
+                                {nextRankRequirements.D && (
+                                  <div className="requirement-item">
+                                    <span className="requirement-label">Total Led (Quests/Crusades):</span>
+                                    <span className="requirement-value">{nextRankRequirements.D}</span>
+                                  </div>
+                                )}
+                                
+                                {/* Crusade Led - Column E */}
+                                {nextRankRequirements.E && (
+                                  <div className="requirement-item">
+                                    <span className="requirement-label">Crusades Led:</span>
+                                    <span className="requirement-value">{nextRankRequirements.E}</span>
+                                  </div>
+                                )}
+                                
+                                {/* Quests Led - Column F */}
+                                {nextRankRequirements.F && (
+                                  <div className="requirement-item">
+                                    <span className="requirement-label">Quests Led:</span>
+                                    <span className="requirement-value">{nextRankRequirements.F}</span>
+                                  </div>
+                                )}
+                                
+                                {/* Pilot Kills - Column G */}
+                                {nextRankRequirements.G && (
+                                  <div className="requirement-item">
+                                    <span className="requirement-label">Pilot Kills:</span>
+                                    <span className="requirement-value">{nextRankRequirements.G}</span>
+                                  </div>
+                                )}
+                                
+                                {/* Ground Kills - Column H */}
+                                {nextRankRequirements.H && (
+                                  <div className="requirement-item">
+                                    <span className="requirement-label">Ground Kills:</span>
+                                    <span className="requirement-value">{nextRankRequirements.H}</span>
+                                  </div>
+                                )}
+                                
+                                {/* Turret Kills - Column I */}
+                                {nextRankRequirements.I && (
+                                  <div className="requirement-item">
+                                    <span className="requirement-label">Turret Kills:</span>
+                                    <span className="requirement-value">{nextRankRequirements.I}</span>
+                                  </div>
+                                )}
+                                
+                                {/* Crusade/Quest Total - Column J */}
+                                {nextRankRequirements.J && (
+                                  <div className="requirement-item">
+                                    <span className="requirement-label">Total Quests & Crusades:</span>
+                                    <span className="requirement-value">{nextRankRequirements.J}</span>
+                                  </div>
+                                )}
+                                
+                                {/* Quests Completed - Column K */}
+                                {nextRankRequirements.K && (
+                                  <div className="requirement-item">
+                                    <span className="requirement-label">Quests Completed:</span>
+                                    <span className="requirement-value">{nextRankRequirements.K}</span>
+                                  </div>
+                                )}
+                                
+                                {/* Crusade Completed - Column L */}
+                                {nextRankRequirements.L && (
+                                  <div className="requirement-item">
+                                    <span className="requirement-label">Crusades Completed:</span>
+                                    <span className="requirement-value">{nextRankRequirements.L}</span>
+                                  </div>
+                                )}
+                              </div>
+                            )
+                          })()}
                           
                           {/* Progress Indicators */}
                           <div className="progress-indicators">
@@ -1920,7 +2063,15 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                 <div 
                                   className="progress-fill-small"
                                   style={{ 
-                                    width: '60%',
+                                    width: `${(() => {
+                                      const nextRankRequirements = getProgressRequirementsForRank(nextRankData['Rank Name'])
+                                      const currentStats = {
+                                        fpsKills: currentGoogleStats?.fpsKills || 0,
+                                        pilotKills: currentGoogleStats?.shipKills || 0,
+                                        turretKills: currentGoogleStats?.turretKills || 0
+                                      }
+                                      return calculateRankProgress(nextRankRequirements, currentStats)
+                                    })()}%`,
                                     background: (() => {
                                       const colors = getProgressBarColors(currentCustomization)
                                       return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
@@ -1928,7 +2079,17 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                   }}
                                 />
                               </div>
-                              <span className="progress-percentage">60%</span>
+                              <span className="progress-percentage">
+                                {(() => {
+                                  const nextRankRequirements = getProgressRequirementsForRank(nextRankData['Rank Name'])
+                                  const currentStats = {
+                                    fpsKills: currentGoogleStats?.fpsKills || 0,
+                                    pilotKills: currentGoogleStats?.shipKills || 0,
+                                    turretKills: currentGoogleStats?.turretKills || 0
+                                  }
+                                  return calculateRankProgress(nextRankRequirements, currentStats)
+                                })()}%
+                              </span>
                             </div>
                           </div>
                         </div>
