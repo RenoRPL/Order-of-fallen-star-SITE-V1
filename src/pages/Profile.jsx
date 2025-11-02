@@ -163,12 +163,14 @@ export default function Profile() {
       const memberActiveQuest = member['Active Quest']
       if (memberActiveQuest && memberActiveQuest.trim() === questName.trim()) {
         const memberName = member['Display Name'] || member['Username'] || 'Unknown'
+        const discordId = member['User ID'] || null // Use the correct field name from Member Log
+        
         const participant = {
           name: memberName,
           rank: member['Rank'] || 'Unknown',
           role: member['Role'] || member['Role Path'] || 'Unknown',
           avatar: member['Avatar'] || null,
-          discordId: member['Discord ID'] || member['discordId'] || null,
+          discordId: discordId,
           isLeader: questLeader === memberName
         }
         participants.push(participant)
