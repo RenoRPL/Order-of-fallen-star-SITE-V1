@@ -9,6 +9,14 @@ export default function RankProgressBar({
   className = '',
   customization = null
 }) {
+  // Debug the incoming props
+  console.log('RankProgressBar Props:', {
+    currentRank,
+    currentStats,
+    memberData,
+    customization
+  })
+
   const [allRanks, setAllRanks] = useState([])
   const [progressRequirements, setProgressRequirements] = useState([])
   const [currentRankData, setCurrentRankData] = useState(null)
@@ -76,33 +84,42 @@ export default function RankProgressBar({
 
   const loadRankData = async () => {
     try {
+      console.log('Starting to load rank data...')
       setLoading(true)
       const [ranks, progressData] = await Promise.all([
         OFSDataService.getAllRanks(),
         OFSDataService.getProgressRequirements()
       ])
       
+      console.log('Loaded data:', { ranks, progressData })
+      
       setAllRanks(ranks)
       setProgressRequirements(progressData)
 
       if (currentRank) {
+        console.log('Processing rank:', currentRank)
         // Find current rank info from ranks sheet
         const currentRankInfo = ranks.find(rank => rank['Rank Name'] === currentRank)
+        console.log('Current rank info:', currentRankInfo)
         setCurrentRankData(currentRankInfo)
 
         // Find current rank progress requirements from progress sheet  
         const currentProgressInfo = progressData.find(progress => progress['Rank'] === currentRank)
+        console.log('Current progress info:', currentProgressInfo)
         setCurrentProgressData(currentProgressInfo)
 
         // Find next rank in progression based on tier system
         if (currentRankInfo?.Tier) {
           const currentTier = parseInt(currentRankInfo.Tier)
           const nextTier = currentTier - 1 // Lower tier number = higher rank
+          console.log('Current tier:', currentTier, 'Next tier:', nextTier)
           
           if (nextTier >= 1) {
             const nextRankInfo = ranks.find(rank => parseInt(rank.Tier) === nextTier)
+            console.log('Next rank info:', nextRankInfo)
             setNextRankData(nextRankInfo)
           } else {
+            console.log('Already at max rank')
             setNextRankData(null) // Already at max rank
           }
         }
@@ -110,6 +127,7 @@ export default function RankProgressBar({
     } catch (error) {
       console.error('Error loading rank data:', error)
     } finally {
+      console.log('Finished loading rank data')
       setLoading(false)
       setDataLoaded(true)
     }
@@ -240,7 +258,7 @@ export default function RankProgressBar({
     return themes[theme] || themes.classic
   }
 
-  if (loading || !dataLoaded || !currentProgressData) {
+  if (loading || !dataLoaded) {
     return (
       <div className="welcome-progress-section">
         <div className="progress-label">Next Rank Progress</div>
@@ -285,7 +303,7 @@ export default function RankProgressBar({
 
   // Calculate progress using the new Progress sheet data
   const progressResult = calculateProgressFromSheet(currentProgressData, currentStats, memberData)
-  const { progress: overallProgress, requirements: requirementsBreakdown } = progressResult
+  const { progress: overallProgress, requirements: requirementsBreakdown } = progressResult || { progress: 0, requirements: [] }
   const overallProgressColor = currentTheme.primary
 
   // Debug logging
@@ -295,7 +313,9 @@ export default function RankProgressBar({
     requirementsLength: requirementsBreakdown?.length,
     currentProgressData,
     nextRankData,
-    dataLoaded
+    dataLoaded,
+    loading,
+    progressResult
   })
 
   return (
@@ -333,7 +353,7 @@ export default function RankProgressBar({
             }}
           />
         </div>
-        <span className="next-rank-welcome">{nextRankData['Rank Name']}</span>
+        <span className="next-rank-welcome">{nextRankData?.['Rank Name'] || 'Unknown'}</span>
 
         {/* Hover Tooltip */}
         {showTooltip && (
@@ -371,7 +391,7 @@ export default function RankProgressBar({
               borderBottom: '1px solid rgba(57, 185, 255, 0.2)',
               paddingBottom: '0.5rem'
             }}>
-              {nextRankData ? `Requirements for ${nextRankData['Rank Name']}` : 'Tooltip Test'}
+              {nextRankData ? `Requirements for ${nextRankData['Rank Name']}` : 'Rank Progress Information'}
             </div>
             
             {currentProgressData?.['Detail Req'] && (
