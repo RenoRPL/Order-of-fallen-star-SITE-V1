@@ -1756,7 +1756,10 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
               })()}
             </div>
 
-            {/* Center-Right: Active Quest */}
+            {/* Center Space - Empty column for character display */}
+            <div></div>
+
+            {/* Right: Active Quest */}
             <div className="active-quest-overview">
               {(() => {
                 const activeQuest = getActiveQuest()
