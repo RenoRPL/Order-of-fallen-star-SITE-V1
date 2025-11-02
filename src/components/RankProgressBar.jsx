@@ -15,8 +15,8 @@ export default function RankProgressBar({
   const [nextRankData, setNextRankData] = useState(null)
   const [currentProgressData, setCurrentProgressData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [showTooltip, setShowTooltip] = useState(false)
-  const [tooltipLocked, setTooltipLocked] = useState(false)
+  const [showRankTooltip, setShowRankTooltip] = useState(false)
+  const [rankTooltipLocked, setRankTooltipLocked] = useState(false)
   const [dataLoaded, setDataLoaded] = useState(false)
 
   // Define rank order for progression (from lowest to highest)
@@ -394,16 +394,16 @@ export default function RankProgressBar({
       <div className="progress-label">Next Rank Progress</div>
       <div 
         className="welcome-progress-bar-container"
-        onMouseEnter={() => !tooltipLocked && setShowTooltip(true)}
-        onMouseLeave={() => !tooltipLocked && setShowTooltip(false)}
+        onMouseEnter={() => !rankTooltipLocked && setShowRankTooltip(true)}
+        onMouseLeave={() => !rankTooltipLocked && setShowRankTooltip(false)}
         onClick={() => {
-          setTooltipLocked(!tooltipLocked)
-          setShowTooltip(true)
+          setRankTooltipLocked(!rankTooltipLocked)
+          setShowRankTooltip(true)
         }}
         style={{ 
           position: 'relative',
           cursor: 'help',
-          backgroundColor: showTooltip ? 'rgba(57, 185, 255, 0.05)' : 'transparent',
+          backgroundColor: showRankTooltip ? 'rgba(57, 185, 255, 0.05)' : 'transparent',
           padding: '8px',
           margin: '-8px',
           borderRadius: '8px',
@@ -428,7 +428,7 @@ export default function RankProgressBar({
         <span className="next-rank-welcome">{nextRankData?.['Rank Name'] || 'Unknown'}</span>
 
         {/* Hover/Click Tooltip */}
-        {(showTooltip || tooltipLocked) && (
+        {(showRankTooltip || rankTooltipLocked) && (
           <div className="requirements-tooltip" style={{
             position: 'absolute',
             top: '100%',
@@ -442,7 +442,7 @@ export default function RankProgressBar({
             minWidth: '500px',
             maxWidth: '700px',
             width: 'max-content',
-            zIndex: 1000,
+            zIndex: 900,
             backdropFilter: 'blur(15px)',
             boxShadow: '0 15px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(57, 185, 255, 0.4)',
             fontSize: '0.9rem'
@@ -459,12 +459,12 @@ export default function RankProgressBar({
             }}></div>
             
             {/* Close button for locked tooltip */}
-            {tooltipLocked && (
+            {rankTooltipLocked && (
               <button 
                 onClick={(e) => {
                   e.stopPropagation()
-                  setTooltipLocked(false)
-                  setShowTooltip(false)
+                  setRankTooltipLocked(false)
+                  setShowRankTooltip(false)
                 }}
                 style={{
                   position: 'absolute',
@@ -503,10 +503,10 @@ export default function RankProgressBar({
               borderBottom: '2px solid rgba(57, 185, 255, 0.3)',
               paddingBottom: '0.8rem',
               textShadow: '0 0 10px rgba(57, 185, 255, 0.5)',
-              paddingRight: tooltipLocked ? '30px' : '0'
+              paddingRight: rankTooltipLocked ? '30px' : '0'
             }}>
               {nextRankData ? `Requirements for ${nextRankData['Rank Name']}` : 'Rank Progress Information'}
-              {!tooltipLocked && (
+              {!rankTooltipLocked && (
                 <div style={{
                   fontSize: '0.7rem',
                   color: '#888',
