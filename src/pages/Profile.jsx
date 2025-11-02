@@ -611,6 +611,8 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
 
   // Fetch member and patrol data
   useEffect(() => {
+    let isCancelled = false // Track if this effect should be cancelled
+    
     const fetchData = async () => {
       // Get playerId from URL params or URL route parameter
       const playerId = searchParams.get('playerId') || urlDiscordId
@@ -618,13 +620,23 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       
       if (!targetUserId) return
       
-      setIsLoading(true)
-      setError(null)
-      setIsViewingOtherPlayer(!!playerId)
+      // Only update loading state if not cancelled
+      if (!isCancelled) {
+        setIsLoading(true)
+        setError(null)
+        setIsViewingOtherPlayer(!!playerId)
+      }
       
       try {
         // Fetch member data for the target user (either URL param or current user)
         const member = await OFSDataService.getMemberData(targetUserId)
+        
+        // Check if this effect was cancelled while we were fetching
+        if (isCancelled) {
+          console.log('Fetch cancelled, ignoring results for:', targetUserId)
+          return
+        }
+        
         console.log('Fetched member data:', member)
         console.log('Member data keys:', member ? Object.keys(member) : 'No member data')
         
@@ -637,12 +649,19 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         console.log('Fetched member data:', member) // Debug log
         
         if (playerId) {
+          // Check if cancelled before setting other player data
+          if (isCancelled) return
+          
           // If viewing another player, set their data in the selected player state
           setSelectedPlayerData(member)
           setSelectedPlayer(member) // Set the selected player for PlayerSearch component
           
           // Fetch their patrol data
           const patrols = await OFSDataService.getPatrolData(targetUserId)
+          
+          // Check if cancelled after patrol data fetch
+          if (isCancelled) return
+          
           setSelectedPlayerPatrolData(patrols)
           
           // Calculate their patrol stats
@@ -653,12 +672,18 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
           try {
             console.log('Fetching Google Sheets stats for URL player:', targetUserId)
             const playerGoogleStats = await googleSheetsService.fetchUserStats(targetUserId)
+            
+            // Check if cancelled after Google stats fetch
+            if (isCancelled) return
+            
             console.log('URL-based player Google stats:', playerGoogleStats)
             setSelectedPlayerGoogleStats(playerGoogleStats)
             console.log('*** SET selectedPlayerGoogleStats for URL player ***', playerGoogleStats)
           } catch (error) {
             console.log('No Google Sheets stats found for URL player:', error)
-            setSelectedPlayerGoogleStats(null)
+            if (!isCancelled) {
+              setSelectedPlayerGoogleStats(null)
+            }
           }
           
           // Fetch selected player's backstory from Google Sheets
@@ -677,6 +702,10 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             
             if (backstoryResponse.ok) {
               const backstoryResult = await backstoryResponse.json()
+              
+              // Check if cancelled after backstory fetch
+              if (isCancelled) return
+              
               if (backstoryResult.success) {
                 setSelectedPlayerBackstory(backstoryResult.backstory || '')
                 console.log('Loaded backstory for selected player:', backstoryResult.backstory?.length || 0, 'characters')
@@ -684,7 +713,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             }
           } catch (error) {
             console.log('No backstory found for selected player:', error)
-            setSelectedPlayerBackstory('')
+            if (!isCancelled) {
+              setSelectedPlayerBackstory('')
+            }
           }
           
           // Fetch selected player's ship from Google Sheets
@@ -703,6 +734,10 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             
             if (shipResponse.ok) {
               const shipResult = await shipResponse.json()
+              
+              // Check if cancelled after ship fetch
+              if (isCancelled) return
+              
               if (shipResult.success && shipResult.shipValue) {
                 // Convert ship name to value format for UI consistency
                 let shipValueForUI = shipResult.shipValue
@@ -718,7 +753,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             }
           } catch (error) {
             console.log('No ship found for selected player:', error)
-            setSelectedPlayerShip('')
+            if (!isCancelled) {
+              setSelectedPlayerShip('')
+            }
           }
           
           // Fetch selected player's custom ship image from Google Sheets
@@ -736,6 +773,10 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             
             if (customShipImageResponse.ok) {
               const customShipImageResult = await customShipImageResponse.json()
+              
+              // Check if cancelled after custom ship image fetch
+              if (isCancelled) return
+              
               if (customShipImageResult.success && customShipImageResult.customShipImage) {
                 setSelectedPlayerCustomShipImage(customShipImageResult.customShipImage)
                 console.log('Loaded custom ship image for selected player:', customShipImageResult.customShipImage)
@@ -745,7 +786,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             }
           } catch (error) {
             console.log('No custom ship image found for selected player:', error)
-            setSelectedPlayerCustomShipImage('')
+            if (!isCancelled) {
+              setSelectedPlayerCustomShipImage('')
+            }
           }
           
           // Fetch selected player's customization settings
@@ -763,8 +806,13 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             }
           } catch (error) {
             console.log('No customization found for selected player:', error)
-            setSelectedPlayerCustomization(null)
+            if (!isCancelled) {
+              setSelectedPlayerCustomization(null)
+            }
           }
+          
+          // Final check before clearing current user data
+          if (isCancelled) return
           
           // Clear current user data to avoid confusion
           setMemberData(null)
@@ -773,6 +821,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
           setRankData(null)
           
         } else {
+          // Check if cancelled before setting current user data
+          if (isCancelled) return
+          
           // Viewing current user - preserve local RSI verification state if it exists
           setMemberData(prevMemberData => {
             const newMemberData = { ...member }
@@ -946,7 +997,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         console.error('Error fetching OFS data:', err)
         setError('Failed to load organization data')
       } finally {
-        setIsLoading(false)
+        if (!isCancelled) {
+          setIsLoading(false)
+        }
       }
     }
     
@@ -954,6 +1007,11 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
     const playerId = searchParams.get('playerId') || urlDiscordId
     if ((isAuthenticated && user?.id) || playerId) {
       fetchData()
+    }
+    
+    // Cleanup function to cancel the effect if dependencies change
+    return () => {
+      isCancelled = true
     }
   }, [user?.id, isAuthenticated, searchParams, urlDiscordId])
 
