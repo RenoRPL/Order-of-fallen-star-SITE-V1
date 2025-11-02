@@ -288,14 +288,37 @@ export default function RankProgressBar({
   const { progress: overallProgress, requirements: requirementsBreakdown } = progressResult
   const overallProgressColor = currentTheme.primary
 
+  // Debug logging
+  console.log('RankProgressBar Debug:', {
+    showTooltip,
+    requirementsBreakdown,
+    requirementsLength: requirementsBreakdown?.length,
+    currentProgressData,
+    nextRankData,
+    dataLoaded
+  })
+
   return (
     <div className="welcome-progress-section">
       <div className="progress-label">Next Rank Progress</div>
       <div 
         className="welcome-progress-bar-container"
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        style={{ position: 'relative' }}
+        onMouseEnter={() => {
+          console.log('Mouse entered progress bar')
+          setShowTooltip(true)
+        }}
+        onMouseLeave={() => {
+          console.log('Mouse left progress bar')
+          setShowTooltip(false)
+        }}
+        style={{ 
+          position: 'relative',
+          cursor: 'help',
+          backgroundColor: showTooltip ? 'rgba(57, 185, 255, 0.1)' : 'transparent',
+          padding: '5px',
+          margin: '-5px',
+          borderRadius: '4px'
+        }}
       >
         <span className="current-rank-welcome">{currentRank || 'Unranked'}</span>
         <div className="welcome-progress-bar">
@@ -313,21 +336,20 @@ export default function RankProgressBar({
         <span className="next-rank-welcome">{nextRankData['Rank Name']}</span>
 
         {/* Hover Tooltip */}
-        {showTooltip && requirementsBreakdown.length > 0 && (
+        {showTooltip && (
           <div className="requirements-tooltip" style={{
             position: 'absolute',
             top: '-10px',
             left: '50%',
             transform: 'translateX(-50%) translateY(-100%)',
-            backgroundColor: 'linear-gradient(135deg, rgba(10, 20, 40, 0.95) 0%, rgba(20, 30, 50, 0.95) 100%)',
+            backgroundColor: 'rgba(10, 20, 40, 0.95)',
             border: '1px solid rgba(57, 185, 255, 0.4)',
             borderRadius: '8px',
             padding: '1rem',
             minWidth: '250px',
             zIndex: 1000,
             backdropFilter: 'blur(10px)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(57, 185, 255, 0.2)',
-            animation: 'tooltipFadeIn 0.2s ease-out'
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(57, 185, 255, 0.2)'
           }}>
             {/* Tooltip arrow */}
             <div style={{
@@ -348,7 +370,9 @@ export default function RankProgressBar({
               textAlign: 'center',
               borderBottom: '1px solid rgba(57, 185, 255, 0.2)',
               paddingBottom: '0.5rem'
-            }}>Requirements for {nextRankData['Rank Name']}</div>
+            }}>
+              {nextRankData ? `Requirements for ${nextRankData['Rank Name']}` : 'Tooltip Test'}
+            </div>
             
             {currentProgressData?.['Detail Req'] && (
               <div className="tooltip-step" style={{
@@ -362,37 +386,49 @@ export default function RankProgressBar({
               </div>
             )}
             
-            {requirementsBreakdown.map((req, index) => (
-              <div key={index} className={`tooltip-requirement ${req.met ? 'completed' : ''}`} style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '0.5rem',
-                fontSize: '0.85rem'
-              }}>
-                <span className="req-type" style={{
-                  color: '#39b9ff',
-                  fontWeight: '500',
-                  flex: 1
-                }}>{req.label}:</span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span className="req-progress" style={{
-                    color: '#ffffff',
-                    fontWeight: '600'
-                  }}>{req.current}/{req.required}</span>
-                  <span className="req-percentage" style={{
-                    color: req.met ? '#00ff88' : '#ffffff',
+            {requirementsBreakdown && requirementsBreakdown.length > 0 ? (
+              requirementsBreakdown.map((req, index) => (
+                <div key={index} className={`tooltip-requirement ${req.met ? 'completed' : ''}`} style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '0.5rem',
+                  fontSize: '0.85rem'
+                }}>
+                  <span className="req-type" style={{
+                    color: '#39b9ff',
                     fontWeight: '500',
-                    minWidth: '50px',
-                    textAlign: 'right'
-                  }}>({Math.round(req.progress)}%)</span>
-                  {req.met && <span className="req-checkmark" style={{ 
-                    color: '#00ff88',
-                    fontWeight: 'bold'
-                  }}>✓</span>}
-                </span>
+                    flex: 1
+                  }}>{req.label}:</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span className="req-progress" style={{
+                      color: '#ffffff',
+                      fontWeight: '600'
+                    }}>{req.current}/{req.required}</span>
+                    <span className="req-percentage" style={{
+                      color: req.met ? '#00ff88' : '#ffffff',
+                      fontWeight: '500',
+                      minWidth: '50px',
+                      textAlign: 'right'
+                    }}>({Math.round(req.progress)}%)</span>
+                    {req.met && <span className="req-checkmark" style={{ 
+                      color: '#00ff88',
+                      fontWeight: 'bold'
+                    }}>✓</span>}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div style={{ color: '#ffffff', textAlign: 'center' }}>
+                No requirements data available
+                <br />
+                <small style={{ color: '#888' }}>
+                  Data loaded: {dataLoaded ? 'Yes' : 'No'}<br />
+                  Current progress data: {currentProgressData ? 'Yes' : 'No'}<br />
+                  Requirements count: {requirementsBreakdown?.length || 0}
+                </small>
               </div>
-            ))}
+            )}
           </div>
         )}
       </div>
