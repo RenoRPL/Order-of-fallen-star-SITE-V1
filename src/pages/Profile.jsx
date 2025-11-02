@@ -1121,217 +1121,27 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
   }
 
   const handlePlayerSelect = async (player) => {
-    setSelectedPlayer(player)
-    
     if (player) {
       console.log('Selected player:', player)
       
-      try {
-        // Start loading
-        setSelectedPlayerLoading(true)
-        
-        // Fetch detailed data for the selected player
-        const playerDiscordId = player['User ID']
-        
-        // Show immediate feedback
-        setNotification({
-          type: 'success',
-          message: `Loading profile for ${player.Username}...`
-        })
-
-        // Fetch selected player's patrol data
-        const playerPatrols = await OFSDataService.getPatrolData(playerDiscordId)
-        setSelectedPlayerPatrolData(playerPatrols)
-        
-        // Calculate selected player's patrol stats
-        const playerStats = OFSDataService.formatPatrolStats(playerPatrols)
-        setSelectedPlayerStats(playerStats)
-        
-        // Set the selected player data (this is already from getMemberData)
-        setSelectedPlayerData(player)
-        console.log('Selected player data:', player)
-        console.log('Selected player data keys:', player ? Object.keys(player) : 'No player data')
-        
-        if (player) {
-          console.log('Selected player Rank field:', player.Rank)
-          console.log('Selected player Role field:', player.Role)
-          console.log('Selected player Role Path field:', player['Role Path'])
-        }
-        
-        // Fetch selected player's Google Sheets stats
-        try {
-          console.log('Fetching Google Sheets stats for player:', playerDiscordId)
-          const playerGoogleStats = await googleSheetsService.fetchUserStats(playerDiscordId)
-          console.log('Selected player Google stats:', playerGoogleStats)
-          setSelectedPlayerGoogleStats(playerGoogleStats)
-          
-          // Show debug notification with stats
-          if (playerGoogleStats) {
-            console.log('Successfully loaded stats for', player.Username, ':', {
-              fpsKills: playerGoogleStats.fpsKills,
-              shipKills: playerGoogleStats.shipKills,
-              quests: playerGoogleStats.quests,
-              totalLength: playerGoogleStats.totalLength
-            })
-          }
-        } catch (error) {
-          console.log('No Google Sheets stats found for selected player:', error)
-          setSelectedPlayerGoogleStats(null)
-        }
-        
-        // Fetch selected player's backstory from Google Sheets
-        try {
-          console.log('Fetching backstory for player:', playerDiscordId)
-          const backstoryResponse = await fetch('/api/update-backstory', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              discordId: playerDiscordId,
-              action: 'get'
-            })
-          })
-          
-          if (backstoryResponse.ok) {
-            const backstoryResult = await backstoryResponse.json()
-            if (backstoryResult.success) {
-              setSelectedPlayerBackstory(backstoryResult.backstory || '')
-              console.log('Loaded backstory for selected player:', backstoryResult.backstory?.length || 0, 'characters')
-            }
-          }
-        } catch (error) {
-          console.log('No backstory found for selected player:', error)
-          setSelectedPlayerBackstory('')
-        }
-        
-        // Fetch selected player's ship from Google Sheets
-        try {
-          console.log('Fetching ship for player:', playerDiscordId)
-          const shipResponse = await fetch('/api/update-ship-selection-v2', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              discordId: playerDiscordId,
-              action: 'get'
-            })
-          })
-          
-          if (shipResponse.ok) {
-            const shipResult = await shipResponse.json()
-            if (shipResult.success && shipResult.shipValue) {
-              // Convert ship name to value format for UI consistency
-              let shipValueForUI = shipResult.shipValue
-              const matchedShip = shipRegistry.find(ship => 
-                ship.fullName === shipResult.shipValue || ship.value === shipResult.shipValue
-              )
-              if (matchedShip) {
-                shipValueForUI = matchedShip.value
-              }
-              setSelectedPlayerShip(shipValueForUI)
-              console.log('Loaded ship for selected player:', shipResult.shipValue)
-            }
-          }
-        } catch (error) {
-          console.log('No ship found for selected player:', error)
-          setSelectedPlayerShip('')
-        }
-        
-        // Fetch selected player's custom ship image from Google Sheets
-        try {
-          console.log('Fetching custom ship image for player:', playerDiscordId)
-          
-          // We need to get a token for this request or handle it differently
-          // For now, let's use a separate endpoint that doesn't require auth for viewing other players
-          const customShipImageResponse = await fetch('/api/get-custom-ship-image', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              discordId: playerDiscordId
-            })
-          })
-          
-          if (customShipImageResponse.ok) {
-            const customShipImageResult = await customShipImageResponse.json()
-            if (customShipImageResult.success && customShipImageResult.customShipImage) {
-              setSelectedPlayerCustomShipImage(customShipImageResult.customShipImage)
-              console.log('Loaded custom ship image for selected player:', customShipImageResult.customShipImage)
-            } else {
-              setSelectedPlayerCustomShipImage('')
-            }
-          }
-        } catch (error) {
-          console.log('No custom ship image found for selected player:', error)
-          setSelectedPlayerCustomShipImage('')
-        }
-        
-        // Fetch selected player's customization settings
-        try {
-          // TODO: First try to fetch from Google Sheets API
-          // const customizationResponse = await fetch('/api/get-customization', {
-          //   method: 'POST',
-          //   headers: { 'Content-Type': 'application/json' },
-          //   body: JSON.stringify({ discordId: playerDiscordId, action: 'get' })
-          // })
-          
-          // For now, try localStorage (will only work if player used same device)
-          const savedProfile = localStorage.getItem(`profile_${playerDiscordId}`)
-          if (savedProfile) {
-            const { customization } = JSON.parse(savedProfile)
-            setSelectedPlayerCustomization(customization || null)
-            console.log('Loaded customization for selected player from localStorage:', customization)
-          } else {
-            // Set to null so we use default theme
-            setSelectedPlayerCustomization(null)
-            console.log('No customization found for selected player, using default theme')
-          }
-        } catch (error) {
-          console.log('No customization found for selected player:', error)
-          setSelectedPlayerCustomization(null)
-        }
-        
-        // Switch to viewing the other player
-        setIsViewingOtherPlayer(true)
-        setClearPlayerSearch(true) // Trigger search field clearing
-        
-        // Update notification to show success
-        setNotification({
-          type: 'success',
-          message: `Now viewing ${player.Username}'s profile (${player.Rank}) - ${player.Role || 'No Role'}`
-        })
-        
-        // Clear notification after 3 seconds
-        setTimeout(() => {
-          setNotification(null)
-          setClearPlayerSearch(false) // Reset the clear trigger after clearing
-        }, 3000)
-        
-      } catch (error) {
-        console.error('Error fetching selected player data:', error)
+      // Get the player's Discord ID
+      const playerDiscordId = player['User ID']
+      
+      if (playerDiscordId) {
+        // Navigate to the player's individual profile page
+        console.log('Navigating to player profile:', playerDiscordId)
+        navigate(`/profile/${playerDiscordId}`)
+      } else {
+        console.error('No Discord ID found for player:', player)
         setNotification({
           type: 'error',
-          message: `Failed to load profile for ${player.Username}`
+          message: `Cannot load profile for ${player.Username} - no Discord ID found`
         })
         setTimeout(() => setNotification(null), 3000)
-      } finally {
-        // Stop loading
-        setSelectedPlayerLoading(false)
       }
     } else {
       // Deselect player - go back to own profile
-      setSelectedPlayer(null)
-      setSelectedPlayerData(null)
-      setSelectedPlayerPatrolData([])
-      setSelectedPlayerStats(null)
-      setSelectedPlayerGoogleStats(null)
-      setSelectedPlayerBackstory('')
-      setSelectedPlayerShip('')
-      setIsViewingOtherPlayer(false)
-      setSelectedPlayerLoading(false)
+      navigate('/profile')
     }
   }
 
