@@ -1401,6 +1401,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
     if (player) {
       console.log('Selected player:', player)
       
+      // Close rank progression modal when switching players
+      setShowRankProgression(false)
+      
       // Get the player's Discord ID
       const playerDiscordId = player['User ID']
       
@@ -1431,6 +1434,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       }
     } else {
       // Deselect player - go back to own profile
+      // Close rank progression modal when switching back to own profile
+      setShowRankProgression(false)
+      
       setNavigationLocked(true)
       setClearPlayerSearch(true)
       
@@ -1444,6 +1450,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
   }
 
   const switchBackToOwnProfile = () => {
+    // Close rank progression modal when switching back to own profile
+    setShowRankProgression(false)
+    
     // Navigate back to profile without parameters
     navigate('/profile')
     setIsViewingOtherPlayer(false)
