@@ -2000,9 +2000,6 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                   {/* Current Rank Requirements */}
                   <div className="rank-requirements-section">
                     <div className="rank-header-section">
-                      <h3 className="requirements-title">
-                        {isViewingOtherPlayer ? (selectedPlayerData?.Username || 'Unknown Player') : (currentDisplayData?.Username || user?.username || 'Warrior')} - Progression Path
-                      </h3>
                       <div className="rank-info">
                         <span className="current-rank">Current Rank: {currentDisplayData?.Rank || 'Unranked'}</span>
                         {(() => {
@@ -2014,6 +2011,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                           )
                         })()}
                       </div>
+                      <h3 className="requirements-title">
+                        {isViewingOtherPlayer ? (selectedPlayerData?.Username || 'Unknown Player') : (currentDisplayData?.Username || user?.username || 'Warrior')} - Progression Path
+                      </h3>
                     </div>
                     
                     {(() => {
@@ -2201,36 +2201,6 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                               </div>
                             )
                           })()}
-                          
-                          {/* Progress Indicators */}
-                          <div className="progress-indicators">
-                            <div className="progress-item">
-                              <span className="progress-label">Your Progress</span>
-                              <div className="progress-bar-small">
-                                <div 
-                                  className="progress-fill-small"
-                                  style={{ 
-                                    width: `${(() => {
-                                      const nextRankRequirements = getProgressRequirementsForRank(nextRankData['Rank Name'])
-                                      const currentStats = getPlayerCurrentStats()
-                                      return calculateRankProgress(nextRankRequirements, currentStats)
-                                    })()}%`,
-                                    background: (() => {
-                                      const colors = getProgressBarColors(currentCustomization)
-                                      return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
-                                    })()
-                                  }}
-                                />
-                              </div>
-                              <span className="progress-percentage">
-                                {(() => {
-                                  const nextRankRequirements = getProgressRequirementsForRank(nextRankData['Rank Name'])
-                                  const currentStats = getPlayerCurrentStats()
-                                  return calculateRankProgress(nextRankRequirements, currentStats)
-                                })()}%
-                              </span>
-                            </div>
-                          </div>
                         </div>
                       )
                     })()}
