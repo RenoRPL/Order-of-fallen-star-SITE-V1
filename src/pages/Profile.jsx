@@ -151,18 +151,24 @@ export default function Profile() {
       return []
     }
     
+    // Get the quest leader from the current quest data
+    const activeQuest = getActiveQuest()
+    const questLeader = activeQuest?.leader
+    
     const participants = []
     
     // Search through all member data for anyone with this quest in their Active Quest column
     allMemberData.forEach(member => {
       const memberActiveQuest = member['Active Quest']
       if (memberActiveQuest && memberActiveQuest.trim() === questName.trim()) {
+        const memberName = member['Display Name'] || member['Username'] || 'Unknown'
         const participant = {
-          name: member['Display Name'] || member['Username'] || 'Unknown',
+          name: memberName,
           rank: member['Rank'] || 'Unknown',
           role: member['Role'] || member['Role Path'] || 'Unknown',
           avatar: member['Avatar'] || null,
-          discordId: member['Discord ID'] || member['discordId'] || null
+          discordId: member['Discord ID'] || member['discordId'] || null,
+          isLeader: questLeader === memberName
         }
         participants.push(participant)
       }

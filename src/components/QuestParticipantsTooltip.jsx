@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './QuestParticipantsTooltip.css'
 
 const QuestParticipantsTooltip = ({ 
@@ -11,6 +12,15 @@ const QuestParticipantsTooltip = ({
   onToggleLock 
 }) => {
   const tooltipRef = useRef(null)
+  const navigate = useNavigate()
+
+  // Handle participant click to navigate to profile
+  const handleParticipantClick = (participant) => {
+    if (participant.discordId) {
+      navigate(`/profile?playerId=${participant.discordId}`)
+      onClose() // Close tooltip when navigating
+    }
+  }
 
   // Handle outside clicks when locked
   useEffect(() => {
@@ -98,7 +108,12 @@ const QuestParticipantsTooltip = ({
       
       <div className="participants-list">
         {participants.map((participant, index) => (
-          <div key={participant.discordId || index} className="participant-item">
+          <div 
+            key={participant.discordId || index} 
+            className={`participant-item ${participant.isLeader ? 'leader' : ''} ${participant.discordId ? 'clickable' : ''}`}
+            onClick={() => handleParticipantClick(participant)}
+            title={participant.discordId ? `Click to view ${participant.name}'s profile` : 'Profile not available'}
+          >
             <div className="participant-avatar">
               <img 
                 src={getRankIconUrl(participant)} 
@@ -107,10 +122,16 @@ const QuestParticipantsTooltip = ({
                   e.target.src = '/Ranks/Page.png' // Fallback to Page rank
                 }}
               />
+              {participant.isLeader && (
+                <div className="leader-crown">👑</div>
+              )}
             </div>
             
             <div className="participant-info">
-              <div className="participant-name">{participant.name}</div>
+              <div className="participant-name">
+                {participant.name}
+                {participant.isLeader && <span className="leader-badge">LEADER</span>}
+              </div>
               <div className="participant-details">
                 <span className="participant-rank">{participant.rank}</span>
                 <span className="participant-role">{participant.role}</span>
