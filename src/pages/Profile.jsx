@@ -1221,14 +1221,21 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       const playerDiscordId = player['User ID']
       
       if (playerDiscordId) {
-        // Navigate to the player's individual profile page
-        console.log('Navigating to player profile:', playerDiscordId)
-        setClearPlayerSearch(true) // Trigger search field clearing
-        navigate(`/profile/${playerDiscordId}`)
-        // Reset the clear trigger after a brief delay
+        // Clear search field first
+        setClearPlayerSearch(true)
+        
+        // Add a small delay to ensure authentication state is stable
+        // This prevents race conditions on first page load
         setTimeout(() => {
-          setClearPlayerSearch(false)
-        }, 200)
+          console.log('Navigating to player profile:', playerDiscordId)
+          navigate(`/profile/${playerDiscordId}`)
+          
+          // Reset the clear trigger after navigation
+          setTimeout(() => {
+            setClearPlayerSearch(false)
+          }, 200)
+        }, isAuthLoading ? 500 : 100) // Longer delay if auth is still loading
+        
       } else {
         console.error('No Discord ID found for player:', player)
         setNotification({
@@ -1239,11 +1246,14 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       }
     } else {
       // Deselect player - go back to own profile
-      navigate('/profile')
-      setClearPlayerSearch(true) // Also clear when going back to own profile
+      setClearPlayerSearch(true)
+      
       setTimeout(() => {
-        setClearPlayerSearch(false)
-      }, 200)
+        navigate('/profile')
+        setTimeout(() => {
+          setClearPlayerSearch(false)
+        }, 200)
+      }, isAuthLoading ? 500 : 100)
     }
   }
 
