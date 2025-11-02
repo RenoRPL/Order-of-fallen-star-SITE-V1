@@ -1870,8 +1870,8 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                     <span className="detail-label">Chapter:</span>
                     <span className="detail-value">
                       {isViewingOtherPlayer 
-                        ? (selectedPlayer?.['Chapter'] || selectedPlayer?.['chapter'] || 'Chapter: E')
-                        : (memberData?.['Chapter'] || memberData?.['chapter'] || 'Chapter: E')
+                        ? (selectedPlayer?.['Current Chapter'] || selectedPlayer?.['Chapter'] || selectedPlayer?.['current chapter'] || 'Unknown')
+                        : (memberData?.['Current Chapter'] || memberData?.['Chapter'] || memberData?.['current chapter'] || 'Unknown')
                       }
                     </span>
                   </div>
