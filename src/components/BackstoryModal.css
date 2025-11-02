@@ -50,7 +50,7 @@
 }
 
 .backstory-modal-content {
-  padding: 30px 40px 40px 40px;
+  padding: 20px 30px 30px 30px;
   overflow-y: auto;
   position: relative;
   flex: 1;
@@ -61,15 +61,15 @@
 
 .backstory-modal-header {
   text-align: left;
-  margin-bottom: 30px;
-  padding: 20px;
+  margin-bottom: 15px;
+  padding: 15px;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .backstory-modal-title {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   color: #4A90E2;
   margin: 0 0 10px 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -108,7 +108,7 @@
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   line-height: 1.7;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   color: #ffffff;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
   flex: 1;
