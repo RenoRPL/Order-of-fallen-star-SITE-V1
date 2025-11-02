@@ -103,6 +103,36 @@ export default function Profile() {
       isLeader: isLeader
     }
   }
+
+  // Function to get the active quest from member data
+  const getActiveQuest = () => {
+    if (!currentDisplayData) {
+      return null
+    }
+    
+    // Get active quest data directly from Member Log sheet columns (W, X, Y)
+    const questName = currentDisplayData['Active Quest']
+    const questDescription = currentDisplayData['Active Quest Desc']
+    const questLeader = currentDisplayData['Active Quest Leader']
+    
+    console.log('Active quest data from Member Log:', { questName, questDescription, questLeader })
+    
+    // Check if active quest data exists
+    if (!questName || questName.trim() === '') {
+      return null
+    }
+    
+    // Determine if current user is the leader
+    const currentUserName = currentDisplayData?.['Display Name'] || currentDisplayData?.['Username'] || 'Unknown'
+    const isLeader = questLeader === currentUserName
+    
+    return {
+      name: questName,
+      description: questDescription || 'No description available',
+      leader: questLeader || 'Unknown Leader',
+      isLeader: isLeader
+    }
+  }
   
   // Debug logging for stats display
   console.log('=== PROFILE STATS DEBUG ===');
@@ -1721,6 +1751,32 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                     </div>
                     <div className="quest-name">No quests found</div>
                     <div className="quest-description">Complete your first quest to see it here!</div>
+                  </div>
+                )
+              })()}
+            </div>
+
+            {/* Center-Right: Active Quest */}
+            <div className="active-quest-overview">
+              {(() => {
+                const activeQuest = getActiveQuest()
+                return activeQuest ? (
+                  <div className="quest-display active-quest-display">
+                    <div className="quest-header">
+                      <h3>Active Quest</h3>
+                      {activeQuest.isLeader && <span className="leader-badge">Leader</span>}
+                    </div>
+                    <div className="quest-name">{activeQuest.name}</div>
+                    <div className="quest-description">{activeQuest.description}</div>
+                    <div className="quest-leader">Led by: {activeQuest.leader}</div>
+                  </div>
+                ) : (
+                  <div className="quest-display active-quest-display">
+                    <div className="quest-header">
+                      <h3>Active Quest</h3>
+                    </div>
+                    <div className="quest-name">No active quest</div>
+                    <div className="quest-description">Join an active quest to see it here!</div>
                   </div>
                 )
               })()}

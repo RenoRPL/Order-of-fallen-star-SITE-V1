@@ -323,9 +323,9 @@
     inset 0 0 50px rgba(0, 0, 0, 0.5),
     0 0 100px color-mix(in srgb, var(--profile-accent, #39b9ff) 10%, transparent);
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr 1fr auto;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
   min-height: 300px;
 }
 
@@ -671,6 +671,44 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.3px;
+}
+
+/* Active Quest Overview - Center-Right */
+.active-quest-overview {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 3;
+  max-width: 300px;
+  margin-top: 1rem;
+  padding: 0 1rem;
+}
+
+.active-quest-display {
+  border-color: color-mix(in srgb, #00ff88 25%, transparent);
+  box-shadow: 
+    0 0 25px color-mix(in srgb, #00ff88 10%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #00ff88 15%, transparent);
+}
+
+.active-quest-display:hover {
+  border-color: color-mix(in srgb, #00ff88 50%, transparent);
+  box-shadow: 0 8px 25px color-mix(in srgb, #00ff88 20%, transparent);
+}
+
+.active-quest-display .quest-header h3 {
+  color: #00ff88;
+  text-shadow: 0 0 10px color-mix(in srgb, #00ff88 40%, transparent);
+}
+
+.active-quest-display .quest-name {
+  text-shadow: 0 0 10px color-mix(in srgb, #00ff88 30%, transparent);
+}
+
+.active-quest-display .quest-leader {
+  color: #00ff88;
 }
 
 /* Content Grid Layout */
@@ -1430,6 +1468,7 @@
 
   .battle-stats-overview,
   .recent-quest-overview,
+  .active-quest-overview,
   .profile-stats-overview {
     max-width: 100%;
     justify-self: center;
@@ -1445,8 +1484,13 @@
     max-width: 350px;
   }
 
-  .profile-stats-overview {
+  .active-quest-overview {
     order: 3;
+    max-width: 350px;
+  }
+
+  .profile-stats-overview {
+    order: 4;
   }
 
   .hero-stats {
