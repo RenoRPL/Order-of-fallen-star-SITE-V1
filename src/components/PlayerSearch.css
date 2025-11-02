@@ -11,6 +11,7 @@
   align-items: center;
   gap: 16px;
   width: 100%;
+  justify-content: flex-end;
 }
 
 .player-search-header {
@@ -18,15 +19,18 @@
   align-items: center;
   gap: 16px;
   margin-bottom: 0;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .player-search-header h3 {
   margin: 0;
   color: #0ea5e9;
   font-family: 'Orbitron', monospace;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
+  order: 1;
 }
 
 .roster-button {
@@ -36,7 +40,7 @@
   padding: 6px 12px;
   color: #0ea5e9;
   font-family: 'Orbitron', monospace;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -44,6 +48,7 @@
   align-items: center;
   gap: 4px;
   white-space: nowrap;
+  order: 3;
 }
 
 .roster-button:hover {
@@ -58,15 +63,17 @@
 
 .member-count {
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 11px;
   font-family: 'Orbitron', monospace;
   white-space: nowrap;
+  order: 4;
 }
 
 .search-input-wrapper {
   position: relative;
-  flex: 1;
-  width: 100%;
+  flex: 0 0 auto;
+  width: 300px;
+  order: 2;
 }
 
 .search-input-container {
@@ -77,24 +84,24 @@
 
 .search-icon {
   position: absolute;
-  left: 12px;
+  left: 10px;
   color: #64748b;
   z-index: 2;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .search-input {
   width: 100%;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 26, 46, 0.5) 100%);
-  border: 1px solid color-mix(in srgb, var(--profile-accent, #39b9ff) 20%, transparent);
-  border-radius: 15px;
-  padding: 12px 40px 12px 35px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(26, 26, 46, 0.3) 100%);
+  border: 1px solid color-mix(in srgb, var(--profile-accent, #39b9ff) 15%, transparent);
+  border-radius: 12px;
+  padding: 8px 35px 8px 30px;
   color: #f1f5f9;
   font-family: 'Orbitron', monospace;
-  font-size: 14px;
+  font-size: 13px;
   transition: all 0.2s ease;
   backdrop-filter: blur(5px);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--profile-accent, #39b9ff) 5%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--profile-accent, #39b9ff) 3%, transparent);
 }
 
 .search-input:focus {
@@ -114,15 +121,15 @@
 
 .clear-button {
   position: absolute;
-  right: 12px;
+  right: 10px;
   background: none;
   border: none;
   color: #64748b;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   padding: 0;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
