@@ -32,17 +32,30 @@ const QuestParticipantsTooltip = ({
     return null
   }
 
-  // Generate Discord avatar URL
-  const getDiscordAvatarUrl = (participant) => {
-    const userId = participant.discordId
-    const avatarHash = participant.avatar
-    
-    if (!avatarHash || !userId) {
-      // Default Discord avatar based on user ID
-      const defaultAvatar = userId ? (parseInt(userId) % 5) : 0
-      return `https://cdn.discordapp.com/embed/avatars/${defaultAvatar}.png`
+  // Generate rank icon URL
+  const getRankIconUrl = (participant) => {
+    const rank = participant.rank
+    if (!rank || rank === 'Unknown') {
+      return '/Ranks/Page.png' // Default rank icon
     }
-    return `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.png?size=64`
+    
+    // Map rank names to icon filenames
+    const rankIconMap = {
+      'Primarch': 'Primarch.png',
+      'Chapter Master': 'Chapter Master.png',
+      'Lord Commander': 'Lord Commander.png',
+      'Commander': 'Commander.png',
+      'Marshal': 'Marshal.png',
+      'Lord': 'Lord.png',
+      'Templar': 'Templar.png',
+      'Knight': 'Knight.png',
+      'Squire': 'Squire.png',
+      'Page': 'Page.png',
+      'Serf': 'Serf.png'
+    }
+    
+    const iconFilename = rankIconMap[rank] || 'Page.png'
+    return `/Ranks/${iconFilename}`
   }
 
   return (
@@ -87,19 +100,12 @@ const QuestParticipantsTooltip = ({
           <div key={participant.discordId || index} className="participant-item">
             <div className="participant-avatar">
               <img 
-                src={getDiscordAvatarUrl(participant)} 
-                alt={participant.name}
+                src={getRankIconUrl(participant)} 
+                alt={`${participant.rank} rank`}
                 onError={(e) => {
-                  e.target.style.display = 'none'
-                  e.target.nextSibling.style.display = 'flex'
+                  e.target.src = '/Ranks/Page.png' // Fallback to Page rank
                 }}
               />
-              <div 
-                className="avatar-fallback"
-                style={{ display: 'none' }}
-              >
-                {participant.name.charAt(0).toUpperCase()}
-              </div>
             </div>
             
             <div className="participant-info">

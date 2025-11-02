@@ -1851,6 +1851,12 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                     onMouseEnter={(e) => handleTooltipMouseEnter(e, activeQuest)}
                     onMouseMove={handleTooltipMouseMove}
                     onMouseLeave={handleTooltipMouseLeave}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      if (showTooltip && !tooltipLocked) {
+                        handleTooltipToggleLock()
+                      }
+                    }}
                   >
                     <div className="quest-header">
                       <h3>Active Quest</h3>
