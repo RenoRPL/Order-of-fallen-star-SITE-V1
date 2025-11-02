@@ -2002,6 +2002,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                     <div className="rank-header-section">
                       <div className="rank-info">
                         <span className="current-rank">Current Rank: {currentDisplayData?.Rank || 'Unranked'}</span>
+                        <span className="progression-path">
+                          {isViewingOtherPlayer ? (selectedPlayerData?.Username || 'Unknown Player') : (currentDisplayData?.Username || user?.username || 'Warrior')} - Progression Path
+                        </span>
                         {(() => {
                           const nextRankData = getNextRankFromTier(currentDisplayData?.Rank)
                           return nextRankData ? (
@@ -2011,9 +2014,6 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                           )
                         })()}
                       </div>
-                      <h3 className="requirements-title">
-                        {isViewingOtherPlayer ? (selectedPlayerData?.Username || 'Unknown Player') : (currentDisplayData?.Username || user?.username || 'Warrior')} - Progression Path
-                      </h3>
                     </div>
                     
                     {(() => {

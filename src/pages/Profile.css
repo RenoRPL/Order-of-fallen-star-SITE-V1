@@ -389,19 +389,29 @@
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 0.5rem;
+  gap: 1rem;
 }
 
-.current-rank, .next-rank {
+.current-rank, .next-rank, .progression-path {
   font-size: 1rem;
   font-weight: 600;
+  flex: 1;
+  text-align: center;
 }
 
 .current-rank {
   color: var(--profile-accent, #39b9ff);
+  text-align: left;
+}
+
+.progression-path {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 0 8px rgba(57, 185, 255, 0.3);
 }
 
 .next-rank {
   color: #00ff88;
+  text-align: right;
 }
 
 .max-rank-info {
