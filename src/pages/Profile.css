@@ -168,10 +168,11 @@
 }
 
 .welcome-subtitle {
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0;
-  font-weight: 300;
+  font-size: 1.4rem;
+  color: var(--profile-accent, #39b9ff);
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+  text-shadow: 0 0 15px color-mix(in srgb, var(--profile-accent, #39b9ff) 40%, transparent);
 }
 
 .welcome-badges {
@@ -359,7 +360,7 @@
 }
 
 .rank-requirements-section {
-  margin-top: 1.5rem;
+  margin-top: 0.75rem;
   padding: 1.5rem;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 15px;

@@ -1996,8 +1996,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                 
                 {/* Center: Rank Progression Details */}
                 <div className="welcome-content rank-progression-content">
-                  <h2 className="welcome-title">Rank Progression</h2>
-                  <p className="welcome-subtitle">Your Path to Advancement</p>
+                  <p className="welcome-subtitle">{isViewingOtherPlayer ? (selectedPlayerData?.Username || 'Unknown Player') : (currentDisplayData?.Username || user?.username || 'Warrior')} - Progression Path</p>
                   
                   {/* Current Rank Requirements */}
                   <div className="rank-requirements-section">
