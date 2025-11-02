@@ -13,7 +13,7 @@ import { GoogleSheetsService } from '../services/googleSheetsService'
 import './Profile.css'
 
 export default function Profile() {
-  const { user, isAuthenticated, logout } = useAuth()
+  const { user, isAuthenticated, logout, isLoading: isAuthLoading } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { discordId: urlDiscordId } = useParams() // Get Discord ID from URL parameter
@@ -1021,8 +1021,17 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
     }
   }, [profileBio, selectedPlayerBackstory]) // Re-run when backstory content changes
 
-  // Redirect if not authenticated
-  if (!isAuthenticated) {
+  // Show loading while authentication is being determined
+  if (isAuthLoading) {
+    return (
+      <div className="profile-container">
+        <div className="loading-spinner">Loading...</div>
+      </div>
+    )
+  }
+
+  // Only redirect if not authenticated AND not viewing another player's profile
+  if (!isAuthenticated && !urlDiscordId) {
     navigate('/')
     return null
   }
