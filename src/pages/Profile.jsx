@@ -71,31 +71,36 @@ export default function Profile() {
   const currentPatrolStats = isViewingOtherPlayer && selectedPlayerStats ? selectedPlayerStats : patrolStats
   const currentGoogleStats = isViewingOtherPlayer && selectedPlayerGoogleStats ? selectedPlayerGoogleStats : googleStats
   
-  // Function to get the most recent completed quest from patrol data
+  // Function to get the most recent completed quest from member data
   const getMostRecentQuest = () => {
-    if (!currentPatrolData || currentPatrolData.length === 0) {
+    if (!currentDisplayData) {
       return null
     }
     
-    // Filter patrols where the current user participated (either as leader or participant)
-    const userDiscordId = currentDisplayData?.discordId || user?.id
-    const userPatrols = currentPatrolData.filter(patrol => 
-      patrol['Player ID'] === userDiscordId || patrol['Patrol Leader ID'] === userDiscordId
-    )
+    // Debug: Log available fields to verify column names
+    console.log('Available currentDisplayData fields:', Object.keys(currentDisplayData))
     
-    if (userPatrols.length === 0) {
+    // Get quest data directly from Member Log sheet columns
+    const questName = currentDisplayData['Most Recent Completed Quest']
+    const questLeader = currentDisplayData['Most Recent Quest Leader']
+    const questDescription = currentDisplayData['Most Recent Completed Quest Desc']
+    
+    console.log('Quest data from Member Log:', { questName, questLeader, questDescription })
+    
+    // Check if quest data exists
+    if (!questName || questName.trim() === '') {
       return null
     }
     
-    // Sort by date (assuming there's a date field, or use the most recent entry)
-    // For now, we'll take the last entry in the array as the most recent
-    const mostRecent = userPatrols[userPatrols.length - 1]
+    // Determine if current user was the leader
+    const currentUserName = currentDisplayData?.['Display Name'] || currentDisplayData?.['Username'] || 'Unknown'
+    const isLeader = questLeader === currentUserName
     
     return {
-      name: mostRecent['Patrol Name'] || 'Unknown Quest',
-      description: mostRecent['Patrol Description'] || 'No description available',
-      leader: mostRecent['Patrol Leader'] || mostRecent['Leader'] || mostRecent['Leader Name'] || mostRecent['Patrol Leader Name'] || 'Unknown Leader',
-      isLeader: mostRecent['Patrol Leader ID'] === userDiscordId
+      name: questName,
+      description: questDescription || 'No description available',
+      leader: questLeader || 'Unknown Leader',
+      isLeader: isLeader
     }
   }
   
