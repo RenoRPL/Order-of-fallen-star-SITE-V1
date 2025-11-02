@@ -17,10 +17,15 @@ export default function PlayerSearch({ onPlayerSelect, shouldClear }) {
   // Clear search field when shouldClear prop is true
   useEffect(() => {
     if (shouldClear) {
+      setShowSuggestions(false) // Hide suggestions first
       setSearchTerm('')
       setFilteredMembers([])
-      setShowSuggestions(false)
       setSelectedIndex(-1)
+      
+      // Double-check suggestions are hidden after a brief delay
+      setTimeout(() => {
+        setShowSuggestions(false)
+      }, 50)
     }
   }, [shouldClear])
 
@@ -111,9 +116,11 @@ export default function PlayerSearch({ onPlayerSelect, shouldClear }) {
   }
 
   const selectMember = (member) => {
-    setSearchTerm(member.Username || '')
+    // Immediately close suggestions to prevent flash
     setShowSuggestions(false)
     setSelectedIndex(-1)
+    setSearchTerm(member.Username || '')
+    
     if (onPlayerSelect) {
       onPlayerSelect(member)
     }
