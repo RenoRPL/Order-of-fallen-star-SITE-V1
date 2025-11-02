@@ -1991,7 +1991,10 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
             </div>
           ) : (
             /* Rank Progression Requirements Section */
-            <div className="profile-welcome">
+            <div 
+              className="profile-welcome" 
+              key={`rank-progression-${isViewingOtherPlayer ? selectedPlayerData?.discordId : memberData?.discordId || user?.id}`}
+            >
               <div className="welcome-layout rank-progression-layout">
                 {/* Close Button - Top Right */}
                 <button 
