@@ -2836,7 +2836,6 @@
   .requirements-list {
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
-    max-height: 180px;
   }
 
   .requirement-label {
@@ -2947,28 +2946,8 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.5rem;
-  max-height: 200px;
-  overflow-y: auto;
   padding-right: 0.5rem;
   margin-bottom: 1rem;
-}
-
-.requirements-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.requirements-list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-.requirements-list::-webkit-scrollbar-thumb {
-  background: var(--profile-accent, #39b9ff);
-  border-radius: 3px;
-}
-
-.requirements-list::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--profile-accent, #39b9ff) 80%, white);
 }
 
 .requirement-item {
@@ -3134,7 +3113,6 @@
   .requirements-list {
     grid-template-columns: 1fr;
     gap: 0.4rem;
-    max-height: 160px;
   }
 
   .requirement-item {

@@ -310,12 +310,21 @@ export default function Profile() {
           ? parseInt(timeInService.split(' ')[0]) * 365
           : 0
 
+    // Get the current player's Discord ID for matching
+    const currentPlayerDiscordId = isViewingOtherPlayer 
+      ? selectedPlayerData?.discordId 
+      : (currentDisplayData?.discordId || user?.id)
+
+    console.log('Player Discord ID for stats:', currentPlayerDiscordId)
+    console.log('Total patrol records:', patrolData.length)
+
     // Count quests and crusades led from patrol data
     const playerLedPatrols = patrolData.filter(patrol => 
-      patrol['Patrol Leader ID'] === user?.sub || 
-      patrol['Patrol Leader ID'] === currentDisplayData?.['User ID']
+      patrol['Patrol Leader ID'] === currentPlayerDiscordId
     )
     
+    console.log('Patrols led by player:', playerLedPatrols.length)
+
     const questsLed = playerLedPatrols.filter(patrol => 
       patrol['Patrol Type']?.toLowerCase().includes('quest') ||
       patrol['Patrol Name']?.toLowerCase().includes('quest')
@@ -328,11 +337,11 @@ export default function Profile() {
 
     // Count total completed patrols (participated in)
     const playerPatrols = patrolData.filter(patrol => 
-      patrol['Patrol Leader ID'] === user?.sub || 
-      patrol['Patrol Leader ID'] === currentDisplayData?.['User ID'] ||
-      patrol['Player ID'] === user?.sub ||
-      patrol['Player ID'] === currentDisplayData?.['User ID']
+      patrol['Patrol Leader ID'] === currentPlayerDiscordId || 
+      patrol['Player ID'] === currentPlayerDiscordId
     )
+
+    console.log('Total patrols participated:', playerPatrols.length)
 
     const questsCompleted = playerPatrols.filter(patrol => 
       patrol['Patrol Type']?.toLowerCase().includes('quest') ||
@@ -343,6 +352,13 @@ export default function Profile() {
       patrol['Patrol Type']?.toLowerCase().includes('crusade') ||
       patrol['Patrol Name']?.toLowerCase().includes('crusade')
     ).length
+
+    console.log('Stats calculated:', { 
+      questsLed, 
+      crusadesLed, 
+      questsCompleted, 
+      crusadesCompleted 
+    })
 
     return {
       timeInServiceDays,
