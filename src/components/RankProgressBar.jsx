@@ -16,6 +16,7 @@ export default function RankProgressBar({
   const [currentProgressData, setCurrentProgressData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showTooltip, setShowTooltip] = useState(false)
+  const [dataLoaded, setDataLoaded] = useState(false)
 
   // Define rank order for progression (from lowest to highest)
   const rankOrder = [
@@ -110,6 +111,7 @@ export default function RankProgressBar({
       console.error('Error loading rank data:', error)
     } finally {
       setLoading(false)
+      setDataLoaded(true)
     }
   }
 
@@ -209,26 +211,73 @@ export default function RankProgressBar({
     return '#ff4757'
   }
 
-  if (loading) {
+  // Progress bar color function to match Profile.jsx
+  const getProgressBarColors = (customization) => {
+    if (!customization?.progressBarTheme) {
+      return { primary: '#39b9ff', secondary: '#00ff88' } // Default classic theme
+    }
+
+    const theme = customization.progressBarTheme
+    
+    // If custom theme is selected, use the custom hue
+    if (theme === 'custom' && customization.customHue !== undefined) {
+      const hue = customization.customHue
+      return {
+        primary: `hsl(${hue}, 85%, 60%)`,
+        secondary: `hsl(${hue + 30}, 80%, 65%)`
+      }
+    }
+
+    // Predefined themes
+    const themes = {
+      classic: { primary: '#39b9ff', secondary: '#00ff88' },
+      frost: { primary: '#00d4ff', secondary: '#7dd3fc' },
+      ocean: { primary: '#0ea5e9', secondary: '#38bdf8' },
+      midnight: { primary: '#1e40af', secondary: '#3b82f6' },
+      cyan: { primary: '#06b6d4', secondary: '#67e8f9' }
+    }
+
+    return themes[theme] || themes.classic
+  }
+
+  if (loading || !dataLoaded || !currentProgressData) {
     return (
-      <div className={`rank-progress-bar loading ${className}`}>
-        <div className="progress-header">
-          <h3>Rank Progress</h3>
+      <div className="welcome-progress-section">
+        <div className="progress-label">Next Rank Progress</div>
+        <div className="welcome-progress-bar-container">
+          <span className="current-rank-welcome">{currentRank || 'Loading...'}</span>
+          <div className="welcome-progress-bar">
+            <div 
+              className="welcome-progress-fill"
+              style={{ 
+                width: '0%',
+                background: 'linear-gradient(90deg, #39b9ff, #00ff88)'
+              }}
+            />
+          </div>
+          <span className="next-rank-welcome">Loading...</span>
         </div>
-        <div className="loading-spinner">Loading rank requirements...</div>
       </div>
     )
   }
 
-  if (!nextRankData) {
+  // Only show max rank if we have loaded data and confirmed no next rank
+  if (dataLoaded && !nextRankData) {
     return (
-      <div className={`rank-progress-bar max-rank ${className}`}>
-        <div className="progress-header">
-          <h3>Rank Progress</h3>
-        </div>
-        <div className="max-rank-message">
-          <span className="rank-icon">👑</span>
-          <span>You have reached the highest rank: {currentRank}</span>
+      <div className="welcome-progress-section">
+        <div className="progress-label">Max Rank Achieved</div>
+        <div className="welcome-progress-bar-container">
+          <span className="current-rank-welcome">{currentRank}</span>
+          <div className="welcome-progress-bar">
+            <div 
+              className="welcome-progress-fill"
+              style={{ 
+                width: '100%',
+                background: 'linear-gradient(90deg, #00ff88, #39b9ff)'
+              }}
+            />
+          </div>
+          <span className="next-rank-welcome">👑 Max</span>
         </div>
       </div>
     )
@@ -240,53 +289,108 @@ export default function RankProgressBar({
   const overallProgressColor = currentTheme.primary
 
   return (
-    <div className={`rank-progress-bar-inline ${className}`}>
-      {/* Compact Header */}
-      <div className="progress-inline-header">
-        <div className="rank-progression-compact">
-          <span className="current-rank-compact">{currentRank || 'Unranked'}</span>
-          <span className="progression-arrow-compact">→</span>
-          <span className="next-rank-compact">{nextRankData['Rank Name']}</span>
-        </div>
-      </div>
-
-      {/* Sleek Progress Bar with Hover */}
+    <div className="welcome-progress-section">
+      <div className="progress-label">Next Rank Progress</div>
       <div 
-        className="progress-bar-container"
+        className="welcome-progress-bar-container"
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        style={{
-          '--theme-primary': currentTheme.primary,
-          '--theme-secondary': currentTheme.secondary,
-          '--theme-background': currentTheme.background,
-          '--theme-border': currentTheme.border
-        }}
+        style={{ position: 'relative' }}
       >
-        <div className="sleek-progress-bar">
+        <span className="current-rank-welcome">{currentRank || 'Unranked'}</span>
+        <div className="welcome-progress-bar">
           <div 
-            className="sleek-progress-fill"
+            className="welcome-progress-fill"
             style={{ 
               width: `${overallProgress}%`,
-              background: `linear-gradient(90deg, ${currentTheme.primary}, ${currentTheme.secondary})`
+              background: (() => {
+                const colors = getProgressBarColors(customization)
+                return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
+              })()
             }}
           />
         </div>
+        <span className="next-rank-welcome">{nextRankData['Rank Name']}</span>
 
         {/* Hover Tooltip */}
         {showTooltip && requirementsBreakdown.length > 0 && (
-          <div className="requirements-tooltip">
-            <div className="tooltip-header">Requirements for {nextRankData['Rank Name']}</div>
+          <div className="requirements-tooltip" style={{
+            position: 'absolute',
+            top: '-10px',
+            left: '50%',
+            transform: 'translateX(-50%) translateY(-100%)',
+            backgroundColor: 'linear-gradient(135deg, rgba(10, 20, 40, 0.95) 0%, rgba(20, 30, 50, 0.95) 100%)',
+            border: '1px solid rgba(57, 185, 255, 0.4)',
+            borderRadius: '8px',
+            padding: '1rem',
+            minWidth: '250px',
+            zIndex: 1000,
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(57, 185, 255, 0.2)',
+            animation: 'tooltipFadeIn 0.2s ease-out'
+          }}>
+            {/* Tooltip arrow */}
+            <div style={{
+              content: '',
+              position: 'absolute',
+              top: '100%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              border: '6px solid transparent',
+              borderTopColor: 'rgba(57, 185, 255, 0.4)'
+            }}></div>
+            
+            <div className="tooltip-header" style={{
+              color: '#ffffff',
+              fontSize: '0.9rem',
+              fontWeight: '600',
+              marginBottom: '0.8rem',
+              textAlign: 'center',
+              borderBottom: '1px solid rgba(57, 185, 255, 0.2)',
+              paddingBottom: '0.5rem'
+            }}>Requirements for {nextRankData['Rank Name']}</div>
+            
             {currentProgressData?.['Detail Req'] && (
-              <div className="tooltip-step">
-                <span className="step-info">📋 {currentProgressData['Detail Req']}</span>
+              <div className="tooltip-step" style={{
+                color: '#00ff88',
+                marginBottom: '8px',
+                fontSize: '0.85em',
+                textAlign: 'center',
+                fontStyle: 'italic'
+              }}>
+                📋 {currentProgressData['Detail Req']}
               </div>
             )}
+            
             {requirementsBreakdown.map((req, index) => (
-              <div key={index} className={`tooltip-requirement ${req.met ? 'completed' : ''}`}>
-                <span className="req-type">{req.label}:</span>
-                <span className="req-progress">{req.current}/{req.required}</span>
-                <span className="req-percentage">({Math.round(req.progress)}%)</span>
-                {req.met && <span className="req-checkmark">✓</span>}
+              <div key={index} className={`tooltip-requirement ${req.met ? 'completed' : ''}`} style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '0.5rem',
+                fontSize: '0.85rem'
+              }}>
+                <span className="req-type" style={{
+                  color: '#39b9ff',
+                  fontWeight: '500',
+                  flex: 1
+                }}>{req.label}:</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span className="req-progress" style={{
+                    color: '#ffffff',
+                    fontWeight: '600'
+                  }}>{req.current}/{req.required}</span>
+                  <span className="req-percentage" style={{
+                    color: req.met ? '#00ff88' : '#ffffff',
+                    fontWeight: '500',
+                    minWidth: '50px',
+                    textAlign: 'right'
+                  }}>({Math.round(req.progress)}%)</span>
+                  {req.met && <span className="req-checkmark" style={{ 
+                    color: '#00ff88',
+                    fontWeight: 'bold'
+                  }}>✓</span>}
+                </span>
               </div>
             ))}
           </div>
