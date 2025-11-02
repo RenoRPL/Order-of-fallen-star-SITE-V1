@@ -1223,7 +1223,12 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       if (playerDiscordId) {
         // Navigate to the player's individual profile page
         console.log('Navigating to player profile:', playerDiscordId)
+        setClearPlayerSearch(true) // Trigger search field clearing
         navigate(`/profile/${playerDiscordId}`)
+        // Reset the clear trigger after a brief delay
+        setTimeout(() => {
+          setClearPlayerSearch(false)
+        }, 200)
       } else {
         console.error('No Discord ID found for player:', player)
         setNotification({
@@ -1235,6 +1240,10 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
     } else {
       // Deselect player - go back to own profile
       navigate('/profile')
+      setClearPlayerSearch(true) // Also clear when going back to own profile
+      setTimeout(() => {
+        setClearPlayerSearch(false)
+      }, 200)
     }
   }
 

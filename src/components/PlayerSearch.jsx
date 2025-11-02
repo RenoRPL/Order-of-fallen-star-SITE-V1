@@ -116,10 +116,6 @@ export default function PlayerSearch({ onPlayerSelect, shouldClear }) {
     setSelectedIndex(-1)
     if (onPlayerSelect) {
       onPlayerSelect(member)
-      // Clear search field after navigation delay
-      setTimeout(() => {
-        setSearchTerm('')
-      }, 100)
     }
   }
 
