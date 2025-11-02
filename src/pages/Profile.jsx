@@ -1523,6 +1523,14 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       <main className="profile-main">
         <div className="profile-container">
           
+          {/* Player Search - Top of Page */}
+          <div className="profile-search-section">
+            <PlayerSearch 
+              onPlayerSelect={handlePlayerSelect} 
+              shouldClear={clearPlayerSearch}
+            />
+          </div>
+          
           {/* Welcome Section - Top of Page */}
           <div className="profile-welcome">
             {/* Profile Switch Banner */}
@@ -1869,14 +1877,6 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                   )}
                 </div>
               </div>
-            </div>
-            
-            {/* Right Column - Player Search */}
-            <div className="profile-right-column">
-              <PlayerSearch 
-                onPlayerSelect={handlePlayerSelect} 
-                shouldClear={clearPlayerSearch}
-              />
             </div>
           </div>
 
