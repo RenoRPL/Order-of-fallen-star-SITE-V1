@@ -1470,25 +1470,15 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
     return '/Nebula BG.jpeg'
   }
 
-  // Get path background image based on role
-  const getPathImageUrl = (role) => {
-    const pathImages = {
-      'The Explorer': '/Role Path/The Explorer - Hero.png',
-      'The Guardian': '/Role Path/The Guardian - Hero.png', 
-      'The Healer': '/Role Path/The Healer - Hero.png',
-      'The Infiltrator': '/Role Path/The Infiltrator - Hero.png',
-      'The Merchant': '/Role Path/The Merchant - Hero.png',
-      'Support': '/Role Path/The Healer - Hero.png', // Map Support role to Healer image
-      'Command': '/Role Path/The Guardian - Hero.png', // Map Command role to Guardian image
-      'Combat': '/Role Path/The Warmaster - Hero.png', // Map Combat role to Warmaster image
-      'Pilot': '/Role Path/The Explorer - Hero.png', // Map Pilot role to Explorer image
-      'Member': '/Role Path/The Explorer - Hero.png' // Default mapping
+  // Get path background image based on role path
+  const getPathImageUrl = (rolePath) => {
+    if (!rolePath || rolePath.trim() === '') {
+      return '/Nebula BG.jpeg'
     }
     
-    const rawPath = pathImages[role] || '/Nebula BG.jpeg'
-    // Properly encode the URL to handle spaces
-    const encodedPath = encodeURI(rawPath)
-    return encodedPath
+    // Construct the hero image path directly from the Role Path field
+    const heroImagePath = `/Role Path/${rolePath} - Hero.png`
+    return encodeURI(heroImagePath)
   }
 
   const formatJoinDate = (timestamp) => {
@@ -1926,7 +1916,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         onClose={() => setShowBackstoryModal(false)}
         playerName={isViewingOtherPlayer ? (selectedPlayerData?.username || 'Unknown Player') : (memberData?.username || 'Your')}
         backstory={isViewingOtherPlayer ? selectedPlayerBackstory : profileBio}
-        pathImage={getPathImageUrl(isViewingOtherPlayer ? selectedPlayerData?.role : memberData?.role)}
+        pathImage={getPathImageUrl(isViewingOtherPlayer ? selectedPlayerData?.['Role Path'] : currentDisplayData?.['Role Path'])}
         customBannerImage={isViewingOtherPlayer ? selectedPlayerCustomBannerImage : profileCustomBannerImage}
         formatBackstoryText={formatBackstoryText}
       />
