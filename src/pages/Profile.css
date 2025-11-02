@@ -1893,6 +1893,8 @@
     0 0 15px color-mix(in srgb, var(--profile-primary), transparent 85%);
   flex: 1;
   height: fit-content;
+  width: 100%;
+  min-width: 0;
 }
 
 /* Two-column layout for viewing other players */
@@ -1906,7 +1908,7 @@
 /* Three-column layout - Command Center / Player Information / Player Search */
 .profile-three-column-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 300px 1fr 300px;
   gap: 1.5rem;
   margin-bottom: 20px;
 }
@@ -1919,6 +1921,8 @@
 .profile-middle-column {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-width: 0;
 }
 
 .profile-right-column {
