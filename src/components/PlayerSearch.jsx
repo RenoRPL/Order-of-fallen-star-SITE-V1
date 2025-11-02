@@ -146,67 +146,64 @@ export default function PlayerSearch({ onPlayerSelect, shouldClear }) {
     <div className="player-search-container" ref={searchRef}>
       <div className="player-search-header">
         <h3>Player Search</h3>
-        <div className="header-controls">
-          <button 
-            className="roster-button"
-            onClick={() => navigate('/roster')}
-            title="View Full Roster"
-          >
-            📋 Roster
-          </button>
-          <span className="member-count">
-            {isLoading ? 'Loading...' : `${members.length} ranked members`}
-          </span>
-        </div>
-      </div>
-      
-      <div className="search-input-wrapper">
-        <div className="search-input-container">
-          <span className="search-icon">🔍</span>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            placeholder="Search by username, rank, or role..."
-            className="search-input"
-            disabled={isLoading}
-          />
-          {searchTerm && (
-            <button onClick={clearSearch} className="clear-button">
-              ×
-            </button>
+        <div className="search-input-wrapper">
+          <div className="search-input-container">
+            <span className="search-icon">🔍</span>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              placeholder="Search by username, rank, or role..."
+              className="search-input"
+              disabled={isLoading}
+            />
+            {searchTerm && (
+              <button onClick={clearSearch} className="clear-button">
+                ×
+              </button>
+            )}
+          </div>
+
+          {showSuggestions && (
+            <div className="suggestions-dropdown" ref={suggestionsRef}>
+              {filteredMembers.map((member, index) => (
+                <div
+                  key={member['User ID'] || index}
+                  className={`suggestion-item ${index === selectedIndex ? 'selected' : ''}`}
+                  onClick={() => selectMember(member)}
+                >
+                  <div className="suggestion-main">
+                    <span className="suggestion-username">
+                      {member.Username || 'Unknown User'}
+                    </span>
+                    <span className="suggestion-rank">
+                      {member.Rank}
+                    </span>
+                  </div>
+                  <div className="suggestion-details">
+                    <span className="suggestion-role">
+                      {member.Role || 'No Role'}
+                    </span>
+                    <span className="suggestion-path">
+                      {member['Role Path'] || 'No Path'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
-
-        {showSuggestions && (
-          <div className="suggestions-dropdown" ref={suggestionsRef}>
-            {filteredMembers.map((member, index) => (
-              <div
-                key={member['User ID'] || index}
-                className={`suggestion-item ${index === selectedIndex ? 'selected' : ''}`}
-                onClick={() => selectMember(member)}
-              >
-                <div className="suggestion-main">
-                  <span className="suggestion-username">
-                    {member.Username || 'Unknown User'}
-                  </span>
-                  <span className="suggestion-rank">
-                    {member.Rank}
-                  </span>
-                </div>
-                <div className="suggestion-details">
-                  <span className="suggestion-role">
-                    {member.Role || 'No Role'}
-                  </span>
-                  <span className="suggestion-path">
-                    {member['Role Path'] || 'No Path'}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <button 
+          className="roster-button"
+          onClick={() => navigate('/roster')}
+          title="View Full Roster"
+        >
+          📋 Roster
+        </button>
+        <span className="member-count">
+          {isLoading ? 'Loading...' : `${members.length} ranked members`}
+        </span>
       </div>
     </div>
   )

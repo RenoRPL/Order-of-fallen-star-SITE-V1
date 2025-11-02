@@ -1,19 +1,23 @@
 .player-search-container {
-  background: rgba(30, 41, 59, 0.95);
-  border: 1px solid rgba(14, 165, 233, 0.3);
-  border-radius: 8px;
-  padding: 16px;
-  backdrop-filter: blur(10px);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  backdrop-filter: none;
   position: relative;
   margin-bottom: 20px;
   z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
 }
 
 .player-search-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  gap: 16px;
+  margin-bottom: 0;
 }
 
 .player-search-header h3 {
@@ -22,12 +26,7 @@
   font-family: 'Orbitron', monospace;
   font-size: 16px;
   font-weight: 600;
-}
-
-.header-controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  white-space: nowrap;
 }
 
 .roster-button {
@@ -44,6 +43,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  white-space: nowrap;
 }
 
 .roster-button:hover {
@@ -60,10 +60,13 @@
   color: #94a3b8;
   font-size: 12px;
   font-family: 'Orbitron', monospace;
+  white-space: nowrap;
 }
 
 .search-input-wrapper {
   position: relative;
+  flex: 1;
+  width: 100%;
 }
 
 .search-input-container {
@@ -82,20 +85,22 @@
 
 .search-input {
   width: 100%;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(71, 85, 105, 0.5);
-  border-radius: 6px;
-  padding: 10px 40px 10px 35px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 26, 46, 0.5) 100%);
+  border: 1px solid color-mix(in srgb, var(--profile-accent, #39b9ff) 20%, transparent);
+  border-radius: 15px;
+  padding: 12px 40px 12px 35px;
   color: #f1f5f9;
   font-family: 'Orbitron', monospace;
   font-size: 14px;
   transition: all 0.2s ease;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--profile-accent, #39b9ff) 5%, transparent);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+  border-color: color-mix(in srgb, var(--profile-accent, #39b9ff) 40%, transparent);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--profile-accent, #39b9ff) 15%, transparent);
 }
 
 .search-input:disabled {
