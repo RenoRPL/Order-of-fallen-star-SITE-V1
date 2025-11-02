@@ -98,6 +98,7 @@
 
 /* Profile Search Section - Very Top */
 .profile-search-section {
+  width: 100%;
   margin-bottom: 1.5rem;
   padding: 1rem 2rem;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 46, 0.6) 100%);
@@ -105,8 +106,9 @@
   border: 1px solid color-mix(in srgb, var(--profile-accent, #39b9ff) 15%, transparent);
   box-shadow: 0 0 20px color-mix(in srgb, var(--profile-accent, #39b9ff) 8%, transparent);
   display: flex;
-  justify-content: center;
+  justify-content: stretch;
   align-items: center;
+  box-sizing: border-box;
 }
 
 /* Profile Welcome Section - Top of Page */
