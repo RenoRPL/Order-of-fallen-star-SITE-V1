@@ -71,6 +71,34 @@ export default function Profile() {
   const currentPatrolStats = isViewingOtherPlayer && selectedPlayerStats ? selectedPlayerStats : patrolStats
   const currentGoogleStats = isViewingOtherPlayer && selectedPlayerGoogleStats ? selectedPlayerGoogleStats : googleStats
   
+  // Function to get the most recent completed quest from patrol data
+  const getMostRecentQuest = () => {
+    if (!currentPatrolData || currentPatrolData.length === 0) {
+      return null
+    }
+    
+    // Filter patrols where the current user participated (either as leader or participant)
+    const userDiscordId = currentDisplayData?.discordId || user?.id
+    const userPatrols = currentPatrolData.filter(patrol => 
+      patrol['Player ID'] === userDiscordId || patrol['Patrol Leader ID'] === userDiscordId
+    )
+    
+    if (userPatrols.length === 0) {
+      return null
+    }
+    
+    // Sort by date (assuming there's a date field, or use the most recent entry)
+    // For now, we'll take the last entry in the array as the most recent
+    const mostRecent = userPatrols[userPatrols.length - 1]
+    
+    return {
+      name: mostRecent['Patrol Name'] || 'Unknown Quest',
+      description: mostRecent['Patrol Description'] || 'No description available',
+      leader: mostRecent['Patrol Leader'] || mostRecent['Leader'] || mostRecent['Leader Name'] || mostRecent['Patrol Leader Name'] || 'Unknown Leader',
+      isLeader: mostRecent['Patrol Leader ID'] === userDiscordId
+    }
+  }
+  
   // Debug logging for stats display
   console.log('=== PROFILE STATS DEBUG ===');
   console.log('isViewingOtherPlayer:', isViewingOtherPlayer);
@@ -1665,6 +1693,32 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                 </div>
                 <div className="stat-label">Turret Kills</div>
               </div>
+            </div>
+
+            {/* Center: Most Recent Quest */}
+            <div className="recent-quest-overview">
+              {(() => {
+                const recentQuest = getMostRecentQuest()
+                return recentQuest ? (
+                  <div className="quest-display">
+                    <div className="quest-header">
+                      <h3>Most Recent Quest</h3>
+                      {recentQuest.isLeader && <span className="leader-badge">Leader</span>}
+                    </div>
+                    <div className="quest-name">{recentQuest.name}</div>
+                    <div className="quest-description">{recentQuest.description}</div>
+                    <div className="quest-leader">Led by: {recentQuest.leader}</div>
+                  </div>
+                ) : (
+                  <div className="quest-display">
+                    <div className="quest-header">
+                      <h3>Most Recent Quest</h3>
+                    </div>
+                    <div className="quest-name">No quests found</div>
+                    <div className="quest-description">Complete your first quest to see it here!</div>
+                  </div>
+                )
+              })()}
             </div>
 
             {/* Right: Quest Stats */}
