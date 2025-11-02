@@ -6,6 +6,7 @@
   backdrop-filter: blur(10px);
   position: relative;
   margin-bottom: 20px;
+  z-index: 10000;
 }
 
 .player-search-header {
@@ -128,17 +129,17 @@
 }
 
 .suggestions-dropdown {
-  position: fixed;
-  top: auto;
-  left: auto;
-  right: auto;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   background: rgba(15, 23, 42, 0.95);
   border: 1px solid rgba(71, 85, 105, 0.5);
   border-radius: 6px;
   margin-top: 4px;
   max-height: 300px;
   overflow-y: auto;
-  z-index: 9999;
+  z-index: 10001;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
