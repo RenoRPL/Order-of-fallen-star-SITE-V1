@@ -199,6 +199,32 @@ export default function Profile() {
     console.log(`Found ${participants.length} participants for quest "${questName}" (sorted by tier):`, participants)
     return participants
   }
+
+  // Function to get next rank based on Tier system from Google Sheets
+  const getNextRankFromTier = (currentRank) => {
+    if (!allRankData || allRankData.length === 0 || !currentRank) {
+      return null
+    }
+
+    // Find current rank data
+    const currentRankData = allRankData.find(rank => rank['Rank Name'] === currentRank)
+    if (!currentRankData || !currentRankData.Tier) {
+      return null
+    }
+
+    const currentTier = parseInt(currentRankData.Tier)
+    
+    // If already at Tier 1 (highest rank), return null
+    if (currentTier <= 1) {
+      return null
+    }
+
+    // Find the rank with the next tier (current tier - 1)
+    const nextTier = currentTier - 1
+    const nextRankData = allRankData.find(rank => parseInt(rank.Tier) === nextTier)
+    
+    return nextRankData
+  }
   
   // Tooltip control functions
   const handleTooltipToggleLock = () => {
@@ -1663,27 +1689,57 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                 <span className="path-badge">{currentDisplayData?.['Role Path'] || 'Unassigned'}</span>
                 
                 {/* Integrated Progress Bar - Show when user has rank data */}
-                {currentDisplayData?.Rank && (
-                  <div className="welcome-progress-section">
-                    <div className="progress-label">Next Rank Progress</div>
-                    <div className="welcome-progress-bar-container">
-                      <span className="current-rank-welcome">{currentDisplayData.Rank}</span>
-                      <div className="welcome-progress-bar">
-                        <div 
-                          className="welcome-progress-fill"
-                          style={{ 
-                            width: '60%',
-                            background: (() => {
-                              const colors = getProgressBarColors(currentCustomization)
-                              return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
-                            })()
-                          }}
-                        />
+                {currentDisplayData?.Rank && (() => {
+                  const nextRankData = getNextRankFromTier(currentDisplayData.Rank)
+                  
+                  if (!nextRankData) {
+                    // At max rank - show "Max Rank" instead
+                    return (
+                      <div className="welcome-progress-section">
+                        <div className="progress-label">Max Rank</div>
+                        <div className="welcome-progress-bar-container">
+                          <span className="current-rank-welcome">{currentDisplayData.Rank}</span>
+                          <div className="welcome-progress-bar">
+                            <div 
+                              className="welcome-progress-fill"
+                              style={{ 
+                                width: '100%',
+                                background: (() => {
+                                  const colors = getProgressBarColors(currentCustomization)
+                                  return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
+                                })()
+                              }}
+                            />
+                          </div>
+                          <span className="next-rank-welcome">👑 Max</span>
+                        </div>
                       </div>
-                      <span className="next-rank-welcome">Squire</span>
+                    )
+                  }
+                  
+                  // Show progress to next rank
+                  return (
+                    <div className="welcome-progress-section">
+                      <div className="progress-label">Next Rank Progress</div>
+                      <div className="welcome-progress-bar-container">
+                        <span className="current-rank-welcome">{currentDisplayData.Rank}</span>
+                        <div className="welcome-progress-bar">
+                          <div 
+                            className="welcome-progress-fill"
+                            style={{ 
+                              width: '60%',
+                              background: (() => {
+                                const colors = getProgressBarColors(currentCustomization)
+                                return `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`
+                              })()
+                            }}
+                          />
+                        </div>
+                        <span className="next-rank-welcome">{nextRankData['Rank Name']}</span>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )
+                })()}
               </div>
               
               {/* Right: Rank Icon and Role Badge */}
