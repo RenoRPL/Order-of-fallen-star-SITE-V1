@@ -2932,6 +2932,54 @@
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.requirement-item.req-met {
+  background: rgba(0, 255, 136, 0.1);
+  border-color: rgba(0, 255, 136, 0.3);
+}
+
+.requirement-item.req-not-met {
+  background: rgba(255, 77, 77, 0.1);
+  border-color: rgba(255, 77, 77, 0.3);
+}
+
+.requirement-item.special-req {
+  background: rgba(57, 185, 255, 0.1);
+  border-color: rgba(57, 185, 255, 0.3);
+}
+
+.requirement-comparison {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.current-value {
+  color: var(--profile-accent, #39b9ff);
+  font-weight: 600;
+  min-width: 30px;
+  text-align: right;
+}
+
+.req-met .current-value {
+  color: #00ff88;
+}
+
+.req-not-met .current-value {
+  color: #ff4d4d;
+}
+
+.separator {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.required-value {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  min-width: 30px;
 }
 
 .requirement-label {

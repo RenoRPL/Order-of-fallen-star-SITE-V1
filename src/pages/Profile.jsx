@@ -261,32 +261,101 @@ export default function Profile() {
     let totalRequirements = 0
     let metRequirements = 0
 
-    // Check each requirement and calculate progress
-    const requirements = [
-      { key: 'Ground Kills', userValue: parseInt(currentUserStats.fpsKills || 0), label: 'Ground Kills' },
-      { key: 'Pilot Kills', userValue: parseInt(currentUserStats.pilotKills || 0), label: 'Pilot Kills' },
-      { key: 'Turret Kills', userValue: parseInt(currentUserStats.turretKills || 0), label: 'Turret Kills' },
-      { key: 'Quests Led', userValue: parseInt(currentUserStats.questsLed || 0), label: 'Quests Led' },
-      { key: 'Crusade Led', userValue: parseInt(currentUserStats.crusadesLed || 0), label: 'Crusades Led' },
-      { key: 'Quests Completed', userValue: parseInt(currentUserStats.questsCompleted || 0), label: 'Quests Completed' },
-      { key: 'Crusade Completed', userValue: parseInt(currentUserStats.crusadesCompleted || 0), label: 'Crusades Completed' },
-    ]
-
-    requirements.forEach(req => {
-      const requiredValue = parseInt(nextRankRequirements[req.key] || 0)
-      if (requiredValue > 0) {
+    // Count requirements from the next rank requirements object
+    const checkRequirement = (reqKey, userValue, parseRequired = true) => {
+      const requiredValue = parseRequired 
+        ? parseInt((nextRankRequirements[reqKey] || '0').toString().replace(/\D/g, '') || 0)
+        : nextRankRequirements[reqKey]
+      
+      if (requiredValue && requiredValue > 0) {
         totalRequirements++
-        if (req.userValue >= requiredValue) {
+        if (userValue >= requiredValue) {
           metRequirements++
         }
       }
-    })
+    }
+
+    // Check each type of requirement
+    checkRequirement('Time in Service', currentUserStats.timeInServiceDays)
+    checkRequirement('Crusade/Quest Led Total', currentUserStats.totalLed)
+    checkRequirement('Crusade Led', currentUserStats.crusadesLed)
+    checkRequirement('Quests Led', currentUserStats.questsLed)
+    checkRequirement('Pilot Kills', currentUserStats.pilotKills)
+    checkRequirement('Ground Kills', currentUserStats.fpsKills)
+    checkRequirement('Turret Kills', currentUserStats.turretKills)
+    checkRequirement('Crusade/Quest Total', currentUserStats.totalCompleted)
+    checkRequirement('Quests Completed', currentUserStats.questsCompleted)
+    checkRequirement('Crusade Completed', currentUserStats.crusadesCompleted)
 
     // If no requirements found, return 50% as placeholder
     if (totalRequirements === 0) return 50
 
     // Calculate percentage
     return Math.round((metRequirements / totalRequirements) * 100)
+  }
+
+  // Function to get player's current statistics for requirements comparison
+  const getPlayerCurrentStats = () => {
+    // Calculate time in service from join date
+    const timeInService = currentDisplayData?.['Join Date'] 
+      ? OFSDataService.calculateTimeInService(currentDisplayData['Join Date'])
+      : '0 days'
+    
+    // Parse time in service to get days
+    const timeInServiceDays = timeInService.includes('days') 
+      ? parseInt(timeInService.split(' ')[0]) 
+      : timeInService.includes('months') 
+        ? parseInt(timeInService.split(' ')[0]) * 30
+        : timeInService.includes('years')
+          ? parseInt(timeInService.split(' ')[0]) * 365
+          : 0
+
+    // Count quests and crusades led from patrol data
+    const playerLedPatrols = patrolData.filter(patrol => 
+      patrol['Patrol Leader ID'] === user?.sub || 
+      patrol['Patrol Leader ID'] === currentDisplayData?.['User ID']
+    )
+    
+    const questsLed = playerLedPatrols.filter(patrol => 
+      patrol['Patrol Type']?.toLowerCase().includes('quest') ||
+      patrol['Patrol Name']?.toLowerCase().includes('quest')
+    ).length
+
+    const crusadesLed = playerLedPatrols.filter(patrol => 
+      patrol['Patrol Type']?.toLowerCase().includes('crusade') ||
+      patrol['Patrol Name']?.toLowerCase().includes('crusade')
+    ).length
+
+    // Count total completed patrols (participated in)
+    const playerPatrols = patrolData.filter(patrol => 
+      patrol['Patrol Leader ID'] === user?.sub || 
+      patrol['Patrol Leader ID'] === currentDisplayData?.['User ID'] ||
+      patrol['Player ID'] === user?.sub ||
+      patrol['Player ID'] === currentDisplayData?.['User ID']
+    )
+
+    const questsCompleted = playerPatrols.filter(patrol => 
+      patrol['Patrol Type']?.toLowerCase().includes('quest') ||
+      patrol['Patrol Name']?.toLowerCase().includes('quest')
+    ).length
+
+    const crusadesCompleted = playerPatrols.filter(patrol => 
+      patrol['Patrol Type']?.toLowerCase().includes('crusade') ||
+      patrol['Patrol Name']?.toLowerCase().includes('crusade')
+    ).length
+
+    return {
+      timeInServiceDays,
+      questsLed,
+      crusadesLed,
+      totalLed: questsLed + crusadesLed,
+      questsCompleted,
+      crusadesCompleted,
+      totalCompleted: questsCompleted + crusadesCompleted,
+      fpsKills: parseInt(currentGoogleStats?.fpsKills || 0),
+      pilotKills: parseInt(currentGoogleStats?.shipKills || 0),
+      turretKills: parseInt(currentGoogleStats?.turretKills || 0)
+    }
   }
   
   // Tooltip control functions
@@ -1860,11 +1929,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                               style={{ 
                                 width: `${(() => {
                                   const nextRankRequirements = getProgressRequirementsForRank(nextRankData['Rank Name'])
-                                  const currentStats = {
-                                    fpsKills: currentGoogleStats?.fpsKills || 0,
-                                    pilotKills: currentGoogleStats?.shipKills || 0,
-                                    turretKills: currentGoogleStats?.turretKills || 0
-                                  }
+                                  const currentStats = getPlayerCurrentStats()
                                   return calculateRankProgress(nextRankRequirements, currentStats)
                                 })()}%`,
                                 background: (() => {
@@ -1986,93 +2051,141 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                             
                             return (
                               <div className="requirements-list">
-                                {/* Detail Requirements */}
-                                {nextRankRequirements['Detail Req'] && (
-                                  <div className="requirement-item">
-                                    <span className="requirement-label">Step Requirements:</span>
-                                    <span className="requirement-value">{nextRankRequirements['Detail Req']}</span>
-                                  </div>
-                                )}
-                                
-                                {/* Time in Service */}
-                                {nextRankRequirements['Time in Service'] && (
-                                  <div className="requirement-item">
-                                    <span className="requirement-label">Time in Service:</span>
-                                    <span className="requirement-value">{nextRankRequirements['Time in Service']}</span>
-                                  </div>
-                                )}
-                                
-                                {/* Crusade/Quest Led Total */}
-                                {nextRankRequirements['Crusade/Quest Led Total'] && (
-                                  <div className="requirement-item">
-                                    <span className="requirement-label">Total Led (Quests/Crusades):</span>
-                                    <span className="requirement-value">{nextRankRequirements['Crusade/Quest Led Total']}</span>
-                                  </div>
-                                )}
-                                
-                                {/* Crusade Led */}
-                                {nextRankRequirements['Crusade Led'] && (
-                                  <div className="requirement-item">
-                                    <span className="requirement-label">Crusades Led:</span>
-                                    <span className="requirement-value">{nextRankRequirements['Crusade Led']}</span>
-                                  </div>
-                                )}
-                                
-                                {/* Quests Led */}
-                                {nextRankRequirements['Quests Led'] && (
-                                  <div className="requirement-item">
-                                    <span className="requirement-label">Quests Led:</span>
-                                    <span className="requirement-value">{nextRankRequirements['Quests Led']}</span>
-                                  </div>
-                                )}
-                                
-                                {/* Pilot Kills */}
-                                {nextRankRequirements['Pilot Kills'] && (
-                                  <div className="requirement-item">
-                                    <span className="requirement-label">Pilot Kills:</span>
-                                    <span className="requirement-value">{nextRankRequirements['Pilot Kills']}</span>
-                                  </div>
-                                )}
-                                
-                                {/* Ground Kills */}
-                                {nextRankRequirements['Ground Kills'] && (
-                                  <div className="requirement-item">
-                                    <span className="requirement-label">Ground Kills:</span>
-                                    <span className="requirement-value">{nextRankRequirements['Ground Kills']}</span>
-                                  </div>
-                                )}
-                                
-                                {/* Turret Kills */}
-                                {nextRankRequirements['Turret Kills'] && (
-                                  <div className="requirement-item">
-                                    <span className="requirement-label">Turret Kills:</span>
-                                    <span className="requirement-value">{nextRankRequirements['Turret Kills']}</span>
-                                  </div>
-                                )}
-                                
-                                {/* Crusade/Quest Total */}
-                                {nextRankRequirements['Crusade/Quest Total'] && (
-                                  <div className="requirement-item">
-                                    <span className="requirement-label">Total Quests & Crusades:</span>
-                                    <span className="requirement-value">{nextRankRequirements['Crusade/Quest Total']}</span>
-                                  </div>
-                                )}
-                                
-                                {/* Quests Completed */}
-                                {nextRankRequirements['Quests Completed'] && (
-                                  <div className="requirement-item">
-                                    <span className="requirement-label">Quests Completed:</span>
-                                    <span className="requirement-value">{nextRankRequirements['Quests Completed']}</span>
-                                  </div>
-                                )}
-                                
-                                {/* Crusade Completed */}
-                                {nextRankRequirements['Crusade Completed'] && (
-                                  <div className="requirement-item">
-                                    <span className="requirement-label">Crusades Completed:</span>
-                                    <span className="requirement-value">{nextRankRequirements['Crusade Completed']}</span>
-                                  </div>
-                                )}
+                                {(() => {
+                                  const playerStats = getPlayerCurrentStats()
+                                  
+                                  return (
+                                    <>
+                                      {/* Detail Requirements */}
+                                      {nextRankRequirements['Detail Req'] && (
+                                        <div className="requirement-item special-req">
+                                          <span className="requirement-label">Step Requirements:</span>
+                                          <span className="requirement-value">{nextRankRequirements['Detail Req']}</span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Time in Service */}
+                                      {nextRankRequirements['Time in Service'] && (
+                                        <div className={`requirement-item ${playerStats.timeInServiceDays >= parseInt(nextRankRequirements['Time in Service'].replace(/\D/g, '') || 0) ? 'req-met' : 'req-not-met'}`}>
+                                          <span className="requirement-label">Time in Service:</span>
+                                          <span className="requirement-comparison">
+                                            <span className="current-value">{playerStats.timeInServiceDays} days</span>
+                                            <span className="separator"> / </span>
+                                            <span className="required-value">{nextRankRequirements['Time in Service']}</span>
+                                          </span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Crusade/Quest Led Total */}
+                                      {nextRankRequirements['Crusade/Quest Led Total'] && (
+                                        <div className={`requirement-item ${playerStats.totalLed >= parseInt(nextRankRequirements['Crusade/Quest Led Total'] || 0) ? 'req-met' : 'req-not-met'}`}>
+                                          <span className="requirement-label">Total Led (Quests/Crusades):</span>
+                                          <span className="requirement-comparison">
+                                            <span className="current-value">{playerStats.totalLed}</span>
+                                            <span className="separator"> / </span>
+                                            <span className="required-value">{nextRankRequirements['Crusade/Quest Led Total']}</span>
+                                          </span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Crusade Led */}
+                                      {nextRankRequirements['Crusade Led'] && (
+                                        <div className={`requirement-item ${playerStats.crusadesLed >= parseInt(nextRankRequirements['Crusade Led'] || 0) ? 'req-met' : 'req-not-met'}`}>
+                                          <span className="requirement-label">Crusades Led:</span>
+                                          <span className="requirement-comparison">
+                                            <span className="current-value">{playerStats.crusadesLed}</span>
+                                            <span className="separator"> / </span>
+                                            <span className="required-value">{nextRankRequirements['Crusade Led']}</span>
+                                          </span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Quests Led */}
+                                      {nextRankRequirements['Quests Led'] && (
+                                        <div className={`requirement-item ${playerStats.questsLed >= parseInt(nextRankRequirements['Quests Led'] || 0) ? 'req-met' : 'req-not-met'}`}>
+                                          <span className="requirement-label">Quests Led:</span>
+                                          <span className="requirement-comparison">
+                                            <span className="current-value">{playerStats.questsLed}</span>
+                                            <span className="separator"> / </span>
+                                            <span className="required-value">{nextRankRequirements['Quests Led']}</span>
+                                          </span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Pilot Kills */}
+                                      {nextRankRequirements['Pilot Kills'] && (
+                                        <div className={`requirement-item ${playerStats.pilotKills >= parseInt(nextRankRequirements['Pilot Kills'] || 0) ? 'req-met' : 'req-not-met'}`}>
+                                          <span className="requirement-label">Pilot Kills:</span>
+                                          <span className="requirement-comparison">
+                                            <span className="current-value">{playerStats.pilotKills}</span>
+                                            <span className="separator"> / </span>
+                                            <span className="required-value">{nextRankRequirements['Pilot Kills']}</span>
+                                          </span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Ground Kills */}
+                                      {nextRankRequirements['Ground Kills'] && (
+                                        <div className={`requirement-item ${playerStats.fpsKills >= parseInt(nextRankRequirements['Ground Kills'] || 0) ? 'req-met' : 'req-not-met'}`}>
+                                          <span className="requirement-label">Ground Kills:</span>
+                                          <span className="requirement-comparison">
+                                            <span className="current-value">{playerStats.fpsKills}</span>
+                                            <span className="separator"> / </span>
+                                            <span className="required-value">{nextRankRequirements['Ground Kills']}</span>
+                                          </span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Turret Kills */}
+                                      {nextRankRequirements['Turret Kills'] && (
+                                        <div className={`requirement-item ${playerStats.turretKills >= parseInt(nextRankRequirements['Turret Kills'] || 0) ? 'req-met' : 'req-not-met'}`}>
+                                          <span className="requirement-label">Turret Kills:</span>
+                                          <span className="requirement-comparison">
+                                            <span className="current-value">{playerStats.turretKills}</span>
+                                            <span className="separator"> / </span>
+                                            <span className="required-value">{nextRankRequirements['Turret Kills']}</span>
+                                          </span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Crusade/Quest Total */}
+                                      {nextRankRequirements['Crusade/Quest Total'] && (
+                                        <div className={`requirement-item ${playerStats.totalCompleted >= parseInt(nextRankRequirements['Crusade/Quest Total'] || 0) ? 'req-met' : 'req-not-met'}`}>
+                                          <span className="requirement-label">Total Quests & Crusades:</span>
+                                          <span className="requirement-comparison">
+                                            <span className="current-value">{playerStats.totalCompleted}</span>
+                                            <span className="separator"> / </span>
+                                            <span className="required-value">{nextRankRequirements['Crusade/Quest Total']}</span>
+                                          </span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Quests Completed */}
+                                      {nextRankRequirements['Quests Completed'] && (
+                                        <div className={`requirement-item ${playerStats.questsCompleted >= parseInt(nextRankRequirements['Quests Completed'] || 0) ? 'req-met' : 'req-not-met'}`}>
+                                          <span className="requirement-label">Quests Completed:</span>
+                                          <span className="requirement-comparison">
+                                            <span className="current-value">{playerStats.questsCompleted}</span>
+                                            <span className="separator"> / </span>
+                                            <span className="required-value">{nextRankRequirements['Quests Completed']}</span>
+                                          </span>
+                                        </div>
+                                      )}
+                                      
+                                      {/* Crusade Completed */}
+                                      {nextRankRequirements['Crusade Completed'] && (
+                                        <div className={`requirement-item ${playerStats.crusadesCompleted >= parseInt(nextRankRequirements['Crusade Completed'] || 0) ? 'req-met' : 'req-not-met'}`}>
+                                          <span className="requirement-label">Crusades Completed:</span>
+                                          <span className="requirement-comparison">
+                                            <span className="current-value">{playerStats.crusadesCompleted}</span>
+                                            <span className="separator"> / </span>
+                                            <span className="required-value">{nextRankRequirements['Crusade Completed']}</span>
+                                          </span>
+                                        </div>
+                                      )}
+                                    </>
+                                  )
+                                })()}
                               </div>
                             )
                           })()}
@@ -2087,11 +2200,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                   style={{ 
                                     width: `${(() => {
                                       const nextRankRequirements = getProgressRequirementsForRank(nextRankData['Rank Name'])
-                                      const currentStats = {
-                                        fpsKills: currentGoogleStats?.fpsKills || 0,
-                                        pilotKills: currentGoogleStats?.shipKills || 0,
-                                        turretKills: currentGoogleStats?.turretKills || 0
-                                      }
+                                      const currentStats = getPlayerCurrentStats()
                                       return calculateRankProgress(nextRankRequirements, currentStats)
                                     })()}%`,
                                     background: (() => {
@@ -2104,11 +2213,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                               <span className="progress-percentage">
                                 {(() => {
                                   const nextRankRequirements = getProgressRequirementsForRank(nextRankData['Rank Name'])
-                                  const currentStats = {
-                                    fpsKills: currentGoogleStats?.fpsKills || 0,
-                                    pilotKills: currentGoogleStats?.shipKills || 0,
-                                    turretKills: currentGoogleStats?.turretKills || 0
-                                  }
+                                  const currentStats = getPlayerCurrentStats()
                                   return calculateRankProgress(nextRankRequirements, currentStats)
                                 })()}%
                               </span>
