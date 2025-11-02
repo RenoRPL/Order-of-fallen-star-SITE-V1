@@ -1047,8 +1047,8 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
     
     if (targetUserId) {
       // If viewing another player (via URL), always fetch regardless of auth state
-      // If viewing own profile, only fetch if authenticated
-      if (playerId || (isAuthenticated && user?.id)) {
+      // If viewing own profile, only fetch if authenticated OR if user ID exists
+      if (playerId || user?.id) {
         console.log('Triggering fetchData for:', targetUserId, 'viewingOther:', !!playerId)
         fetchData()
       }
@@ -1058,7 +1058,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
     return () => {
       isCancelled = true
     }
-  }, [urlDiscordId, searchParams, user?.id, isAuthenticated])
+  }, [urlDiscordId, searchParams, user?.id]) // Removed isAuthenticated from dependencies
 
   // Fetch Google Sheets patrol stats
   useEffect(() => {
@@ -1098,11 +1098,11 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
     }
 
     // Only fetch if we have a user ID OR a playerId from URL
-    const playerId = searchParams.get('playerId')
-    if ((isAuthenticated && user?.id) || playerId) {
+    const playerId = searchParams.get('playerId') || urlDiscordId
+    if (user?.id || playerId) {
       fetchGoogleStats()
     }
-  }, [user?.id, isAuthenticated, searchParams])
+  }, [user?.id, searchParams, urlDiscordId]) // Removed isAuthenticated from dependencies
 
   // Back story scroll handler
   useEffect(() => {
