@@ -5,6 +5,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import RSILinkModal from '../components/RSILinkModal'
 import EditProfileModal from '../components/EditProfileModal'
+import BackstoryModal from '../components/BackstoryModal'
 import PlayerSearch from '../components/PlayerSearch'
 import OFSDataService from '../services/ofsDataService'
 import { GoogleSheetsService } from '../services/googleSheetsService'
@@ -49,14 +50,19 @@ export default function Profile() {
   const [profileBio, setProfileBio] = useState('')
   const [profileShip, setProfileShip] = useState('')
   const [profileCustomShipImage, setProfileCustomShipImage] = useState('')
+  const [profileCustomBannerImage, setProfileCustomBannerImage] = useState('')
   const [profileCustomization, setProfileCustomization] = useState(null)
   const [selectedPlayerCustomization, setSelectedPlayerCustomization] = useState(null)
   const [selectedPlayerCustomShipImage, setSelectedPlayerCustomShipImage] = useState('')
+  const [selectedPlayerCustomBannerImage, setSelectedPlayerCustomBannerImage] = useState('')
   const [shipRegistry, setShipRegistry] = useState([])
 
   // Back story scroll state
   const [showBackstoryJumpToTop, setShowBackstoryJumpToTop] = useState(false)
   const backstoryRef = React.useRef(null)
+  
+  // Backstory modal state
+  const [showBackstoryModal, setShowBackstoryModal] = useState(false)
 
   // Get current displayed data (either logged-in user or selected player)
   const currentDisplayData = isViewingOtherPlayer && selectedPlayerData ? selectedPlayerData : memberData
@@ -116,8 +122,17 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         
         setProfileBio(testBio)
         setProfileShip(testShip)
+        setProfileCustomShipImage('')
+        setProfileCustomBannerImage('')
         
-        console.log('Test profile data set:', { bio: testBio.length + ' characters', ship: testShip })
+        // Set test memberData with role for localhost
+        setMemberData({
+          username: 'TestUser',
+          role: 'The Guardian', // Test with Guardian role
+          discriminator: '1234'
+        })
+        
+        console.log('Test profile data set:', { bio: testBio.length + ' characters', ship: testShip, role: 'The Guardian' })
         return // Skip API calls for localhost
       }
 
@@ -125,9 +140,11 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       const savedProfile = localStorage.getItem(`profile_${user.id}`)
       if (savedProfile) {
         try {
-          const { bio, ship, customization } = JSON.parse(savedProfile)
+          const { bio, ship, customShipImage, customBannerImage, customization } = JSON.parse(savedProfile)
           setProfileBio(bio || '')
           setProfileShip(ship || '')
+          setProfileCustomShipImage(customShipImage || '')
+          setProfileCustomBannerImage(customBannerImage || '')
           setProfileCustomization(customization || null)
         } catch (error) {
           console.error('Error loading profile data from localStorage:', error)
@@ -1136,6 +1153,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       setProfileBio(profileData.bio)
       setProfileShip(profileData.ship)
       setProfileCustomShipImage(profileData.customShipImage || '')
+      setProfileCustomBannerImage(profileData.customBannerImage || '')
       setProfileCustomization(profileData.customization || null)
       
       // Save ship selection to Google Sheets Member Log
@@ -1452,6 +1470,27 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
     return '/Nebula BG.jpeg'
   }
 
+  // Get path background image based on role
+  const getPathImageUrl = (role) => {
+    const pathImages = {
+      'The Explorer': '/Role Path/The Explorer - Hero.png',
+      'The Guardian': '/Role Path/The Guardian - Hero.png', 
+      'The Healer': '/Role Path/The Healer - Hero.png',
+      'The Infiltrator': '/Role Path/The Infiltrator - Hero.png',
+      'The Merchant': '/Role Path/The Merchant - Hero.png',
+      'Support': '/Role Path/The Healer - Hero.png', // Map Support role to Healer image
+      'Command': '/Role Path/The Guardian - Hero.png', // Map Command role to Guardian image
+      'Combat': '/Role Path/The Warmaster - Hero.png', // Map Combat role to Warmaster image
+      'Pilot': '/Role Path/The Explorer - Hero.png', // Map Pilot role to Explorer image
+      'Member': '/Role Path/The Explorer - Hero.png' // Default mapping
+    }
+    
+    const rawPath = pathImages[role] || '/Nebula BG.jpeg'
+    // Properly encode the URL to handle spaces
+    const encodedPath = encodeURI(rawPath)
+    return encodedPath
+  }
+
   const formatJoinDate = (timestamp) => {
     if (!timestamp) return 'Unknown'
     const date = new Date(parseInt(timestamp) / 4194304 + 1420070400000)
@@ -1685,8 +1724,36 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                 backgroundRepeat: 'no-repeat'
               }}
             >
-              <div className="bio-header" id="backstory-top">
-                <h3>Back Story</h3>
+              <div className="bio-header" id="backstory-top" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <h3 style={{ margin: 0 }}>Back Story</h3>
+                <button
+                  onClick={() => setShowBackstoryModal(true)}
+                  className="expand-backstory-btn"
+                  style={{
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    color: '#4A90E2',
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '300',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(0, 0, 0, 0.5)'
+                    e.target.style.border = '1px solid rgba(255, 255, 255, 0.2)'
+                    e.target.style.transform = 'scale(1.05)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(0, 0, 0, 0.3)'
+                    e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'
+                    e.target.style.transform = 'scale(1)'
+                  }}
+                  title="Open backstory in full screen"
+                >
+                  ⛶ Expand
+                </button>
               </div>
               <div 
                 className="bio-content"
@@ -1849,7 +1916,19 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         currentBio={profileBio}
         currentShip={profileShip}
         currentCustomShipImage={profileCustomShipImage}
+        currentCustomBannerImage={profileCustomBannerImage}
         currentCustomization={profileCustomization}
+      />
+
+      {/* Backstory Modal */}
+      <BackstoryModal
+        isOpen={showBackstoryModal}
+        onClose={() => setShowBackstoryModal(false)}
+        playerName={isViewingOtherPlayer ? (selectedPlayerData?.username || 'Unknown Player') : (memberData?.username || 'Your')}
+        backstory={isViewingOtherPlayer ? selectedPlayerBackstory : profileBio}
+        pathImage={getPathImageUrl(isViewingOtherPlayer ? selectedPlayerData?.role : memberData?.role)}
+        customBannerImage={isViewingOtherPlayer ? selectedPlayerCustomBannerImage : profileCustomBannerImage}
+        formatBackstoryText={formatBackstoryText}
       />
 
       <Footer />

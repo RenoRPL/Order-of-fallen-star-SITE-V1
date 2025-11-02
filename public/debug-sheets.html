@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Google Sheets Data</title>
+</head>
+<body>
+    <h1>Google Sheets Debug Tool</h1>
+    <p>This will fetch and display the actual CSV data from the Google Sheets to verify column mappings.</p>
+    
+    <button onclick="debugSheets()">Debug Sheets Data</button>
+    <div id="output"></div>
+
+    <script>
+        async function debugSheets() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<p>Fetching data...</p>';
+            
+            try {
+                // Use the same URLs as in the service
+                const spreadsheetId = '12OiRHpEALj1hzXRxaXgBOWjHtmUT5hg2ztxIgr4J4y8';
+                const sheetGid = '1245860458'; // Patrols_User_Totals
+                const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${sheetGid}`;
+                
+                console.log('Fetching from:', csvUrl);
+                
+                const response = await fetch(csvUrl);
+                const csvText = await response.text();
+                
+                console.log('CSV Response:', csvText);
+                
+                // Parse first few rows
+                const lines = csvText.split('\n').filter(line => line.trim());
+                const headers = lines[0].split(',').map(h => h.replace(/"/g, ''));
+                
+                let html = '<h2>CSV Data Preview</h2>';
+                html += '<h3>Headers:</h3>';
+                html += '<pre>' + headers.map((h, i) => `Column ${String.fromCharCode(65 + i)} (${i}): ${h}`).join('\n') + '</pre>';
+                
+                html += '<h3>First 5 rows:</h3>';
+                html += '<table border="1" style="border-collapse: collapse;">';
+                html += '<tr>';
+                for (let i = 0; i < Math.min(headers.length, 15); i++) {
+                    html += `<th>${String.fromCharCode(65 + i)}<br/>${headers[i] || 'Empty'}</th>`;
+                }
+                html += '</tr>';
+                
+                for (let rowIndex = 1; rowIndex <= Math.min(5, lines.length - 1); rowIndex++) {
+                    const values = parseCSVLine(lines[rowIndex]);
+                    html += '<tr>';
+                    for (let i = 0; i < Math.min(headers.length, 15); i++) {
+                        html += `<td>${values[i] || ''}</td>`;
+                    }
+                    html += '</tr>';
+                }
+                html += '</table>';
+                
+                html += '<h3>Column Mapping Analysis:</h3>';
+                html += '<pre>';
+                html += 'Current mapping in googleSheetsService.js:\n';
+                html += 'Column D (3): totalLength (Total Hours)\n';
+                html += 'Column E (4): fpsKills (Ground Kills)\n';
+                html += 'Column F (5): shipKills (Pilot Kills)\n';
+                html += 'Column G (6): crusades\n';
+                html += 'Column H (7): turretKills\n';
+                html += 'Column I (8): quests\n';
+                html += 'Column J (9): ledQuests\n';
+                html += 'Column K (10): ledCrusades\n';
+                html += '</pre>';
+                
+                output.innerHTML = html;
+                
+            } catch (error) {
+                output.innerHTML = `<p>Error: ${error.message}</p>`;
+                console.error('Debug error:', error);
+            }
+        }
+        
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.replace(/"/g, ''));
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current.replace(/"/g, ''));
+            return result;
+        }
+    </script>
+</body>
+</html>

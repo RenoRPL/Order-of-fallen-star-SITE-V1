@@ -3,12 +3,15 @@ import OFSDataService from '../services/ofsDataService'
 import RichTextEditor from './RichTextEditor'
 import './EditProfileModal.css'
 
-export default function EditProfileModal({ isOpen, onClose, onSave, currentBio = '', currentShip = '', currentCustomShipImage = '', currentCustomization = null }) {
+export default function EditProfileModal({ isOpen, onClose, onSave, currentBio = '', currentShip = '', currentCustomShipImage = '', currentCustomBannerImage = '', currentCustomization = null }) {
   const [bio, setBio] = useState(currentBio)
   const [selectedShip, setSelectedShip] = useState(currentShip)
   const [customShipImage, setCustomShipImage] = useState(currentCustomShipImage)
   const [customShipImageFile, setCustomShipImageFile] = useState(null)
   const [customShipImagePreview, setCustomShipImagePreview] = useState(currentCustomShipImage)
+  const [customBannerImage, setCustomBannerImage] = useState(currentCustomBannerImage)
+  const [customBannerImageFile, setCustomBannerImageFile] = useState(null)
+  const [customBannerImagePreview, setCustomBannerImagePreview] = useState(currentCustomBannerImage)
   const [isUploadingImage, setIsUploadingImage] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [ships, setShips] = useState([])
@@ -88,12 +91,15 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
       setCustomShipImage(currentCustomShipImage)
       setCustomShipImagePreview(currentCustomShipImage)
       setCustomShipImageFile(null)
+      setCustomBannerImage(currentCustomBannerImage)
+      setCustomBannerImagePreview(currentCustomBannerImage)
+      setCustomBannerImageFile(null)
       setProgressBarTheme(currentCustomization?.progressBarTheme || 'classic')
       setCustomHue(currentCustomization?.customHue || 200)
       setProfilePageTheme(currentCustomization?.profilePageTheme || 'default')
       setProfileCustomHue(currentCustomization?.profileCustomHue || 220)
     }
-  }, [isOpen, currentBio, currentShip, currentCustomShipImage, currentCustomization])
+  }, [isOpen, currentBio, currentShip, currentCustomShipImage, currentCustomBannerImage, currentCustomization])
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0]
@@ -129,6 +135,46 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
     setCustomShipImage('')
     // Reset file input
     const fileInput = document.getElementById('custom-ship-image')
+    if (fileInput) {
+      fileInput.value = ''
+    }
+  }
+
+  // Banner image upload handlers
+  const handleBannerImageUpload = (event) => {
+    const file = event.target.files[0]
+    if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
+      if (!validTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPG, PNG, or GIF)')
+        return
+      }
+
+      // Validate file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024 // 5MB in bytes
+      if (file.size > maxSize) {
+        alert('Image file is too large. Please select an image smaller than 5MB.')
+        return
+      }
+
+      setCustomBannerImageFile(file)
+      
+      // Create preview URL
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setCustomBannerImagePreview(e.target.result)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleRemoveCustomBannerImage = () => {
+    setCustomBannerImageFile(null)
+    setCustomBannerImagePreview('')
+    setCustomBannerImage('')
+    // Reset file input
+    const fileInput = document.getElementById('custom-banner-image')
     if (fileInput) {
       fileInput.value = ''
     }
@@ -239,18 +285,19 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
       }
 
       let finalCustomShipImage = customShipImage
+      let finalCustomBannerImage = customBannerImage
 
       // Upload custom ship image if a new file was selected
       if (customShipImageFile) {
-        console.log('Starting image upload for file:', customShipImageFile.name)
+        console.log('Starting ship image upload for file:', customShipImageFile.name)
         try {
           const uploadedUrl = await uploadImageToImgur(customShipImageFile)
           if (uploadedUrl) {
             finalCustomShipImage = uploadedUrl
-            console.log('Image upload successful, URL:', uploadedUrl)
+            console.log('Ship image upload successful, URL:', uploadedUrl)
           } else {
-            console.error('Image upload returned null/undefined')
-            const continueWithoutImage = confirm('Failed to upload image. Do you want to save your profile without the custom ship image?')
+            console.error('Ship image upload returned null/undefined')
+            const continueWithoutImage = confirm('Failed to upload ship image. Do you want to save your profile without the custom ship image?')
             if (!continueWithoutImage) {
               setIsSaving(false)
               return // Exit if user doesn't want to continue
@@ -259,7 +306,7 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
             finalCustomShipImage = ''
           }
         } catch (uploadError) {
-          console.error('Image upload error:', uploadError)
+          console.error('Ship image upload error:', uploadError)
           // Check if it's a configuration error
           if (uploadError.message && uploadError.message.includes('not configured')) {
             const continueWithoutImage = confirm('Image upload service is not yet configured by administrator. Do you want to save your profile without the custom ship image for now?')
@@ -270,7 +317,7 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
             // Continue with empty custom image
             finalCustomShipImage = ''
           } else {
-            const continueWithoutImage = confirm(`Failed to upload image: ${uploadError.message || 'Unknown error'}. Do you want to save your profile without the custom ship image?`)
+            const continueWithoutImage = confirm(`Failed to upload ship image: ${uploadError.message || 'Unknown error'}. Do you want to save your profile without the custom ship image?`)
             if (!continueWithoutImage) {
               setIsSaving(false)
               return // Exit if user doesn't want to continue
@@ -281,10 +328,52 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
         }
       }
 
+      // Upload custom banner image if a new file was selected
+      if (customBannerImageFile) {
+        console.log('Starting banner image upload for file:', customBannerImageFile.name)
+        try {
+          const uploadedUrl = await uploadImageToImgur(customBannerImageFile)
+          if (uploadedUrl) {
+            finalCustomBannerImage = uploadedUrl
+            console.log('Banner image upload successful, URL:', uploadedUrl)
+          } else {
+            console.error('Banner image upload returned null/undefined')
+            const continueWithoutImage = confirm('Failed to upload banner image. Do you want to save your profile without the custom banner image?')
+            if (!continueWithoutImage) {
+              setIsSaving(false)
+              return // Exit if user doesn't want to continue
+            }
+            // Continue with empty custom banner image
+            finalCustomBannerImage = ''
+          }
+        } catch (uploadError) {
+          console.error('Banner image upload error:', uploadError)
+          // Check if it's a configuration error
+          if (uploadError.message && uploadError.message.includes('not configured')) {
+            const continueWithoutImage = confirm('Image upload service is not yet configured by administrator. Do you want to save your profile without the custom banner image for now?')
+            if (!continueWithoutImage) {
+              setIsSaving(false)
+              return // Exit if user doesn't want to continue
+            }
+            // Continue with empty custom banner image
+            finalCustomBannerImage = ''
+          } else {
+            const continueWithoutImage = confirm(`Failed to upload banner image: ${uploadError.message || 'Unknown error'}. Do you want to save your profile without the custom banner image?`)
+            if (!continueWithoutImage) {
+              setIsSaving(false)
+              return // Exit if user doesn't want to continue
+            }
+            // Continue with empty custom banner image
+            finalCustomBannerImage = ''
+          }
+        }
+      }
+
       console.log('Saving profile with data:', {
         bio: bio.trim().length + ' characters',
         ship: selectedShip,
-        customShipImage: finalCustomShipImage ? 'Custom image provided' : 'No custom image',
+        customShipImage: finalCustomShipImage ? 'Custom ship image provided' : 'No custom ship image',
+        customBannerImage: finalCustomBannerImage ? 'Custom banner image provided' : 'No custom banner image',
         customization: { progressBarTheme, customHue, profilePageTheme, profileCustomHue }
       })
       
@@ -292,6 +381,7 @@ export default function EditProfileModal({ isOpen, onClose, onSave, currentBio =
         bio: bio.trim(),
         ship: selectedShip,
         customShipImage: finalCustomShipImage,
+        customBannerImage: finalCustomBannerImage,
         customization: { progressBarTheme, customHue, profilePageTheme, profileCustomHue }
       })
       
@@ -407,6 +497,58 @@ Use the toolbar above to format your text with different sizes, bold, underline,
                     </span>
                     <span className="upload-note">
                       Supports JPG, PNG, GIF up to 5MB
+                    </span>
+                  </div>
+                </label>
+              )}
+            </div>
+          </div>
+
+          {/* Custom Banner Image Upload */}
+          <div className="form-section">
+            <label htmlFor="custom-banner-image" className="form-label">
+              Custom Banner Image (Optional)
+              <span className="form-note">Upload a custom banner for backstory popup (recommended: 800x400px)</span>
+            </label>
+            
+            <div className="custom-image-upload">
+              <input
+                type="file"
+                id="custom-banner-image"
+                accept="image/jpeg,image/jpg,image/png,image/gif"
+                onChange={handleBannerImageUpload}
+                className="image-upload-input"
+                disabled={isUploadingImage || isSaving}
+              />
+              
+              {customBannerImagePreview && (
+                <div className="image-preview">
+                  <img 
+                    src={customBannerImagePreview} 
+                    alt="Custom banner preview" 
+                    className="preview-image"
+                    style={{ aspectRatio: '2/1', objectFit: 'cover' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleRemoveCustomBannerImage}
+                    className="remove-image-btn"
+                    disabled={isUploadingImage || isSaving}
+                  >
+                    ✕ Remove
+                  </button>
+                </div>
+              )}
+              
+              {!customBannerImagePreview && (
+                <label htmlFor="custom-banner-image" className="upload-area">
+                  <div className="upload-content">
+                    <span className="upload-icon">🖼️</span>
+                    <span className="upload-text">
+                      Click to select a banner image or drag and drop
+                    </span>
+                    <span className="upload-note">
+                      Supports JPG, PNG, GIF up to 5MB | Recommended: 800x400px
                     </span>
                   </div>
                 </label>

@@ -25,9 +25,11 @@ export default function Roster() {
       setIsLoading(true)
       try {
         const allMembers = await OFSDataService.getAllMemberData()
-        // Filter members who have a rank (column C is not empty)
+        // Filter members who have a rank (column C is not empty) and exclude Serf rank
         const membersWithRank = allMembers.filter(member => 
-          member.Rank && member.Rank.trim() !== ''
+          member.Rank && 
+          member.Rank.trim() !== '' && 
+          member.Rank.toLowerCase() !== 'serf'
         )
         setMembers(membersWithRank)
         console.log('Loaded roster members:', membersWithRank.length)
@@ -40,8 +42,10 @@ export default function Roster() {
     fetchMembers()
   }, [])
 
-  // Get unique ranks and roles for filters
-  const uniqueRanks = [...new Set(members.map(member => member.Rank).filter(Boolean))].sort()
+  // Get unique ranks and roles for filters (excluding Serf)
+  const uniqueRanks = [...new Set(members.map(member => member.Rank).filter(rank => 
+    rank && rank.toLowerCase() !== 'serf'
+  ))].sort()
   const uniqueRoles = [...new Set(members.map(member => member.Role).filter(Boolean))].sort()
 
   // Effect to handle filtering and sorting
