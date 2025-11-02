@@ -10,8 +10,10 @@ export default function RankProgressBar({
   customization = null
 }) {
   const [allRanks, setAllRanks] = useState([])
+  const [progressRequirements, setProgressRequirements] = useState([])
   const [currentRankData, setCurrentRankData] = useState(null)
   const [nextRankData, setNextRankData] = useState(null)
+  const [currentProgressData, setCurrentProgressData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showTooltip, setShowTooltip] = useState(false)
 
@@ -74,21 +76,34 @@ export default function RankProgressBar({
   const loadRankData = async () => {
     try {
       setLoading(true)
-      const ranks = await OFSDataService.getAllRanks()
+      const [ranks, progressData] = await Promise.all([
+        OFSDataService.getAllRanks(),
+        OFSDataService.getProgressRequirements()
+      ])
+      
       setAllRanks(ranks)
+      setProgressRequirements(progressData)
 
       if (currentRank) {
+        // Find current rank info from ranks sheet
         const currentRankInfo = ranks.find(rank => rank['Rank Name'] === currentRank)
         setCurrentRankData(currentRankInfo)
 
-        // Find next rank in progression
-        const currentIndex = rankOrder.indexOf(currentRank)
-        if (currentIndex >= 0 && currentIndex < rankOrder.length - 1) {
-          const nextRankName = rankOrder[currentIndex + 1]
-          const nextRankInfo = ranks.find(rank => rank['Rank Name'] === nextRankName)
-          setNextRankData(nextRankInfo)
-        } else {
-          setNextRankData(null) // Already at max rank
+        // Find current rank progress requirements from progress sheet  
+        const currentProgressInfo = progressData.find(progress => progress['Rank'] === currentRank)
+        setCurrentProgressData(currentProgressInfo)
+
+        // Find next rank in progression based on tier system
+        if (currentRankInfo?.Tier) {
+          const currentTier = parseInt(currentRankInfo.Tier)
+          const nextTier = currentTier - 1 // Lower tier number = higher rank
+          
+          if (nextTier >= 1) {
+            const nextRankInfo = ranks.find(rank => parseInt(rank.Tier) === nextTier)
+            setNextRankData(nextRankInfo)
+          } else {
+            setNextRankData(null) // Already at max rank
+          }
         }
       }
     } catch (error) {
@@ -98,58 +113,92 @@ export default function RankProgressBar({
     }
   }
 
-  const parseRequirements = (requirementsText) => {
-    if (!requirementsText) return []
-    
-    // Split by common delimiters and clean up
-    const requirements = requirementsText
-      .split(/[,;\n]/)
-      .map(req => req.trim())
-      .filter(req => req.length > 0)
+  // Calculate progress based on the Progress sheet requirements
+  const calculateProgressFromSheet = (progressData, stats, memberData) => {
+    if (!progressData || !stats || !memberData) return { progress: 0, requirements: [] }
 
-    return requirements
-  }
+    const requirements = []
+    let totalRequirements = 0
+    let metRequirements = 0
 
-  const calculateProgress = (requirement, stats, memberData) => {
-    if (!requirement || !stats) return 0
+    // Get time in service from Member Log (column G)
+    const timeInService = memberData['Time in Service'] || '0 days'
+    const serviceDays = parseInt(timeInService.replace(/\D/g, '')) || 0
 
-    const reqLower = requirement.toLowerCase()
-    
-    // Extract numbers from requirement text
-    const numberMatch = requirement.match(/(\d+)/)
-    const requiredAmount = numberMatch ? parseInt(numberMatch[1]) : 0
-
-    let currentAmount = 0
-
-    // Parse different types of requirements
-    if (reqLower.includes('quest') && reqLower.includes('led')) {
-      currentAmount = parseInt(stats.ledQuests) || 0
-    } else if (reqLower.includes('quest')) {
-      currentAmount = parseInt(stats.quests) || 0
-    } else if (reqLower.includes('crusade') && reqLower.includes('led')) {
-      currentAmount = parseInt(stats.ledCrusades) || 0
-    } else if (reqLower.includes('crusade')) {
-      currentAmount = parseInt(stats.crusades) || 0
-    } else if (reqLower.includes('kill') && reqLower.includes('ground')) {
-      currentAmount = parseInt(stats.fpsKills) || 0
-    } else if (reqLower.includes('kill') && (reqLower.includes('ship') || reqLower.includes('pilot'))) {
-      currentAmount = parseInt(stats.shipKills) || 0
-    } else if (reqLower.includes('kill') && reqLower.includes('turret')) {
-      currentAmount = parseInt(stats.turretKills) || 0
-    } else if (reqLower.includes('hour')) {
-      currentAmount = parseInt(stats.totalLength) || 0
-    } else if (reqLower.includes('month') || reqLower.includes('time')) {
-      // Calculate months in service
-      if (memberData?.['Join Date']) {
-        const joinDate = new Date(memberData['Join Date'])
-        const now = new Date()
-        const monthsDiff = (now.getFullYear() - joinDate.getFullYear()) * 12 + (now.getMonth() - joinDate.getMonth())
-        currentAmount = monthsDiff
+    // Parse each requirement from the Progress sheet
+    const requirementChecks = [
+      {
+        field: 'Crusade/Quest Led Total',
+        current: (parseInt(stats.ledQuests) || 0) + (parseInt(stats.ledCrusades) || 0),
+        label: 'Total Led (Quests + Crusades)'
+      },
+      {
+        field: 'Crusade Led',  
+        current: parseInt(stats.ledCrusades) || 0,
+        label: 'Crusades Led'
+      },
+      {
+        field: 'Quests Led',
+        current: parseInt(stats.ledQuests) || 0,
+        label: 'Quests Led'
+      },
+      {
+        field: 'Pilot Kills',
+        current: parseInt(stats.shipKills) || 0,
+        label: 'Pilot Kills'
+      },
+      {
+        field: 'Ground Kills',
+        current: parseInt(stats.fpsKills) || 0,
+        label: 'Ground Kills'
+      },
+      {
+        field: 'Turret Kills',
+        current: parseInt(stats.turretKills) || 0,
+        label: 'Turret Kills'
+      },
+      {
+        field: 'Crusade/Quest Total',
+        current: (parseInt(stats.quests) || 0) + (parseInt(stats.crusades) || 0),
+        label: 'Total Completed (Quests + Crusades)'
+      },
+      {
+        field: 'Quests Completed',
+        current: parseInt(stats.quests) || 0,
+        label: 'Quests Completed'
+      },
+      {
+        field: 'Crusade Completed',
+        current: parseInt(stats.crusades) || 0,
+        label: 'Crusades Completed'
+      },
+      {
+        field: 'Time in Service',
+        current: serviceDays,
+        label: 'Days in Service'
       }
-    }
+    ]
 
-    if (requiredAmount === 0) return 100 // No specific number requirement
-    return Math.min(100, (currentAmount / requiredAmount) * 100)
+    requirementChecks.forEach(check => {
+      const required = parseInt(progressData[check.field]) || 0
+      if (required > 0) {
+        totalRequirements++
+        const isMet = check.current >= required
+        if (isMet) metRequirements++
+        
+        requirements.push({
+          label: check.label,
+          current: check.current,
+          required: required,
+          progress: Math.min(100, (check.current / required) * 100),
+          met: isMet
+        })
+      }
+    })
+
+    const overallProgress = totalRequirements > 0 ? Math.round((metRequirements / totalRequirements) * 100) : 100
+    
+    return { progress: overallProgress, requirements, metRequirements, totalRequirements }
   }
 
   const getProgressColor = (progress) => {
@@ -158,73 +207,6 @@ export default function RankProgressBar({
     if (progress >= 50) return '#ffaa00'
     if (progress >= 25) return '#ff6b35'
     return '#ff4757'
-  }
-
-  const calculateOverallProgress = (requirements, stats, memberData) => {
-    if (!requirements || requirements.length === 0) return 0
-
-    const progressValues = requirements.map(requirement => 
-      calculateProgress(requirement, stats, memberData)
-    )
-
-    const totalProgress = progressValues.reduce((sum, progress) => sum + progress, 0)
-    return Math.round(totalProgress / requirements.length)
-  }
-
-  const getRequirementsBreakdown = (requirements, stats, memberData) => {
-    if (!requirements || !stats || !memberData) return []
-
-    return requirements.map(requirement => {
-      const reqLower = requirement.toLowerCase()
-      const numberMatch = requirement.match(/(\d+)/)
-      const requiredAmount = numberMatch ? parseInt(numberMatch[1]) : 0
-      
-      let currentAmount = 0
-      let type = ''
-
-      if (reqLower.includes('quest') && reqLower.includes('led')) {
-        currentAmount = parseInt(stats.ledQuests) || 0
-        type = 'Quests Led'
-      } else if (reqLower.includes('quest')) {
-        currentAmount = parseInt(stats.quests) || 0
-        type = 'Quests Completed'
-      } else if (reqLower.includes('crusade') && reqLower.includes('led')) {
-        currentAmount = parseInt(stats.ledCrusades) || 0
-        type = 'Crusades Led'
-      } else if (reqLower.includes('crusade')) {
-        currentAmount = parseInt(stats.crusades) || 0
-        type = 'Crusades Completed'
-      } else if (reqLower.includes('kill') && reqLower.includes('ground')) {
-        currentAmount = parseInt(stats.fpsKills) || 0
-        type = 'Ground Kills'
-      } else if (reqLower.includes('kill') && (reqLower.includes('ship') || reqLower.includes('pilot'))) {
-        currentAmount = parseInt(stats.shipKills) || 0
-        type = 'Ship Kills'
-      } else if (reqLower.includes('kill') && reqLower.includes('turret')) {
-        currentAmount = parseInt(stats.turretKills) || 0
-        type = 'Turret Kills'
-      } else if (reqLower.includes('hour')) {
-        currentAmount = parseInt(stats.totalLength) || 0
-        type = 'Hours Played'
-      } else if (reqLower.includes('month') || reqLower.includes('time')) {
-        if (memberData?.['Join Date']) {
-          const joinDate = new Date(memberData['Join Date'])
-          const now = new Date()
-          const monthsDiff = (now.getFullYear() - joinDate.getFullYear()) * 12 + (now.getMonth() - joinDate.getMonth())
-          currentAmount = monthsDiff
-        }
-        type = 'Months in Service'
-      } else {
-        type = 'Other'
-      }
-
-      return {
-        type,
-        current: currentAmount,
-        required: requiredAmount,
-        progress: requiredAmount > 0 ? Math.min(100, (currentAmount / requiredAmount) * 100) : 100
-      }
-    })
   }
 
   if (loading) {
@@ -252,11 +234,10 @@ export default function RankProgressBar({
     )
   }
 
-  const requirements = parseRequirements(nextRankData['Requirements'])
-  // TESTING: Override progress to 60% for demonstration
-  const overallProgress = 60 // calculateOverallProgress(requirements, currentStats, memberData)
+  // Calculate progress using the new Progress sheet data
+  const progressResult = calculateProgressFromSheet(currentProgressData, currentStats, memberData)
+  const { progress: overallProgress, requirements: requirementsBreakdown } = progressResult
   const overallProgressColor = currentTheme.primary
-  const requirementsBreakdown = getRequirementsBreakdown(requirements, currentStats, memberData)
 
   return (
     <div className={`rank-progress-bar-inline ${className}`}>
@@ -295,11 +276,17 @@ export default function RankProgressBar({
         {showTooltip && requirementsBreakdown.length > 0 && (
           <div className="requirements-tooltip">
             <div className="tooltip-header">Requirements for {nextRankData['Rank Name']}</div>
+            {currentProgressData?.['Detail Req'] && (
+              <div className="tooltip-step">
+                <span className="step-info">📋 {currentProgressData['Detail Req']}</span>
+              </div>
+            )}
             {requirementsBreakdown.map((req, index) => (
-              <div key={index} className="tooltip-requirement">
-                <span className="req-type">{req.type}:</span>
+              <div key={index} className={`tooltip-requirement ${req.met ? 'completed' : ''}`}>
+                <span className="req-type">{req.label}:</span>
                 <span className="req-progress">{req.current}/{req.required}</span>
                 <span className="req-percentage">({Math.round(req.progress)}%)</span>
+                {req.met && <span className="req-checkmark">✓</span>}
               </div>
             ))}
           </div>
