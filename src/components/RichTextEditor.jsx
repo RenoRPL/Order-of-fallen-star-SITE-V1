@@ -107,26 +107,42 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
 
   const applyFontSize = (size) => {
     const selection = window.getSelection()
-    if (selection.rangeCount > 0) {
+    if (selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed) {
+      // Use a more reliable method
+      document.execCommand('removeFormat')
       const range = selection.getRangeAt(0)
-      if (!range.collapsed) {
-        const span = document.createElement('span')
-        span.style.fontSize = size
-        try {
-          range.surroundContents(span)
-          selection.removeAllRanges()
-          selection.addRange(range)
-          handleContentChange()
-        } catch (e) {
-          // Fallback if surroundContents fails
-          document.execCommand('fontSize', false, '7')
-          const fontElements = editorRef.current.querySelectorAll('font[size="7"]')
+      const span = document.createElement('span')
+      span.style.fontSize = size
+      span.style.lineHeight = '1.4'
+      
+      try {
+        const contents = range.extractContents()
+        span.appendChild(contents)
+        range.insertNode(span)
+        
+        // Clear and reselect the content
+        selection.removeAllRanges()
+        const newRange = document.createRange()
+        newRange.selectNodeContents(span)
+        selection.addRange(newRange)
+        
+        handleContentChange()
+      } catch (e) {
+        console.error('Font size application failed:', e)
+        // Fallback method
+        document.execCommand('fontSize', false, '3')
+        setTimeout(() => {
+          const fontElements = editorRef.current.querySelectorAll('font[size="3"]')
           fontElements.forEach(el => {
-            el.style.fontSize = size
-            el.removeAttribute('size')
+            const parent = el.parentNode
+            const span = document.createElement('span')
+            span.style.fontSize = size
+            span.style.lineHeight = '1.4'
+            span.innerHTML = el.innerHTML
+            parent.replaceChild(span, el)
           })
           handleContentChange()
-        }
+        }, 10)
       }
     }
     editorRef.current.focus()
@@ -154,7 +170,7 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
             }}
             title="Small Text"
           >
-            <span style={{ fontSize: '12px' }}>S</span>
+            <span style={{ fontSize: '11px' }}>S</span>
           </button>
           <button
             type="button"
@@ -165,14 +181,14 @@ export default function RichTextEditor({ value, onChange, placeholder, maxLength
             }}
             title="Normal Text"
           >
-            <span style={{ fontSize: '14px' }}>M</span>
+            <span style={{ fontSize: '13px' }}>M</span>
           </button>
           <button
             type="button"
             className="toolbar-btn"
             onMouseDown={(e) => {
               e.preventDefault()
-              applyFontSize('16px')
+              applyFontSize('20px')
             }}
             title="Large Text"
           >
