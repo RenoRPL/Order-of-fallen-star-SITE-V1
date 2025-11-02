@@ -323,9 +323,9 @@
     inset 0 0 50px rgba(0, 0, 0, 0.5),
     0 0 100px color-mix(in srgb, var(--profile-accent, #39b9ff) 10%, transparent);
   display: grid;
-  grid-template-columns: auto 1fr 1fr auto;
+  grid-template-columns: auto auto 1fr auto auto;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   min-height: 300px;
 }
 
@@ -593,10 +593,9 @@
   align-items: center;
   position: relative;
   z-index: 3;
-  max-width: 300px;
+  max-width: 280px;
   margin-top: 1rem;
-  padding: 0 1rem;
-  justify-self: end;
+  padding: 0 0.5rem;
 }
 
 .quest-display {
@@ -682,10 +681,9 @@
   align-items: center;
   position: relative;
   z-index: 3;
-  max-width: 300px;
+  max-width: 280px;
   margin-top: 1rem;
-  padding: 0 1rem;
-  justify-self: start;
+  padding: 0 0.5rem;
 }
 
 .active-quest-display {
