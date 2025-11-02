@@ -430,8 +430,8 @@ export default function RankProgressBar({
         </div>
         <span className="next-rank-welcome">{nextRankData?.['Rank Name'] || 'Unknown'}</span>
 
-        {/* Temporarily disabled for testing
-        {(showRankTooltip || rankTooltipLocked) && (
+        {/* Hover/Click Tooltip - Temporarily disabled for testing */}
+        {false && (showRankTooltip || rankTooltipLocked) && (
           <div className="requirements-tooltip" style={{
             position: 'absolute',
             top: '100%',
@@ -618,7 +618,6 @@ export default function RankProgressBar({
             </div>
           </div>
         )}
-        Temporarily disabled for testing */}
       </div>
     </div>
   )
