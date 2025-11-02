@@ -71,6 +71,7 @@ export default function Profile() {
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
   const [tooltipParticipants, setTooltipParticipants] = useState([])
   const [tooltipQuestName, setTooltipQuestName] = useState('')
+  const [tooltipLocked, setTooltipLocked] = useState(false)
 
   // Get current displayed data (either logged-in user or selected player)
   const currentDisplayData = isViewingOtherPlayer && selectedPlayerData ? selectedPlayerData : memberData
@@ -167,6 +168,42 @@ export default function Profile() {
     
     console.log(`Found ${participants.length} participants for quest "${questName}":`, participants)
     return participants
+  }
+  
+  // Tooltip control functions
+  const handleTooltipToggleLock = () => {
+    setTooltipLocked(prev => !prev)
+  }
+  
+  const handleTooltipClose = () => {
+    setShowTooltip(false)
+    setTooltipLocked(false)
+    setTooltipParticipants([])
+    setTooltipQuestName('')
+  }
+  
+  const handleTooltipMouseEnter = (e, activeQuest) => {
+    if (!tooltipLocked) {
+      const participants = getQuestParticipants(activeQuest.name)
+      setTooltipParticipants(participants)
+      setTooltipQuestName(activeQuest.name)
+      setTooltipPosition({ x: e.clientX, y: e.clientY })
+      setShowTooltip(true)
+    }
+  }
+  
+  const handleTooltipMouseMove = (e) => {
+    if (!tooltipLocked) {
+      setTooltipPosition({ x: e.clientX, y: e.clientY })
+    }
+  }
+  
+  const handleTooltipMouseLeave = () => {
+    if (!tooltipLocked) {
+      setShowTooltip(false)
+      setTooltipParticipants([])
+      setTooltipQuestName('')
+    }
   }
   
   // Debug logging for stats display
@@ -1811,21 +1848,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                 return activeQuest ? (
                   <div 
                     className="quest-display active-quest-display"
-                    onMouseEnter={(e) => {
-                      const participants = getQuestParticipants(activeQuest.name)
-                      setTooltipParticipants(participants)
-                      setTooltipQuestName(activeQuest.name)
-                      setTooltipPosition({ x: e.clientX, y: e.clientY })
-                      setShowTooltip(true)
-                    }}
-                    onMouseMove={(e) => {
-                      setTooltipPosition({ x: e.clientX, y: e.clientY })
-                    }}
-                    onMouseLeave={() => {
-                      setShowTooltip(false)
-                      setTooltipParticipants([])
-                      setTooltipQuestName('')
-                    }}
+                    onMouseEnter={(e) => handleTooltipMouseEnter(e, activeQuest)}
+                    onMouseMove={handleTooltipMouseMove}
+                    onMouseLeave={handleTooltipMouseLeave}
                   >
                     <div className="quest-header">
                       <h3>Active Quest</h3>
@@ -2118,6 +2143,9 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         questName={tooltipQuestName}
         isVisible={showTooltip}
         position={tooltipPosition}
+        isLocked={tooltipLocked}
+        onClose={handleTooltipClose}
+        onToggleLock={handleTooltipToggleLock}
       />
 
       <Footer />
