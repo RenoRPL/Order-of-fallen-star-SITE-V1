@@ -371,8 +371,36 @@
   color: var(--profile-accent, #39b9ff);
   font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   text-shadow: 0 0 10px rgba(57, 185, 255, 0.3);
+}
+
+.rank-header-section {
+  margin-bottom: 1rem;
+}
+
+.rank-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+}
+
+.current-rank, .next-rank {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.current-rank {
+  color: var(--profile-accent, #39b9ff);
+}
+
+.next-rank {
+  color: #00ff88;
 }
 
 .max-rank-info {

@@ -1996,11 +1996,25 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                 
                 {/* Center: Rank Progression Details */}
                 <div className="welcome-content rank-progression-content">
-                  <p className="welcome-subtitle">{isViewingOtherPlayer ? (selectedPlayerData?.Username || 'Unknown Player') : (currentDisplayData?.Username || user?.username || 'Warrior')} - Progression Path</p>
                   
                   {/* Current Rank Requirements */}
                   <div className="rank-requirements-section">
-                    <h3 className="requirements-title">Current Rank: {currentDisplayData?.Rank || 'Unranked'}</h3>
+                    <div className="rank-header-section">
+                      <h3 className="requirements-title">
+                        {isViewingOtherPlayer ? (selectedPlayerData?.Username || 'Unknown Player') : (currentDisplayData?.Username || user?.username || 'Warrior')} - Progression Path
+                      </h3>
+                      <div className="rank-info">
+                        <span className="current-rank">Current Rank: {currentDisplayData?.Rank || 'Unranked'}</span>
+                        {(() => {
+                          const nextRankData = getNextRankFromTier(currentDisplayData?.Rank)
+                          return nextRankData ? (
+                            <span className="next-rank">Next Rank: {nextRankData['Rank Name']}</span>
+                          ) : (
+                            <span className="next-rank">Maximum Rank Achieved!</span>
+                          )
+                        })()}
+                      </div>
+                    </div>
                     
                     {(() => {
                       const nextRankData = getNextRankFromTier(currentDisplayData?.Rank)
@@ -2019,7 +2033,6 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                       
                       return (
                         <div className="next-rank-requirements">
-                          <h4 className="next-rank-title">Next Rank: {nextRankData['Rank Name']}</h4>
                           
                           {(() => {
                             // Get progress requirements for the next rank
