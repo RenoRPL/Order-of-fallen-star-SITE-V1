@@ -1262,7 +1262,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         setTimeout(() => {
           setNavigationLocked(false)
           setClearPlayerSearch(false)
-        }, 1000) // 1 second lock
+        }, 3000) // 3 second lock for better stability
         
       } else {
         console.error('No Discord ID found for player:', player)
@@ -1282,7 +1282,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       setTimeout(() => {
         setNavigationLocked(false)
         setClearPlayerSearch(false)
-      }, 1000)
+      }, 3000) // 3 second lock for better stability
     }
   }
 
