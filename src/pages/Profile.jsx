@@ -7,6 +7,7 @@ import RSILinkModal from '../components/RSILinkModal'
 import EditProfileModal from '../components/EditProfileModal'
 import BackstoryModal from '../components/BackstoryModal'
 import PlayerSearch from '../components/PlayerSearch'
+import QuestParticipantsTooltip from '../components/QuestParticipantsTooltip'
 import OFSDataService from '../services/ofsDataService'
 import { GoogleSheetsService } from '../services/googleSheetsService'
 import './Profile.css'
@@ -16,6 +17,7 @@ export default function Profile() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [memberData, setMemberData] = useState(null)
+  const [allMemberData, setAllMemberData] = useState([])
   const [patrolData, setPatrolData] = useState([])
   const [patrolStats, setPatrolStats] = useState(null)
   const [rankData, setRankData] = useState(null)
@@ -63,6 +65,12 @@ export default function Profile() {
   
   // Backstory modal state
   const [showBackstoryModal, setShowBackstoryModal] = useState(false)
+
+  // Quest participants tooltip state
+  const [showTooltip, setShowTooltip] = useState(false)
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
+  const [tooltipParticipants, setTooltipParticipants] = useState([])
+  const [tooltipQuestName, setTooltipQuestName] = useState('')
 
   // Get current displayed data (either logged-in user or selected player)
   const currentDisplayData = isViewingOtherPlayer && selectedPlayerData ? selectedPlayerData : memberData
@@ -132,6 +140,33 @@ export default function Profile() {
       leader: questLeader || 'Unknown Leader',
       isLeader: isLeader
     }
+  }
+  
+  // Function to get all participants of a quest by searching through all member data
+  const getQuestParticipants = (questName) => {
+    if (!questName || !allMemberData || allMemberData.length === 0) {
+      return []
+    }
+    
+    const participants = []
+    
+    // Search through all member data for anyone with this quest in their Active Quest column
+    allMemberData.forEach(member => {
+      const memberActiveQuest = member['Active Quest']
+      if (memberActiveQuest && memberActiveQuest.trim() === questName.trim()) {
+        const participant = {
+          name: member['Display Name'] || member['Username'] || 'Unknown',
+          rank: member['Rank'] || 'Unknown',
+          role: member['Role'] || member['Role Path'] || 'Unknown',
+          avatar: member['Avatar'] || null,
+          discordId: member['Discord ID'] || member['discordId'] || null
+        }
+        participants.push(participant)
+      }
+    })
+    
+    console.log(`Found ${participants.length} participants for quest "${questName}":`, participants)
+    return participants
   }
   
   // Debug logging for stats display
@@ -797,6 +832,16 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
           setSelectedPlayerShip('')
           setSelectedPlayerCustomShipImage('')
           setSelectedPlayerCustomization(null)
+        }
+        
+        // Fetch all member data for quest participant lookups
+        try {
+          const allMembers = await OFSDataService.getAllMemberData()
+          setAllMemberData(allMembers)
+          console.log('Loaded all member data for quest lookups:', allMembers.length, 'members')
+        } catch (error) {
+          console.error('Error loading all member data:', error)
+          setAllMemberData([])
         }
         
       } catch (err) {
@@ -1764,7 +1809,24 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
               {(() => {
                 const activeQuest = getActiveQuest()
                 return activeQuest ? (
-                  <div className="quest-display active-quest-display">
+                  <div 
+                    className="quest-display active-quest-display"
+                    onMouseEnter={(e) => {
+                      const participants = getQuestParticipants(activeQuest.name)
+                      setTooltipParticipants(participants)
+                      setTooltipQuestName(activeQuest.name)
+                      setTooltipPosition({ x: e.clientX, y: e.clientY })
+                      setShowTooltip(true)
+                    }}
+                    onMouseMove={(e) => {
+                      setTooltipPosition({ x: e.clientX, y: e.clientY })
+                    }}
+                    onMouseLeave={() => {
+                      setShowTooltip(false)
+                      setTooltipParticipants([])
+                      setTooltipQuestName('')
+                    }}
+                  >
                     <div className="quest-header">
                       <h3>Active Quest</h3>
                       {activeQuest.isLeader && <span className="leader-badge">Leader</span>}
@@ -2048,6 +2110,14 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
         backstory={isViewingOtherPlayer ? selectedPlayerBackstory : profileBio}
         pathImage={getPathImageUrl(isViewingOtherPlayer ? selectedPlayerData?.['Role Path'] : currentDisplayData?.['Role Path'])}
         formatBackstoryText={formatBackstoryText}
+      />
+
+      {/* Quest Participants Tooltip */}
+      <QuestParticipantsTooltip
+        participants={tooltipParticipants}
+        questName={tooltipQuestName}
+        isVisible={showTooltip}
+        position={tooltipPosition}
       />
 
       <Footer />
