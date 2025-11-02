@@ -128,10 +128,10 @@
 }
 
 .suggestions-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
+  position: fixed;
+  top: auto;
+  left: auto;
+  right: auto;
   background: rgba(15, 23, 42, 0.95);
   border: 1px solid rgba(71, 85, 105, 0.5);
   border-radius: 6px;

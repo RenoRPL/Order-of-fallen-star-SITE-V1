@@ -11,6 +11,7 @@ export default function PlayerSearch({ onPlayerSelect, shouldClear }) {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 })
   const searchRef = useRef(null)
   const suggestionsRef = useRef(null)
 
@@ -74,10 +75,30 @@ export default function PlayerSearch({ onPlayerSelect, shouldClear }) {
       setFilteredMembers(limitedResults)
       setShowSuggestions(limitedResults.length > 0)
       setSelectedIndex(-1)
+      
+      // Calculate dropdown position when showing suggestions
+      if (limitedResults.length > 0) {
+        updateDropdownPosition()
+      }
     }
 
     filterAndSort()
   }, [searchTerm, members])
+
+  // Function to calculate dropdown position
+  const updateDropdownPosition = () => {
+    if (searchRef.current) {
+      const searchInput = searchRef.current.querySelector('.search-input-container')
+      if (searchInput) {
+        const rect = searchInput.getBoundingClientRect()
+        setDropdownPosition({
+          top: rect.bottom + 4,
+          left: rect.left,
+          width: rect.width
+        })
+      }
+    }
+  }
 
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value)
@@ -128,8 +149,12 @@ export default function PlayerSearch({ onPlayerSelect, shouldClear }) {
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside)
+    window.addEventListener('resize', updateDropdownPosition)
+    window.addEventListener('scroll', updateDropdownPosition)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
+      window.removeEventListener('resize', updateDropdownPosition)
+      window.removeEventListener('scroll', updateDropdownPosition)
     }
   }, [])
 
@@ -180,7 +205,15 @@ export default function PlayerSearch({ onPlayerSelect, shouldClear }) {
         </div>
 
         {showSuggestions && (
-          <div className="suggestions-dropdown" ref={suggestionsRef}>
+          <div 
+            className="suggestions-dropdown" 
+            ref={suggestionsRef}
+            style={{
+              top: `${dropdownPosition.top}px`,
+              left: `${dropdownPosition.left}px`,
+              width: `${dropdownPosition.width}px`
+            }}
+          >
             {filteredMembers.map((member, index) => (
               <div
                 key={member['User ID'] || index}
