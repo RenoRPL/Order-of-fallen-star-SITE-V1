@@ -30,12 +30,14 @@ export default function PlayerSearch({ onPlayerSelect, shouldClear }) {
       setIsLoading(true)
       try {
         const allMembers = await OFSDataService.getAllMemberData()
-        // Filter members who have a rank (column C is not empty)
+        // Filter members who have a rank (column C is not empty) and exclude Serfs
         const membersWithRank = allMembers.filter(member => 
-          member.Rank && member.Rank.trim() !== ''
+          member.Rank && 
+          member.Rank.trim() !== '' && 
+          member.Rank.trim().toLowerCase() !== 'serf'
         )
         setMembers(membersWithRank)
-        console.log('Loaded members with ranks:', membersWithRank.length)
+        console.log('Loaded ranked members (excluding Serfs):', membersWithRank.length)
       } catch (error) {
         console.error('Error fetching member data:', error)
       }
