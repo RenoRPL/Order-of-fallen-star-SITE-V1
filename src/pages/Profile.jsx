@@ -1866,6 +1866,15 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                       }
                     </span>
                   </div>
+                  <div className="player-detail-row">
+                    <span className="detail-label">Chapter:</span>
+                    <span className="detail-value">
+                      {isViewingOtherPlayer 
+                        ? (selectedPlayer?.['Chapter'] || selectedPlayer?.['chapter'] || 'Chapter: E')
+                        : (memberData?.['Chapter'] || memberData?.['chapter'] || 'Chapter: E')
+                      }
+                    </span>
+                  </div>
                   {((isViewingOtherPlayer ? selectedPlayerData?.['RSI User Name'] : memberData?.['RSI User Name']) || rsiData?.handle) && (
                     <div className="player-detail-row">
                       <span className="detail-label">RSI Handle:</span>
