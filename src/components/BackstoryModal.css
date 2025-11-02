@@ -108,7 +108,7 @@
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   line-height: 1.7;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   color: #ffffff;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
   flex: 1;
@@ -123,6 +123,8 @@
 .backstory-paragraph {
   margin-bottom: 20px;
   text-align: justify;
+  font-size: 1.3rem;
+  line-height: 1.7;
 }
 
 .backstory-paragraph:last-child {
