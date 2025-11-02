@@ -138,7 +138,7 @@
   margin-top: 4px;
   max-height: 300px;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 9999;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
