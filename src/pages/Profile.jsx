@@ -48,6 +48,7 @@ export default function Profile() {
   const [isViewingOtherPlayer, setIsViewingOtherPlayer] = useState(false)
   const [selectedPlayerLoading, setSelectedPlayerLoading] = useState(false)
   const [clearPlayerSearch, setClearPlayerSearch] = useState(false)
+  const [navigationLocked, setNavigationLocked] = useState(false) // Lock navigation to prevent race conditions
 
   // Profile editing state
   const [showEditProfileModal, setShowEditProfileModal] = useState(false)
@@ -646,6 +647,12 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       
       if (!targetUserId) return
       
+      // If navigation is locked and we're trying to fetch for a different user, skip
+      if (navigationLocked && playerId && !isViewingOtherPlayer) {
+        console.log('Navigation locked, skipping fetch for:', targetUserId)
+        return
+      }
+      
       // Determine if we're viewing another player
       const viewingOtherPlayer = !!playerId
       
@@ -655,7 +662,8 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       console.log('user?.id:', user?.id)
       console.log('targetUserId:', targetUserId)
       console.log('viewingOtherPlayer:', viewingOtherPlayer)
-      console.log('isAuthenticated:', isAuthenticated)
+      console.log('navigationLocked:', navigationLocked)
+      console.log('isViewingOtherPlayer:', isViewingOtherPlayer)
       console.log('========================')
       
       // Only update loading state if not cancelled
@@ -1058,7 +1066,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
     return () => {
       isCancelled = true
     }
-  }, [urlDiscordId, searchParams, user?.id]) // Removed isAuthenticated from dependencies
+  }, [urlDiscordId, searchParams, user?.id, navigationLocked]) // Added navigationLocked to dependencies
 
   // Fetch Google Sheets patrol stats
   useEffect(() => {
@@ -1240,17 +1248,21 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       const playerDiscordId = player['User ID']
       
       if (playerDiscordId) {
+        // Lock navigation to prevent race conditions
+        setNavigationLocked(true)
+        
         // Clear search field first
         setClearPlayerSearch(true)
         
-        // Navigate immediately - the useEffect is now more stable
+        // Navigate immediately
         console.log('Navigating to player profile:', playerDiscordId)
         navigate(`/profile/${playerDiscordId}`)
         
-        // Reset the clear trigger after navigation
+        // Unlock navigation after a delay to allow data fetching
         setTimeout(() => {
+          setNavigationLocked(false)
           setClearPlayerSearch(false)
-        }, 200)
+        }, 1000) // 1 second lock
         
       } else {
         console.error('No Discord ID found for player:', player)
@@ -1262,12 +1274,15 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
       }
     } else {
       // Deselect player - go back to own profile
+      setNavigationLocked(true)
       setClearPlayerSearch(true)
       
       navigate('/profile')
+      
       setTimeout(() => {
+        setNavigationLocked(false)
         setClearPlayerSearch(false)
-      }, 200)
+      }, 1000)
     }
   }
 
