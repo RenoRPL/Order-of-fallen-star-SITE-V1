@@ -3146,6 +3146,7 @@
 .rank-achievement {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   font-size: 1.2rem;
   font-weight: 600;
@@ -3163,4 +3164,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Max rank badge styling to replace yellow circle */
+.max-rank-badge {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+  border: 2px solid rgba(255, 215, 0, 0.5);
+}
+
+.rank-icon-badge {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }

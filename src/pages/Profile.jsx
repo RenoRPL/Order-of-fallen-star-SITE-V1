@@ -2287,12 +2287,17 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                       </div>
                     )
                   })()}
-                  <span className="role-badge">
-                    {(() => {
-                      const nextRankData = getNextRankFromTier(currentDisplayData?.Rank)
-                      return nextRankData ? nextRankData['Rank Name'] : 'Max Rank'
-                    })()}
-                  </span>
+                  <div className="max-rank-badge">
+                    <img 
+                      src={`/Ranks/${selectedPlayer?.data?.Rank}.png`}
+                      alt="Max Rank Icon" 
+                      className="rank-icon-badge"
+                      onError={(e) => {
+                        e.target.src = '/Ranks/Serf.png'
+                        e.target.style.display = 'none'
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
