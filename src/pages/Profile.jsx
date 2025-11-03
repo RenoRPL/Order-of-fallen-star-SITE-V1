@@ -2274,11 +2274,11 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                       )
                     }
                     return (
-                      <div className="max-rank-crown">
+                      <div className="max-rank-badge">
                         <img 
                           src={`/Ranks/${selectedPlayer?.data?.Rank}.png`}
-                          alt="Max Rank Crown" 
-                          className="rank-icon-crown"
+                          alt="Max Rank Icon" 
+                          className="rank-icon-badge"
                           onError={(e) => {
                             e.target.src = '/Ranks/Serf.png'
                             e.target.style.display = 'none'
@@ -2287,17 +2287,6 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                       </div>
                     )
                   })()}
-                  <div className="max-rank-badge">
-                    <img 
-                      src={`/Ranks/${selectedPlayer?.data?.Rank}.png`}
-                      alt="Max Rank Icon" 
-                      className="rank-icon-badge"
-                      onError={(e) => {
-                        e.target.src = '/Ranks/Serf.png'
-                        e.target.style.display = 'none'
-                      }}
-                    />
-                  </div>
                 </div>
               </div>
             </div>
