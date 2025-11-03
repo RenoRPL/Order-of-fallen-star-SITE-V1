@@ -2280,8 +2280,11 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                           alt="Max Rank Icon" 
                           className="rank-icon-badge"
                           onError={(e) => {
+                            console.log('Failed to load rank image:', `/Ranks/${selectedPlayer?.data?.Rank}.png`)
                             e.target.src = '/Ranks/Serf.png'
-                            e.target.style.display = 'none'
+                          }}
+                          onLoad={(e) => {
+                            console.log('Successfully loaded rank image:', e.target.src)
                           }}
                         />
                       </div>
