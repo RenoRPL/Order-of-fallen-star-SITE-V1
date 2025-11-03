@@ -2254,43 +2254,6 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                     })()}
                   </div>
                 </div>
-                
-                {/* Right: Next Rank Icon */}
-                <div className="welcome-badges">
-                  {(() => {
-                    const nextRankData = getNextRankFromTier(currentDisplayData?.Rank)
-                    if (nextRankData) {
-                      return (
-                        <div className="welcome-rank-icon-container">
-                          <img 
-                            src={`/Ranks/${nextRankData['Rank Name']}.png`}
-                            alt={`${nextRankData['Rank Name']} Rank`}
-                            className="welcome-rank-icon next-rank-preview"
-                            onError={(e) => {
-                              e.target.style.display = 'none'
-                            }}
-                          />
-                        </div>
-                      )
-                    }
-                    return (
-                      <div className="max-rank-badge">
-                        <img 
-                          src={`/Ranks/${selectedPlayer?.data?.Rank}.png`}
-                          alt="Max Rank Icon" 
-                          className="rank-icon-badge"
-                          onError={(e) => {
-                            console.log('Failed to load rank image:', `/Ranks/${selectedPlayer?.data?.Rank}.png`)
-                            e.target.src = '/Ranks/Serf.png'
-                          }}
-                          onLoad={(e) => {
-                            console.log('Successfully loaded rank image:', e.target.src)
-                          }}
-                        />
-                      </div>
-                    )
-                  })()}
-                </div>
               </div>
             </div>
           )}
