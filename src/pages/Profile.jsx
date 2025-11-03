@@ -1931,7 +1931,17 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                 }}
                               />
                             </div>
-                            <span className="next-rank-welcome">👑 Max</span>
+                            <span className="next-rank-welcome">
+                              <img 
+                                src={`/Ranks/${selectedPlayer?.data?.Rank}.png`}
+                                alt="Max Rank" 
+                                className="rank-icon-small"
+                                onError={(e) => {
+                                  e.target.src = '/Ranks/Serf.png'
+                                  e.target.style.display = 'none'
+                                }}
+                              /> Max
+                            </span>
                           </div>
                         </div>
                       )
@@ -2050,7 +2060,17 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                       if (!nextRankData) {
                         return (
                           <div className="max-rank-info">
-                            <div className="rank-achievement">🏆 Maximum Rank Achieved!</div>
+                            <div className="rank-achievement">
+                              <img 
+                                src={`/Ranks/${selectedPlayer?.data?.Rank}.png`}
+                                alt="Maximum Rank" 
+                                className="rank-icon-small"
+                                onError={(e) => {
+                                  e.target.src = '/Ranks/Serf.png'
+                                  e.target.style.display = 'none'
+                                }}
+                              /> Maximum Rank Achieved!
+                            </div>
                             <p className="rank-description">
                               You have reached the highest rank in the Order of the Fallen Star. 
                               Continue to serve with honor and lead by example.
@@ -2255,7 +2275,15 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                     }
                     return (
                       <div className="max-rank-crown">
-                        <span className="crown-icon">👑</span>
+                        <img 
+                          src={`/Ranks/${selectedPlayer?.data?.Rank}.png`}
+                          alt="Max Rank Crown" 
+                          className="rank-icon-crown"
+                          onError={(e) => {
+                            e.target.src = '/Ranks/Serf.png'
+                            e.target.style.display = 'none'
+                          }}
+                        />
                       </div>
                     )
                   })()}
