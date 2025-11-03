@@ -2117,7 +2117,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                       )}
                                       
                                       {/* Crusade/Quest Led Total */}
-                                      {nextRankRequirements['Crusade/Quest Led Total'] && (
+                                      {nextRankRequirements['Crusade/Quest Led Total'] && nextRankRequirements['Crusade/Quest Led Total'] !== 'x' && (
                                         <div className={`requirement-item ${playerStats.totalLed >= parseInt(nextRankRequirements['Crusade/Quest Led Total'] || 0) ? 'req-met' : 'req-not-met'}`}>
                                           <span className="requirement-label">Total Led (Quests/Crusades):</span>
                                           <span className="requirement-comparison">
@@ -2129,7 +2129,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                       )}
                                       
                                       {/* Crusade Led */}
-                                      {nextRankRequirements['Crusade Led'] && (
+                                      {nextRankRequirements['Crusade Led'] && nextRankRequirements['Crusade Led'] !== 'x' && (
                                         <div className={`requirement-item ${playerStats.crusadesLed >= parseInt(nextRankRequirements['Crusade Led'] || 0) ? 'req-met' : 'req-not-met'}`}>
                                           <span className="requirement-label">Crusades Led:</span>
                                           <span className="requirement-comparison">
@@ -2141,7 +2141,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                       )}
                                       
                                       {/* Quests Led */}
-                                      {nextRankRequirements['Quests Led'] && (
+                                      {nextRankRequirements['Quests Led'] && nextRankRequirements['Quests Led'] !== 'x' && (
                                         <div className={`requirement-item ${playerStats.questsLed >= parseInt(nextRankRequirements['Quests Led'] || 0) ? 'req-met' : 'req-not-met'}`}>
                                           <span className="requirement-label">Quests Led:</span>
                                           <span className="requirement-comparison">
@@ -2153,7 +2153,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                       )}
                                       
                                       {/* Pilot Kills */}
-                                      {nextRankRequirements['Pilot Kills'] && (
+                                      {nextRankRequirements['Pilot Kills'] && nextRankRequirements['Pilot Kills'] !== 'x' && (
                                         <div className={`requirement-item ${playerStats.pilotKills >= parseInt(nextRankRequirements['Pilot Kills'] || 0) ? 'req-met' : 'req-not-met'}`}>
                                           <span className="requirement-label">Pilot Kills:</span>
                                           <span className="requirement-comparison">
@@ -2165,7 +2165,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                       )}
                                       
                                       {/* Ground Kills */}
-                                      {nextRankRequirements['Ground Kills'] && (
+                                      {nextRankRequirements['Ground Kills'] && nextRankRequirements['Ground Kills'] !== 'x' && (
                                         <div className={`requirement-item ${playerStats.fpsKills >= parseInt(nextRankRequirements['Ground Kills'] || 0) ? 'req-met' : 'req-not-met'}`}>
                                           <span className="requirement-label">Ground Kills:</span>
                                           <span className="requirement-comparison">
@@ -2177,7 +2177,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                       )}
                                       
                                       {/* Turret Kills */}
-                                      {nextRankRequirements['Turret Kills'] && (
+                                      {nextRankRequirements['Turret Kills'] && nextRankRequirements['Turret Kills'] !== 'x' && (
                                         <div className={`requirement-item ${playerStats.turretKills >= parseInt(nextRankRequirements['Turret Kills'] || 0) ? 'req-met' : 'req-not-met'}`}>
                                           <span className="requirement-label">Turret Kills:</span>
                                           <span className="requirement-comparison">
@@ -2189,7 +2189,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                       )}
                                       
                                       {/* Crusade/Quest Total */}
-                                      {nextRankRequirements['Crusade/Quest Total'] && (
+                                      {nextRankRequirements['Crusade/Quest Total'] && nextRankRequirements['Crusade/Quest Total'] !== 'x' && (
                                         <div className={`requirement-item ${playerStats.totalCompleted >= parseInt(nextRankRequirements['Crusade/Quest Total'] || 0) ? 'req-met' : 'req-not-met'}`}>
                                           <span className="requirement-label">Total Quests & Crusades:</span>
                                           <span className="requirement-comparison">
@@ -2201,7 +2201,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                       )}
                                       
                                       {/* Quests Completed */}
-                                      {nextRankRequirements['Quests Completed'] && (
+                                      {nextRankRequirements['Quests Completed'] && nextRankRequirements['Quests Completed'] !== 'x' && (
                                         <div className={`requirement-item ${playerStats.questsCompleted >= parseInt(nextRankRequirements['Quests Completed'] || 0) ? 'req-met' : 'req-not-met'}`}>
                                           <span className="requirement-label">Quests Completed:</span>
                                           <span className="requirement-comparison">
@@ -2213,7 +2213,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                                       )}
                                       
                                       {/* Crusade Completed */}
-                                      {nextRankRequirements['Crusade Completed'] && (
+                                      {nextRankRequirements['Crusade Completed'] && nextRankRequirements['Crusade Completed'] !== 'x' && (
                                         <div className={`requirement-item ${playerStats.crusadesCompleted >= parseInt(nextRankRequirements['Crusade Completed'] || 0) ? 'req-met' : 'req-not-met'}`}>
                                           <span className="requirement-label">Crusades Completed:</span>
                                           <span className="requirement-comparison">
