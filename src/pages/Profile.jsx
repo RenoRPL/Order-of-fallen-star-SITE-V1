@@ -360,33 +360,14 @@ export default function Profile() {
       crusadesCompleted 
     })
 
-    // Use Google Stats data if available, otherwise fall back to patrol data calculations
-    const finalQuestsLed = parseInt(currentGoogleStats?.ledQuests || questsLed || 0)
-    const finalCrusadesLed = parseInt(currentGoogleStats?.ledCrusades || crusadesLed || 0)
-    const finalQuestsCompleted = parseInt(currentGoogleStats?.quests || questsCompleted || 0)
-    const finalCrusadesCompleted = parseInt(currentGoogleStats?.crusades || crusadesCompleted || 0)
-
-    console.log('Final stats (using Google Stats when available):', { 
-      finalQuestsLed, 
-      finalCrusadesLed, 
-      finalQuestsCompleted, 
-      finalCrusadesCompleted,
-      'Google Stats Source': {
-        ledQuests: currentGoogleStats?.ledQuests,
-        ledCrusades: currentGoogleStats?.ledCrusades,
-        quests: currentGoogleStats?.quests,
-        crusades: currentGoogleStats?.crusades
-      }
-    })
-
     return {
       timeInServiceDays,
-      questsLed: finalQuestsLed,
-      crusadesLed: finalCrusadesLed,
-      totalLed: finalQuestsLed + finalCrusadesLed,
-      questsCompleted: finalQuestsCompleted,
-      crusadesCompleted: finalCrusadesCompleted,
-      totalCompleted: finalQuestsCompleted + finalCrusadesCompleted,
+      questsLed,
+      crusadesLed,
+      totalLed: questsLed + crusadesLed,
+      questsCompleted,
+      crusadesCompleted,
+      totalCompleted: questsCompleted + crusadesCompleted,
       fpsKills: parseInt(currentGoogleStats?.fpsKills || 0),
       pilotKills: parseInt(currentGoogleStats?.shipKills || 0),
       turretKills: parseInt(currentGoogleStats?.turretKills || 0)
