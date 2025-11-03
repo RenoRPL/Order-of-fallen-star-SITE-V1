@@ -1904,7 +1904,7 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
                   <span className="path-badge">{currentDisplayData?.['Role Path'] || 'Unassigned'}</span>
                   
                   {/* Integrated Progress Bar - Show when user has rank data */}
-                  {currentDisplayData?.Rank && (() => {
+                  {currentDisplayData?.Rank && allRankData && allRankData.length > 0 && !isLoading && (() => {
                     const nextRankData = getNextRankFromTier(currentDisplayData.Rank)
                     
                     if (!nextRankData) {
