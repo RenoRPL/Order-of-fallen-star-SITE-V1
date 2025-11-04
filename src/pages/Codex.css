@@ -10,6 +10,7 @@
 .codex-content {
   flex: 1;
   padding: 2rem;
+  padding-top: 120px; /* Add space for fixed header */
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
@@ -436,11 +437,16 @@
   .codex-title-section h1.codex-title {
     font-size: 2rem;
   }
+  
+  .codex-content {
+    padding-top: 100px; /* Adjust for smaller screens */
+  }
 }
 
 @media (max-width: 768px) {
   .codex-content {
     padding: 1rem;
+    padding-top: 90px; /* Adjust for mobile header */
   }
   
   .codex-header {
@@ -482,6 +488,10 @@
 }
 
 @media (max-width: 480px) {
+  .codex-content {
+    padding-top: 80px; /* Further adjust for very small screens */
+  }
+  
   .codex-title-section h1.codex-title {
     font-size: 1.8rem;
     flex-direction: column;
