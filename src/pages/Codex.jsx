@@ -162,66 +162,71 @@ export default function Codex() {
         </div>
 
         <div className="codex-main">
-          {/* Sidebar Navigation */}
-          <aside className="codex-sidebar">
-            <div className="codex-search">
-              <input
-                type="text"
-                placeholder="Search the codex..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
-              />
-            </div>
+          {/* Documents Count Header - Above Both Sections */}
+          <div className="codex-documents-header">
+            <h3>Documents ({filteredEntries.length})</h3>
+          </div>
 
-            <div className="codex-filters">
-              <label>Category:</label>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="category-select"
-              >
-                {categories.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-            </div>
+          <div className="codex-sections">
+            {/* Sidebar Navigation */}
+            <aside className="codex-sidebar">
+              <div className="codex-search">
+                <input
+                  type="text"
+                  placeholder="Search the codex..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
+                />
+              </div>
 
-            <div className="codex-navigation">
-              <h3>Documents ({filteredEntries.length})</h3>
-              {filteredEntries.length === 0 ? (
-                <p className="no-entries">No documents found</p>
-              ) : (
-                <ul className="codex-list">
-                  {filteredEntries.map((entry) => (
-                    <li
-                      key={entry.id}
-                      className={`codex-item ${selectedEntry?.id === entry.id ? 'active' : ''}`}
-                      onClick={() => handleEntrySelect(entry)}
-                    >
-                      <div className="codex-item-header">
-                        <h4 className="codex-item-title">{entry.title}</h4>
-                        {entry.category && (
-                          <span className="codex-item-category">{entry.category}</span>
-                        )}
-                      </div>
-                      {entry.author && (
-                        <p className="codex-item-author">By: {entry.author}</p>
-                      )}
-                      {entry.dateCreated && (
-                        <p className="codex-item-date">
-                          {new Date(entry.dateCreated).toLocaleDateString()}
-                        </p>
-                      )}
-                    </li>
+              <div className="codex-filters">
+                <label>Category:</label>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="category-select"
+                >
+                  {categories.map(category => (
+                    <option key={category} value={category}>{category}</option>
                   ))}
-                </ul>
-              )}
-            </div>
-          </aside>
+                </select>
+              </div>
 
-          {/* Main Content Display */}
-          <section className="codex-viewer">
+              <div className="codex-navigation">
+                {filteredEntries.length === 0 ? (
+                  <p className="no-entries">No documents found</p>
+                ) : (
+                  <ul className="codex-list">
+                    {filteredEntries.map((entry) => (
+                      <li
+                        key={entry.id}
+                        className={`codex-item ${selectedEntry?.id === entry.id ? 'active' : ''}`}
+                        onClick={() => handleEntrySelect(entry)}
+                      >
+                        <div className="codex-item-header">
+                          <h4 className="codex-item-title">{entry.title}</h4>
+                          {entry.category && (
+                            <span className="codex-item-category">{entry.category}</span>
+                          )}
+                        </div>
+                        {entry.author && (
+                          <p className="codex-item-author">By: {entry.author}</p>
+                        )}
+                        {entry.dateCreated && (
+                          <p className="codex-item-date">
+                            {new Date(entry.dateCreated).toLocaleDateString()}
+                          </p>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </aside>
+
+            {/* Main Content Display */}
+            <section className="codex-viewer">
             {selectedEntry ? (
               <div className="codex-document">
                 <header className="document-header">
@@ -280,6 +285,7 @@ export default function Codex() {
               </div>
             )}
           </section>
+          </div> {/* Close codex-sections */}
         </div>
       </main>
 

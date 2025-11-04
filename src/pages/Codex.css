@@ -52,14 +52,38 @@
 /* Main Layout */
 .codex-main {
   display: flex;
-  justify-content: center; /* Center the content */
-  gap: 1rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
   height: calc(100vh - 300px);
   min-height: 600px;
   padding: 0 1rem;
-  max-width: 1800px; /* Set reasonable max width */
-  margin: 0 auto; /* Center the container */
+  max-width: 1800px;
+  margin: 0 auto;
   width: 100%;
+}
+
+/* Documents Header - Above Both Sections */
+.codex-documents-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.codex-documents-header h3 {
+  color: #39b9ff;
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+/* Container for both sidebar and viewer */
+.codex-sections {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  flex: 1;
+  max-width: 1600px;
 }
 
 /* Sidebar */
@@ -142,6 +166,7 @@
   margin: 0 0 1rem 0;
   font-size: 1.1rem;
   font-weight: 600;
+  display: none; /* Hide since we moved it above */
 }
 
 .codex-list {
@@ -506,11 +531,17 @@
   }
   
   .codex-main {
-    flex-direction: column; /* Stack vertically on mobile */
+    flex-direction: column;
     height: auto;
     gap: 1rem;
     padding: 0 0.5rem;
     max-width: none; /* Remove max-width on mobile */
+  }
+
+  .codex-sections {
+    flex-direction: column; /* Stack vertically on mobile */
+    gap: 1rem;
+    max-width: none;
   }
   
   .codex-sidebar {
@@ -561,6 +592,10 @@
   .codex-main {
     padding: 0 0.25rem;
     max-width: none; /* Remove max-width on small mobile */
+  }
+
+  .codex-sections {
+    max-width: none;
   }
   
   .codex-title-section h1.codex-title {
