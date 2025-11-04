@@ -71,16 +71,95 @@ export async function handler(event, context) {
     } catch (sheetError) {
       console.log('Codex sheet not found or error reading:', sheetError.message)
       
-      // If sheet doesn't exist, return empty array
-      if (sheetError.message.includes('not found') || sheetError.message.includes('does not exist')) {
-        return {
-          statusCode: 200,
-          headers,
-          body: JSON.stringify([])
+      // If sheet doesn't exist, create it with a sample entry
+      if (sheetError.message.includes('not found') || 
+          sheetError.message.includes('does not exist') || 
+          sheetError.message.includes('Unable to parse range')) {
+        
+        console.log('Creating Codex sheet with sample data...')
+        
+        try {
+          // Create the Codex sheet with headers
+          const addSheetRequest = {
+            spreadsheetId: spreadsheetId,
+            resource: {
+              requests: [{
+                addSheet: {
+                  properties: {
+                    title: codexSheetName,
+                    gridProperties: {
+                      rowCount: 1000,
+                      columnCount: 8
+                    }
+                  }
+                }
+              }]
+            }
+          }
+          
+          await sheetsService.sheets.spreadsheets.batchUpdate(addSheetRequest)
+          
+          // Add headers and sample data
+          const headers = [
+            'ID', 'Title', 'Content', 'Category', 'Author', 'Date Created', 'Last Modified', 'Tags'
+          ]
+          
+          const sampleEntry = [
+            'codex_sample_1',
+            'Welcome to the Order of the Fallen Star Codex',
+            'This is the official codex of the Order of the Fallen Star. Here you will find our laws, procedures, history, and important organizational documents.\n\nThis system allows authorized administrators to:\n- Add new documents and entries\n- Edit existing content\n- Organize content by categories\n- Tag documents for easy searching\n\nAll members can browse and search through the codex to find the information they need.',
+            'Introduction',
+            'Order Administration',
+            new Date().toISOString(),
+            new Date().toISOString(),
+            'introduction, welcome, getting-started, administration'
+          ]
+          
+          await sheetsService.sheets.spreadsheets.values.update({
+            spreadsheetId: spreadsheetId,
+            range: `${codexSheetName}!A1:H2`,
+            valueInputOption: 'RAW',
+            resource: {
+              values: [headers, sampleEntry]
+            }
+          })
+          
+          console.log('Codex sheet created successfully with sample data')
+          
+          // Return the sample data
+          return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify([{
+              id: sampleEntry[0],
+              title: sampleEntry[1],
+              content: sampleEntry[2],
+              category: sampleEntry[3],
+              author: sampleEntry[4],
+              dateCreated: sampleEntry[5],
+              lastModified: sampleEntry[6],
+              tags: sampleEntry[7].split(',').map(tag => tag.trim())
+            }])
+          }
+          
+        } catch (createError) {
+          console.error('Failed to create Codex sheet:', createError)
+          // Return empty array instead of error
+          return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify([])
+          }
         }
       }
       
-      throw sheetError
+      // For other errors, return empty array
+      console.error('Unknown sheet error:', sheetError)
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify([])
+      }
     }
     
     if (!codexData || codexData.length === 0) {
