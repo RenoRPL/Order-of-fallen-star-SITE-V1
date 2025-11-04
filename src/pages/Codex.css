@@ -9,10 +9,10 @@
 
 .codex-content {
   flex: 1;
-  padding: 1.5rem;
+  padding: 1rem 0.5rem; /* Reduced horizontal padding */
   padding-top: 120px; /* Add space for fixed header */
-  max-width: 1600px; /* Increased from 1400px */
-  margin: 0 auto;
+  max-width: 100%; /* Use full width */
+  margin: 0;
   width: 100%;
 }
 
@@ -21,8 +21,9 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   gap: 2rem;
+  padding: 0 1rem; /* Add padding to match main content */
 }
 
 .codex-title-section h1.codex-title {
@@ -48,17 +49,19 @@
 /* Main Layout */
 .codex-main {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 260px 1fr; /* Keep sidebar compact, maximize content */
+  gap: 1rem;
   height: calc(100vh - 300px);
   min-height: 600px;
+  padding: 0 1rem; /* Add small container padding */
+  max-width: none; /* Remove width constraints */
 }
 
 /* Sidebar */
 .codex-sidebar {
   background: rgba(15, 23, 42, 0.8);
   border-radius: 12px;
-  padding: 1.25rem;
+  padding: 1rem; /* Reduced padding for more compact sidebar */
   border: 1px solid rgba(57, 185, 255, 0.2);
   backdrop-filter: blur(10px);
   display: flex;
@@ -66,11 +69,11 @@
   height: fit-content;
   max-height: 100%;
   overflow: hidden;
-  min-width: 260px;
+  min-width: 240px; /* Reduced minimum width */
 }
 
 .codex-search {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .search-input {
@@ -95,7 +98,7 @@
 }
 
 .codex-filters {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .codex-filters label {
@@ -434,20 +437,26 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
   .codex-main {
-    grid-template-columns: 260px 1fr;
-    gap: 1.25rem;
+    grid-template-columns: 240px 1fr;
+    gap: 1rem;
+    padding: 0 0.75rem;
   }
   
   .codex-content {
-    padding: 1.25rem;
+    padding: 1rem 0.5rem;
     padding-top: 110px;
+  }
+  
+  .codex-header {
+    padding: 0 0.75rem;
   }
 }
 
 @media (max-width: 1024px) {
   .codex-main {
-    grid-template-columns: 240px 1fr;
-    gap: 1rem;
+    grid-template-columns: 220px 1fr;
+    gap: 0.75rem;
+    padding: 0 0.5rem;
   }
   
   .codex-title-section h1.codex-title {
@@ -456,6 +465,10 @@
   
   .codex-content {
     padding-top: 100px;
+  }
+  
+  .codex-header {
+    padding: 0 0.5rem;
   }
   
   .document-title {
@@ -473,19 +486,21 @@
 
 @media (max-width: 768px) {
   .codex-content {
-    padding: 1rem;
+    padding: 0.5rem 0.25rem;
     padding-top: 90px;
   }
   
   .codex-header {
     flex-direction: column;
     gap: 1rem;
+    padding: 0 0.5rem;
   }
   
   .codex-main {
     grid-template-columns: 1fr;
     height: auto;
-    gap: 1.5rem;
+    gap: 1rem;
+    padding: 0 0.25rem;
   }
   
   .codex-sidebar {
@@ -523,7 +538,16 @@
 
 @media (max-width: 480px) {
   .codex-content {
+    padding: 0.25rem 0.125rem;
     padding-top: 80px;
+  }
+  
+  .codex-header {
+    padding: 0 0.25rem;
+  }
+  
+  .codex-main {
+    padding: 0 0.125rem;
   }
   
   .codex-title-section h1.codex-title {
