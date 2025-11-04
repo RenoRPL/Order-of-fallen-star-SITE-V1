@@ -5,6 +5,7 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showControls, setShowControls] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
@@ -168,51 +169,54 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
   }
 
   return (
-    <div className="admin-codex-controls">
-      <div className="admin-badge">
+    <div className="admin-codex-controls floating-admin-bar">
+      <div className="admin-toggle-btn" onClick={() => setShowControls(!showControls)}>
         <span className="admin-icon">🛡️</span>
-        <span>Admin Controls</span>
+        <span className="admin-text">Admin</span>
+        <span className={`toggle-arrow ${showControls ? 'expanded' : ''}`}>▲</span>
       </div>
       
-      <div className="admin-actions">
-        <button
-          onClick={handleAddEntry}
-          className="admin-btn add-btn"
-          title="Add new codex entry"
-        >
-          <span className="btn-icon">➕</span>
-          Add Entry
-        </button>
-        
-        <button
-          onClick={handleEditEntry}
-          className="admin-btn edit-btn"
-          disabled={!selectedEntry}
-          title="Edit selected entry"
-        >
-          <span className="btn-icon">✏️</span>
-          Edit
-        </button>
-        
-        <button
-          onClick={handleDeleteEntry}
-          className="admin-btn delete-btn"
-          disabled={!selectedEntry}
-          title="Delete selected entry"
-        >
-          <span className="btn-icon">🗑️</span>
-          Delete
-        </button>
-        
-        <button
-          onClick={onRefresh}
-          className="admin-btn refresh-btn"
-          title="Refresh codex entries"
-        >
-          <span className="btn-icon">🔄</span>
-          Refresh
-        </button>
-      </div>
+      {showControls && (
+        <div className="admin-actions-panel">
+          <button
+            onClick={handleAddEntry}
+            className="admin-btn add-btn"
+            title="Add new codex entry"
+          >
+            <span className="btn-icon">➕</span>
+            <span className="btn-text">Add</span>
+          </button>
+          
+          <button
+            onClick={handleEditEntry}
+            className="admin-btn edit-btn"
+            disabled={!selectedEntry}
+            title="Edit selected entry"
+          >
+            <span className="btn-icon">✏️</span>
+            <span className="btn-text">Edit</span>
+          </button>
+          
+          <button
+            onClick={handleDeleteEntry}
+            className="admin-btn delete-btn"
+            disabled={!selectedEntry}
+            title="Delete selected entry"
+          >
+            <span className="btn-icon">🗑️</span>
+            <span className="btn-text">Delete</span>
+          </button>
+          
+          <button
+            onClick={onRefresh}
+            className="admin-btn refresh-btn"
+            title="Refresh codex entries"
+          >
+            <span className="btn-icon">🔄</span>
+            <span className="btn-text">Refresh</span>
+          </button>
+        </div>
+      )}
 
       {/* Add Entry Modal */}
       {showAddModal && (

@@ -159,14 +159,6 @@ export default function Codex() {
               Ancient documents and sacred texts of our Order
             </p>
           </div>
-          
-          {/* Admin Controls */}
-          {!adminLoading && isAdmin && (
-            <AdminCodexControls 
-              onRefresh={handleRefreshCodex}
-              selectedEntry={selectedEntry}
-            />
-          )}
         </div>
 
         <div className="codex-main">
@@ -290,6 +282,14 @@ export default function Codex() {
           </section>
         </div>
       </main>
+
+      {/* Floating Admin Controls - Bottom Left */}
+      {!adminLoading && isAdmin && (
+        <AdminCodexControls 
+          onRefresh={handleRefreshCodex}
+          selectedEntry={selectedEntry}
+        />
+      )}
 
       <Footer />
     </div>
