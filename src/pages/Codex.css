@@ -23,7 +23,10 @@
   align-items: flex-start;
   margin-bottom: 1.5rem;
   gap: 2rem;
-  padding: 0 0.5rem; /* Minimal padding */
+  padding: 0 1rem;
+  max-width: 1800px; /* Match main content max-width */
+  margin: 0 auto 1.5rem auto; /* Center the header */
+  width: 100%;
 }
 
 .codex-title-section h1.codex-title {
@@ -48,13 +51,15 @@
 
 /* Main Layout */
 .codex-main {
-  display: grid;
-  grid-template-columns: 240px 1fr; /* Further reduced sidebar width */
-  gap: 0.5rem; /* Reduced gap */
+  display: flex;
+  justify-content: center; /* Center the content */
+  gap: 1rem;
   height: calc(100vh - 300px);
   min-height: 600px;
-  padding: 0 0.5rem; /* Minimal container padding */
-  max-width: none; /* Remove width constraints */
+  padding: 0 1rem;
+  max-width: 1800px; /* Set reasonable max width */
+  margin: 0 auto; /* Center the container */
+  width: 100%;
 }
 
 /* Sidebar */
@@ -69,7 +74,8 @@
   height: fit-content;
   max-height: 100%;
   overflow: hidden;
-  min-width: 220px; /* Further reduced minimum width */
+  width: 280px; /* Fixed width instead of min-width */
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 .codex-search {
@@ -219,6 +225,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  flex: 1; /* Take remaining space */
+  max-width: 1200px; /* Limit content width for readability */
 }
 
 .codex-document {
@@ -494,24 +502,27 @@
     flex-direction: column;
     gap: 1rem;
     padding: 0 0.5rem;
+    max-width: none; /* Remove max-width on mobile */
   }
   
   .codex-main {
-    grid-template-columns: 1fr;
+    flex-direction: column; /* Stack vertically on mobile */
     height: auto;
-    gap: 0.5rem; /* Reduced gap */
-    padding: 0 0.125rem; /* Reduced padding */
+    gap: 1rem;
+    padding: 0 0.5rem;
+    max-width: none; /* Remove max-width on mobile */
   }
   
   .codex-sidebar {
     order: 2;
     max-height: 400px;
-    min-width: auto;
+    width: 100%; /* Full width on mobile */
   }
   
   .codex-viewer {
     order: 1;
     min-height: 500px;
+    max-width: none; /* Remove max-width on mobile */
   }
   
   .document-header {
@@ -543,11 +554,13 @@
   }
   
   .codex-header {
-    padding: 0 0.125rem; /* Minimal padding */
+    padding: 0 0.25rem;
+    max-width: none; /* Remove max-width on small mobile */
   }
   
   .codex-main {
-    padding: 0 0.125rem;
+    padding: 0 0.25rem;
+    max-width: none; /* Remove max-width on small mobile */
   }
   
   .codex-title-section h1.codex-title {
