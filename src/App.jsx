@@ -4,6 +4,7 @@ import './App.css'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
 import Roster from './pages/Roster'
+import Codex from './pages/Codex'
 import ContentManagement from './pages/ContentManagement'
 import TermsPrivacy from './pages/TermsPrivacy'
 import AuthCallback from './pages/AuthCallback'
@@ -51,6 +52,9 @@ export default function App() {
           
           {/* Roster Route */}
           <Route path="/roster" element={<Roster />} />
+          
+          {/* Codex Route */}
+          <Route path="/codex" element={<Codex />} />
           
           {/* Main Site Route */}
         <Route path="/" element={
