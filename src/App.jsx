@@ -6,6 +6,7 @@ import Profile from './pages/Profile'
 import Roster from './pages/Roster'
 import Codex from './pages/Codex'
 import Primarchs from './pages/Primarchs'
+import Fleet from './pages/Fleet'
 import ContentManagement from './pages/ContentManagement'
 import TermsPrivacy from './pages/TermsPrivacy'
 import AuthCallback from './pages/AuthCallback'
@@ -90,6 +91,9 @@ export default function App() {
           
           {/* Primarchs Route */}
           <Route path="/primarchs" element={<Primarchs />} />
+          
+          {/* Fleet Route */}
+          <Route path="/fleet" element={<Fleet />} />
           
           {/* Home Page Route */}
           <Route path="/home" element={<Home />} />

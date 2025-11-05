@@ -1,0 +1,371 @@
+.fleet-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), 
+              url('/Nebula BG.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 120px 2rem 4rem;
+  color: #ffffff;
+}
+
+/* Loading State */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1.5rem;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(57, 185, 255, 0.2);
+  border-top: 4px solid #39b9ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Header */
+.fleet-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.fleet-title {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, #39b9ff, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(57, 185, 255, 0.5);
+  animation: fadeIn 0.6s ease-out;
+}
+
+.fleet-subtitle {
+  font-size: 1.5rem;
+  color: #39b9ff;
+  margin-bottom: 0.75rem;
+  font-weight: 300;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.fleet-description {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 auto;
+  animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Filters */
+.fleet-filters {
+  max-width: 1400px;
+  margin: 0 auto 2.5rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(57, 185, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-group label {
+  font-size: 1.1rem;
+  color: #39b9ff;
+  font-weight: 500;
+}
+
+.filter-select {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(57, 185, 255, 0.4);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-select:hover {
+  border-color: #39b9ff;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #39b9ff;
+  box-shadow: 0 0 10px rgba(57, 185, 255, 0.3);
+}
+
+/* Fleet Grid */
+.fleet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Fleet Card */
+.fleet-card {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(57, 185, 255, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  animation: cardFadeIn 0.6s ease-out backwards;
+}
+
+.fleet-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(57, 185, 255, 0.6);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(57, 185, 255, 0.3);
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger animation for cards */
+.fleet-card:nth-child(1) { animation-delay: 0.05s; }
+.fleet-card:nth-child(2) { animation-delay: 0.1s; }
+.fleet-card:nth-child(3) { animation-delay: 0.15s; }
+.fleet-card:nth-child(4) { animation-delay: 0.2s; }
+.fleet-card:nth-child(5) { animation-delay: 0.25s; }
+.fleet-card:nth-child(6) { animation-delay: 0.3s; }
+
+/* Card Image */
+.fleet-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+}
+
+.fleet-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.fleet-card:hover .fleet-card-image {
+  transform: scale(1.1);
+}
+
+.fleet-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  pointer-events: none;
+}
+
+/* Custom Badge */
+.custom-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 215, 0, 0.9);
+  color: #000;
+  padding: 0.4rem 0.75rem;
+  border-radius: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(255, 215, 0, 0.6);
+  }
+}
+
+/* Card Content */
+.fleet-card-content {
+  padding: 1.5rem;
+}
+
+.fleet-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fleet-card-username {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0;
+  flex: 1;
+}
+
+.fleet-card-rank-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(57, 185, 255, 0.2);
+  padding: 0.4rem 0.75rem;
+  border-radius: 20px;
+  border: 1px solid rgba(57, 185, 255, 0.4);
+  font-size: 0.9rem;
+  color: #39b9ff;
+  white-space: nowrap;
+}
+
+.rank-icon-small {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* Ship Info */
+.fleet-card-ship-info {
+  text-align: left;
+}
+
+.ship-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #39b9ff;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 0 10px rgba(57, 185, 255, 0.3);
+}
+
+.ship-role {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  font-style: italic;
+}
+
+/* No Results */
+.no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .fleet-container {
+    padding-top: 180px;
+  }
+
+  .fleet-title {
+    font-size: 2.5rem;
+  }
+
+  .fleet-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .fleet-description {
+    font-size: 1rem;
+  }
+
+  .fleet-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0;
+  }
+
+  .filter-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-select {
+    min-width: 100%;
+  }
+
+  .fleet-card-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .fleet-card-rank-badge {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .fleet-title {
+    font-size: 2rem;
+  }
+
+  .fleet-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .fleet-card-username {
+    font-size: 1.2rem;
+  }
+
+  .ship-name {
+    font-size: 1.1rem;
+  }
+}
