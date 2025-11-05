@@ -39,20 +39,6 @@ export default function ContentManagement() {
     setHasChanges(true);
   };
 
-  const addResponsibility = (rankIndex) => {
-    const newContent = { ...content };
-    newContent.destiny.ranks[rankIndex].responsibilities.push('New responsibility');
-    setContent(newContent);
-    setHasChanges(true);
-  };
-
-  const removeResponsibility = (rankIndex, respIndex) => {
-    const newContent = { ...content };
-    newContent.destiny.ranks[rankIndex].responsibilities.splice(respIndex, 1);
-    setContent(newContent);
-    setHasChanges(true);
-  };
-
   const saveChanges = () => {
     const success = contentService.saveContent(content);
     if (success) {
@@ -409,38 +395,23 @@ export default function ContentManagement() {
     </div>
   );
 
-  const renderDestinyEditor = () => (
-    <div className="editor-section">
-      <h3>Pick Your Destiny Section</h3>
-      
-      <div className="form-group">
-        <label>Section Title</label>
-        <input
-          type="text"
-          value={content.destiny.title}
-          onChange={(e) => updateContent('destiny', 'title', e.target.value)}
-        />
-      </div>
-
-      <div className="form-group">
-        <label>Subtitle</label>
-        <input
-          type="text"
-          value={content.destiny.subtitle}
-          onChange={(e) => updateContent('destiny', 'subtitle', e.target.value)}
-        />
-      </div>
-
-      {content.destiny.ranks.map((rank, index) => (
-        <div key={index} className="rank-editor">
-          <h4>Rank {index + 1}: {rank.title}</h4>
+  const renderDestinyEditor = () => {
+    // Check if paths exist and are loaded
+    if (!content.destiny.paths || content.destiny.paths.length === 0) {
+      return (
+        <div className="editor-section">
+          <h3>Pick Your Destiny Section</h3>
+          <div className="loading-message">
+            <p>⚠️ No paths loaded yet. The "Choose Your Path" section is dynamically loaded from Google Sheets.</p>
+            <p>Paths will appear here once they are loaded from your spreadsheet.</p>
+          </div>
           
           <div className="form-group">
-            <label>Title</label>
+            <label>Section Title</label>
             <input
               type="text"
-              value={rank.title}
-              onChange={(e) => updateContent('destiny', ['ranks', index, 'title'], e.target.value)}
+              value={content.destiny.title}
+              onChange={(e) => updateContent('destiny', 'title', e.target.value)}
             />
           </div>
 
@@ -448,50 +419,56 @@ export default function ContentManagement() {
             <label>Subtitle</label>
             <input
               type="text"
-              value={rank.subtitle}
-              onChange={(e) => updateContent('destiny', ['ranks', index, 'subtitle'], e.target.value)}
+              value={content.destiny.subtitle}
+              onChange={(e) => updateContent('destiny', 'subtitle', e.target.value)}
             />
-          </div>
-
-          <div className="form-group">
-            <label>Description</label>
-            <textarea
-              rows={6}
-              value={rank.description}
-              onChange={(e) => updateContent('destiny', ['ranks', index, 'description'], e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Responsibilities</label>
-            {rank.responsibilities.map((resp, respIndex) => (
-              <div key={respIndex} className="responsibility-item">
-                <input
-                  type="text"
-                  value={resp}
-                  onChange={(e) => updateContent('destiny', ['ranks', index, 'responsibilities', respIndex], e.target.value)}
-                />
-                <button
-                  type="button"
-                  className="btn-remove"
-                  onClick={() => removeResponsibility(index, respIndex)}
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              className="btn-add"
-              onClick={() => addResponsibility(index)}
-            >
-              + Add Responsibility
-            </button>
           </div>
         </div>
-      ))}
-    </div>
-  );
+      );
+    }
+
+    return (
+      <div className="editor-section">
+        <h3>Pick Your Destiny Section</h3>
+        <p className="section-description">
+          These paths are dynamically loaded from your Google Sheets. Changes here will only affect the titles. 
+          To modify path details, edit them in your Google Sheet.
+        </p>
+        
+        <div className="form-group">
+          <label>Section Title</label>
+          <input
+            type="text"
+            value={content.destiny.title}
+            onChange={(e) => updateContent('destiny', 'title', e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Subtitle</label>
+          <input
+            type="text"
+            value={content.destiny.subtitle}
+            onChange={(e) => updateContent('destiny', 'subtitle', e.target.value)}
+          />
+        </div>
+
+        <div className="paths-preview">
+          <h4>Loaded Paths ({content.destiny.paths.length})</h4>
+          {content.destiny.paths.map((path, index) => (
+            <div key={index} className="path-card-preview">
+              <div className="path-preview-header">
+                <h5>{path.title}</h5>
+                {path.image && <img src={path.image} alt={path.title} className="path-preview-image" />}
+              </div>
+              <p className="path-preview-subtitle">{path.subtitle}</p>
+              <p className="path-preview-description">{path.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   const handleBackToSite = () => {
     if (hasChanges) {
