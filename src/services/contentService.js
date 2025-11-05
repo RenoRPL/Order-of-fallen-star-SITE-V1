@@ -63,7 +63,7 @@ const defaultContent = {
   join: {
     title: "Ready to Join the Elite?",
     description: "Take your place among the stars with Order of the Fallen Star. Experience epic adventures, forge unbreakable bonds, and become part of a legendary organization that shapes the galaxy's future.",
-    backgroundImage: "/Join Fallen Star BG.png",
+    backgroundImage: "https://drive.google.com/file/d/1DcrUOzjJOjWPnR1eR3P703S6t-R7bt9o/view?usp=sharing", // Change this URL to update for everyone
     benefits: [
       { text: "Exclusive missions and events" },
       { text: "Access to organization fleet" },
