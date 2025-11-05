@@ -140,16 +140,20 @@ class ContentService {
       console.log('Paths loaded:', paths);
       if (paths && paths.length > 0) {
         this.content.destiny.paths = paths;
+        console.log('Paths updated successfully, dispatching contentUpdated event');
         // Trigger content update event
         window.dispatchEvent(new CustomEvent('contentUpdated'));
-        console.log('Paths updated successfully');
       } else {
         console.log('No paths found in spreadsheet, keeping defaults');
+        // Still dispatch event so UI updates with defaults
+        window.dispatchEvent(new CustomEvent('contentUpdated'));
       }
     } catch (error) {
       console.error('Error loading paths from spreadsheet:', error);
       // Keep default paths if spreadsheet fails
       console.log('Using default paths due to error');
+      // Dispatch event even on error so UI doesn't stay stuck on loading
+      window.dispatchEvent(new CustomEvent('contentUpdated'));
     }
   }
 

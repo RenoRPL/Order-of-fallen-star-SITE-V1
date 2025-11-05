@@ -13,6 +13,7 @@ export default function Home() {
     const updateContent = () => {
       try {
         const newContent = contentService.getContent();
+        console.log('Content updated in Home component:', newContent);
         setContent(newContent);
       } catch (error) {
         console.error('Error getting content:', error);
@@ -35,11 +36,21 @@ export default function Home() {
       }
     };
 
-    // Update content when component mounts
+    // Update content immediately when component mounts
     updateContent();
 
-    // Optional: Add event listener for real-time updates
+    // Add event listener for real-time updates
     window.addEventListener('contentUpdated', updateContent);
+    
+    // Also refresh paths to ensure they're loaded
+    const refreshData = async () => {
+      try {
+        await contentService.refreshPaths();
+      } catch (error) {
+        console.error('Error refreshing paths:', error);
+      }
+    };
+    refreshData();
     
     // Handle escape key to close modal
     const handleEscape = (event) => {
