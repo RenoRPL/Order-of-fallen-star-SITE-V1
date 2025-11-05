@@ -9,9 +9,9 @@
 
 .codex-content {
   flex: 1;
-  padding: 0 1rem; /* Add some padding */
+  padding: 0;
   padding-top: 120px; /* Add space for fixed header */
-  max-width: 100%; /* Use full width */
+  max-width: 100%;
   margin: 0;
   width: 100%;
 }
@@ -21,9 +21,9 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   gap: 2rem;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   width: 100%;
 }
 
@@ -51,33 +51,34 @@
 .codex-main {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  height: calc(100vh - 300px);
+  gap: 0.5rem;
+  height: calc(100vh - 280px);
   min-height: 600px;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   width: 100%;
-  max-width: none; /* Remove width constraints */
+  max-width: none;
 }
 
 /* Documents Header - Above Both Sections */
 .codex-documents-header {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .codex-documents-header h3 {
   color: #39b9ff;
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 600;
 }
 
 /* Container for both sidebar and viewer */
 .codex-sections {
-  display: flex;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 1.5rem;
   width: 100%;
   flex: 1;
-  max-width: none; /* Remove width constraints */
+  max-width: none;
 }
 
 /* Sidebar */
@@ -92,8 +93,6 @@
   height: fit-content;
   max-height: 100%;
   overflow: hidden;
-  width: 320px; /* Fixed width for sidebar */
-  flex-shrink: 0; /* Prevent shrinking */
 }
 
 .codex-search {
@@ -244,8 +243,6 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  flex: 1; /* Take remaining space */
-  max-width: none; /* Remove width constraints */
 }
 
 .codex-document {
@@ -513,32 +510,27 @@
 
 @media (max-width: 768px) {
   .codex-content {
-    padding: 0.5rem;
     padding-top: 90px;
   }
   
   .codex-header {
     flex-direction: column;
     gap: 1rem;
-    padding: 0 0.5rem;
+    padding: 0 1rem;
   }
   
   .codex-main {
-    flex-direction: column;
-    height: auto;
-    gap: 1rem;
-    padding: 0 0.5rem;
+    padding: 0 1rem;
   }
 
   .codex-sections {
-    flex-direction: column; /* Stack vertically on mobile */
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
   
   .codex-sidebar {
     order: 2;
     max-height: 400px;
-    width: 100%; /* Full width on mobile */
   }
   
   .codex-viewer {
@@ -570,16 +562,15 @@
 
 @media (max-width: 480px) {
   .codex-content {
-    padding: 0.25rem;
     padding-top: 80px;
   }
   
   .codex-header {
-    padding: 0 0.25rem;
+    padding: 0 0.5rem;
   }
   
   .codex-main {
-    padding: 0 0.25rem;
+    padding: 0 0.5rem;
   }
   
   .codex-title-section h1.codex-title {
