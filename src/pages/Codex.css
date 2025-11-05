@@ -19,8 +19,8 @@
 .codex-header {
   text-align: center;
   margin-bottom: 1.5rem;
-  padding: 0 3rem;
-  max-width: 1600px;
+  padding: 0 4rem;
+  max-width: 2400px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -50,8 +50,8 @@
 .codex-count {
   text-align: center;
   margin-bottom: 1.5rem;
-  padding: 0 3rem;
-  max-width: 1600px;
+  padding: 0 4rem;
+  max-width: 2400px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -66,11 +66,11 @@
 /* Main Container */
 .codex-container {
   display: grid;
-  grid-template-columns: 320px 1fr; /* Compact sidebar + wide content */
-  gap: 2.5rem;
-  max-width: 1600px; /* Reasonable max-width for centered layout */
+  grid-template-columns: 300px 1fr; /* Smaller sidebar + much wider content */
+  gap: 3rem;
+  max-width: 2400px; /* Much wider max-width */
   margin: 0 auto; /* Center the container */
-  padding: 0 3rem;
+  padding: 0 4rem;
   height: calc(100vh - 320px);
   min-height: 700px;
   width: 100%;
@@ -87,7 +87,7 @@
 }
 
 .sidebar-content {
-  padding: 1.5rem;
+  padding: 1.25rem;
   height: 100%;
   display: flex;
   flex-direction: column;
