@@ -286,6 +286,29 @@ export default function Codex() {
               </div>
             )}
           </section>
+
+          {/* Image Viewer Section */}
+          <aside className="codex-image-viewer">
+            <div className="image-viewer-header">
+              <h3>📷 Document Images</h3>
+            </div>
+            <div className="image-viewer-content">
+              {selectedEntry ? (
+                <>
+                  <div className="image-placeholder">
+                    🖼️
+                  </div>
+                  <p className="image-caption">
+                    Image support coming soon
+                  </p>
+                </>
+              ) : (
+                <div className="image-placeholder">
+                  📷
+                </div>
+              )}
+            </div>
+          </aside>
         </div>
       </main>
 
