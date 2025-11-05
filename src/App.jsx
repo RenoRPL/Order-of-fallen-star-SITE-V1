@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Profile from './pages/Profile'
 import Roster from './pages/Roster'
 import Codex from './pages/Codex'
+import Primarchs from './pages/Primarchs'
 import ContentManagement from './pages/ContentManagement'
 import TermsPrivacy from './pages/TermsPrivacy'
 import AuthCallback from './pages/AuthCallback'
@@ -86,6 +87,9 @@ export default function App() {
           
           {/* Codex Route */}
           <Route path="/codex" element={<Codex />} />
+          
+          {/* Primarchs Route */}
+          <Route path="/primarchs" element={<Primarchs />} />
           
           {/* Home Page Route */}
           <Route path="/home" element={<Home />} />
