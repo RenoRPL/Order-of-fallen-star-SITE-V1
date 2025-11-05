@@ -3,24 +3,76 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+  background: 
+    linear-gradient(135deg, rgba(10, 10, 15, 0.85) 0%, rgba(26, 26, 46, 0.85) 50%, rgba(22, 33, 62, 0.85) 100%),
+    url('/Nebula BG.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   color: #ffffff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Star Animation Background */
+.codex-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.codex-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent),
+    radial-gradient(1px 1px at 77% 23%, white, transparent);
+  background-size: 200% 200%;
+  animation: twinkle 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
 }
 
 .codex-content {
   flex: 1;
-  padding: 100px 0 20px 0; /* Remove horizontal padding */
+  padding: 100px 0 20px 0;
   max-width: 100%;
   margin: 0;
   width: 100%;
+  position: relative;
+  z-index: 2; /* Above star animation */
 }
 
 /* Page Header */
 .codex-header {
   text-align: center;
   margin-bottom: 1.5rem;
+  margin-top: 2rem; /* Add space from top/header */
   padding: 0 2rem;
   width: 100%;
+  position: relative;
+  z-index: 2;
 }
 
 .codex-title {
@@ -28,10 +80,12 @@
   font-weight: 700;
   color: #39b9ff;
   margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem; /* Add padding below title */
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  text-shadow: 0 0 20px rgba(57, 185, 255, 0.5);
 }
 
 .codex-icon {
@@ -42,6 +96,8 @@
   font-size: 1.3rem;
   color: #8bb8e8;
   margin: 0;
+  padding-top: 0.5rem; /* Add space above subtitle */
+  text-shadow: 0 0 10px rgba(139, 184, 232, 0.3);
 }
 
 /* Documents Count */
@@ -50,6 +106,8 @@
   margin-bottom: 1.5rem;
   padding: 0 2rem;
   width: 100%;
+  position: relative;
+  z-index: 2;
 }
 
 .codex-count h2 {
@@ -62,15 +120,17 @@
 /* Main Container */
 .codex-container {
   display: grid;
-  grid-template-columns: 280px 1fr; /* Even smaller sidebar for wider content */
+  grid-template-columns: 280px 1fr;
   gap: 2rem;
-  max-width: none; /* Remove max-width constraint */
+  max-width: none;
   margin: 0 auto;
-  padding: 0 2rem; /* Reduce outer padding */
+  padding: 0 2rem;
   height: calc(100vh - 320px);
   min-height: 700px;
   width: 100%;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2; /* Above star animation */
 }
 
 /* Sidebar */
