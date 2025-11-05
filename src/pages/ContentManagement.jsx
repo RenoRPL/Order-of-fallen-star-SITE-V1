@@ -7,7 +7,6 @@ export default function ContentManagement() {
   const navigate = useNavigate();
   const [content, setContent] = useState(contentService.getContent());
   const [activeTab, setActiveTab] = useState('hero');
-  const [activePage, setActivePage] = useState('home');
   const [hasChanges, setHasChanges] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
 
@@ -494,20 +493,12 @@ export default function ContentManagement() {
     </div>
   );
 
-  const availablePages = [
-    { id: 'home', name: 'Home Page', description: 'Main landing page content' },
-    { id: 'about', name: 'About Page', description: 'Organization information (Coming Soon)' },
-    { id: 'fleet', name: 'Fleet Page', description: 'Ship showcase and details (Coming Soon)' },
-    { id: 'join', name: 'Join Page', description: 'Recruitment information (Coming Soon)' },
-    { id: 'progress', name: 'Progress Page', description: 'Development updates (Coming Soon)' }
-  ];
-
   const handleBackToSite = () => {
     if (hasChanges) {
       const confirm = window.confirm('You have unsaved changes. Are you sure you want to leave?');
       if (!confirm) return;
     }
-    navigate('/');
+    navigate('/home');
   };
 
   return (
@@ -517,7 +508,7 @@ export default function ContentManagement() {
           <button className="back-button" onClick={handleBackToSite}>
             ← Back to Site
           </button>
-          <h1>Content Management System</h1>
+          <h1>Content Management <span className="system-label">System</span></h1>
         </div>
         <div className="cm-actions">
           {saveStatus && <span className={`save-status ${saveStatus.includes('Error') ? 'error' : 'success'}`}>{saveStatus}</span>}
@@ -534,31 +525,11 @@ export default function ContentManagement() {
         </div>
       </div>
 
-      <div className="page-navigation">
-        <h2>Select Page to Edit</h2>
-        <div className="page-grid">
-          {availablePages.map((page) => (
-            <div 
-              key={page.id} 
-              className={`page-card ${activePage === page.id ? 'active' : ''} ${page.id !== 'home' ? 'disabled' : ''}`}
-              onClick={() => page.id === 'home' && setActivePage(page.id)}
-            >
-              <h3>{page.name}</h3>
-              <p>{page.description}</p>
-              {page.id !== 'home' && <div className="coming-soon">Coming Soon</div>}
-              {page.id === 'home' && activePage === page.id && <div className="active-indicator">Currently Editing</div>}
-            </div>
-          ))}
-        </div>
+      <div className="section-divider">
+        <h2>Home Page Content Editor</h2>
       </div>
 
-      {activePage === 'home' && (
-        <>
-          <div className="section-divider">
-            <h2>Home Page Content Editor</h2>
-          </div>
-
-          <div className="cm-tabs">
+      <div className="cm-tabs">
         <button 
           className={activeTab === 'hero' ? 'active' : ''} 
           onClick={() => setActiveTab('hero')}
@@ -591,15 +562,13 @@ export default function ContentManagement() {
         </button>
       </div>
 
-          <div className="cm-content">
-            {activeTab === 'hero' && renderHeroEditor()}
-            {activeTab === 'features' && renderFeaturesEditor()}
-            {activeTab === 'destiny' && renderDestinyEditor()}
-            {activeTab === 'join' && renderJoinEditor()}
-            {activeTab === 'social' && renderSocialLinksEditor()}
-          </div>
-        </>
-      )}
+      <div className="cm-content">
+        {activeTab === 'hero' && renderHeroEditor()}
+        {activeTab === 'features' && renderFeaturesEditor()}
+        {activeTab === 'destiny' && renderDestinyEditor()}
+        {activeTab === 'join' && renderJoinEditor()}
+        {activeTab === 'social' && renderSocialLinksEditor()}
+      </div>
     </div>
   );
 }
