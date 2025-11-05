@@ -36,7 +36,7 @@ export default function Primarchs() {
       // Map to primarch data with role-based images
       const primarchData = primarchMembers.map(member => {
         const role = member['Role'] || member.D || member.role || ''
-        const backstory = member['Backstory'] || member.I || member.backstory || 'No backstory available.'
+        const backstory = member['Back Story'] || member.J || member.backstory || member['Backstory'] || 'No backstory available.'
         const name = member['RSI Handle'] || member.B || member['Name'] || 'Unknown'
         const discordName = member['Discord Name'] || member.A || ''
         
