@@ -20,6 +20,10 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
     imageUrl: ''
   })
 
+  // Image upload state
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [uploadError, setUploadError] = useState(null)
+
   const resetForm = () => {
     setFormData({
       title: '',
@@ -31,6 +35,7 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
     })
     setError(null)
     setSuccess(null)
+    setUploadError(null)
   }
 
   const handleAddEntry = () => {
@@ -57,6 +62,80 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
   const handleDeleteEntry = () => {
     if (!selectedEntry) return
     setShowDeleteModal(true)
+  }
+
+  // Handle image file selection and upload
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Please select an image file')
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('Image size must be less than 5MB')
+      return
+    }
+
+    setUploadingImage(true)
+    setUploadError(null)
+
+    try {
+      // Convert image to base64
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      
+      reader.onload = async () => {
+        try {
+          const base64Image = reader.result
+
+          // Upload to Cloudinary via Netlify function
+          const response = await fetch('/.netlify/functions/upload-image-cloudinary', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              imageData: base64Image
+            })
+          })
+
+          if (!response.ok) {
+            const error = await response.json()
+            throw new Error(error.message || 'Upload failed')
+          }
+
+          const result = await response.json()
+          
+          // Update form data with the uploaded image URL
+          setFormData(prev => ({
+            ...prev,
+            imageUrl: result.imageUrl
+          }))
+          
+          setSuccess('Image uploaded successfully!')
+          setTimeout(() => setSuccess(null), 3000)
+        } catch (uploadError) {
+          console.error('Upload error:', uploadError)
+          setUploadError(uploadError.message || 'Failed to upload image')
+        } finally {
+          setUploadingImage(false)
+        }
+      }
+
+      reader.onerror = () => {
+        setUploadError('Failed to read image file')
+        setUploadingImage(false)
+      }
+    } catch (error) {
+      console.error('Error handling image:', error)
+      setUploadError('Failed to process image')
+      setUploadingImage(false)
+    }
   }
 
   const handleFormSubmit = async (e, isEdit = false) => {
@@ -286,18 +365,56 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
               </div>
 
               <div className="form-group">
-                <label htmlFor="imageUrl">Image URL</label>
-                <input
-                  type="url"
-                  id="imageUrl"
-                  name="imageUrl"
-                  value={formData.imageUrl}
-                  onChange={handleInputChange}
-                  placeholder="https://example.com/image.jpg"
-                  className="form-input"
-                />
+                <label htmlFor="imageUrl">Image</label>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <input
+                    type="url"
+                    id="imageUrl"
+                    name="imageUrl"
+                    value={formData.imageUrl}
+                    onChange={handleInputChange}
+                    placeholder="https://example.com/image.jpg"
+                    className="form-input"
+                    style={{ flex: 1 }}
+                  />
+                  <label 
+                    htmlFor="image-upload-add" 
+                    className="upload-btn"
+                    style={{
+                      padding: '0.5rem 1rem',
+                      backgroundColor: '#8bb8e8',
+                      color: '#0a1628',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: uploadingImage ? 'not-allowed' : 'pointer',
+                      fontWeight: 'bold',
+                      whiteSpace: 'nowrap',
+                      opacity: uploadingImage ? 0.6 : 1
+                    }}
+                  >
+                    {uploadingImage ? '⏳ Uploading...' : '📁 Upload'}
+                  </label>
+                  <input
+                    type="file"
+                    id="image-upload-add"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={uploadingImage}
+                    style={{ display: 'none' }}
+                  />
+                </div>
+                {uploadError && (
+                  <small style={{ color: '#ff6b6b', fontSize: '0.85rem', marginTop: '0.25rem', display: 'block' }}>
+                    {uploadError}
+                  </small>
+                )}
+                {formData.imageUrl && (
+                  <small style={{ color: '#51cf66', fontSize: '0.85rem', marginTop: '0.25rem', display: 'block' }}>
+                    ✓ Image URL set
+                  </small>
+                )}
                 <small style={{ color: '#8bb8e8', fontSize: '0.85rem', marginTop: '0.25rem', display: 'block' }}>
-                  Optional: Add an image URL to display alongside this document
+                  Optional: Paste URL or upload an image (max 5MB)
                 </small>
               </div>
 
@@ -404,18 +521,56 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
               </div>
 
               <div className="form-group">
-                <label htmlFor="edit-imageUrl">Image URL</label>
-                <input
-                  type="url"
-                  id="edit-imageUrl"
-                  name="imageUrl"
-                  value={formData.imageUrl}
-                  onChange={handleInputChange}
-                  placeholder="https://example.com/image.jpg"
-                  className="form-input"
-                />
+                <label htmlFor="edit-imageUrl">Image</label>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <input
+                    type="url"
+                    id="edit-imageUrl"
+                    name="imageUrl"
+                    value={formData.imageUrl}
+                    onChange={handleInputChange}
+                    placeholder="https://example.com/image.jpg"
+                    className="form-input"
+                    style={{ flex: 1 }}
+                  />
+                  <label 
+                    htmlFor="image-upload-edit" 
+                    className="upload-btn"
+                    style={{
+                      padding: '0.5rem 1rem',
+                      backgroundColor: '#8bb8e8',
+                      color: '#0a1628',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: uploadingImage ? 'not-allowed' : 'pointer',
+                      fontWeight: 'bold',
+                      whiteSpace: 'nowrap',
+                      opacity: uploadingImage ? 0.6 : 1
+                    }}
+                  >
+                    {uploadingImage ? '⏳ Uploading...' : '📁 Upload'}
+                  </label>
+                  <input
+                    type="file"
+                    id="image-upload-edit"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={uploadingImage}
+                    style={{ display: 'none' }}
+                  />
+                </div>
+                {uploadError && (
+                  <small style={{ color: '#ff6b6b', fontSize: '0.85rem', marginTop: '0.25rem', display: 'block' }}>
+                    {uploadError}
+                  </small>
+                )}
+                {formData.imageUrl && (
+                  <small style={{ color: '#51cf66', fontSize: '0.85rem', marginTop: '0.25rem', display: 'block' }}>
+                    ✓ Image URL set
+                  </small>
+                )}
                 <small style={{ color: '#8bb8e8', fontSize: '0.85rem', marginTop: '0.25rem', display: 'block' }}>
-                  Optional: Add an image URL to display alongside this document
+                  Optional: Paste URL or upload an image (max 5MB)
                 </small>
               </div>
 
