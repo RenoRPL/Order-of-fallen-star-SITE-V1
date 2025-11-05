@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { contentService } from '../services/contentService';
+import { DiscordAuthService } from '../services/discordAuth';
 import './ContentManagement.css';
 
 export default function ContentManagement() {
@@ -9,6 +10,57 @@ export default function ContentManagement() {
   const [activeTab, setActiveTab] = useState('hero');
   const [hasChanges, setHasChanges] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+  // Check admin authorization on mount
+  useEffect(() => {
+    const checkAuthorization = async () => {
+      const userData = DiscordAuthService.getUserData();
+      
+      if (!userData || !userData.user) {
+        // Not logged in, redirect to profile
+        console.log('No Discord login found, redirecting to profile');
+        navigate('/profile');
+        return;
+      }
+
+      try {
+        // Check if user is admin
+        const response = await fetch('/.netlify/functions/check-admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            discordId: userData.user.id
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.isAdmin) {
+            console.log('Admin access granted for:', userData.user.username);
+            setIsAuthorized(true);
+          } else {
+            console.log('Access denied: User is not an admin');
+            alert('Access Denied: You must be an admin to access this page.');
+            navigate('/home');
+          }
+        } else {
+          console.error('Error checking admin status');
+          navigate('/home');
+        }
+      } catch (error) {
+        console.error('Error checking authorization:', error);
+        navigate('/home');
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+
+    checkAuthorization();
+  }, [navigate]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -477,6 +529,26 @@ export default function ContentManagement() {
     }
     navigate('/home');
   };
+
+  // Show loading screen while checking authorization
+  if (isCheckingAuth) {
+    return (
+      <div className="content-management">
+        <div className="auth-check-container">
+          <div className="auth-check-content">
+            <div className="auth-spinner"></div>
+            <h2>Checking Authorization...</h2>
+            <p>Verifying admin credentials</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render anything if not authorized (will redirect)
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <div className="content-management">

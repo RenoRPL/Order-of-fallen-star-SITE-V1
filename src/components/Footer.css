@@ -357,6 +357,12 @@
   margin-bottom: 1.5rem;
 }
 
+.admin-modal .modal-note {
+  font-size: 0.9rem;
+  color: rgba(255, 193, 7, 0.9);
+  margin-top: 0.5rem;
+}
+
 .admin-modal input {
   width: 100%;
   background: rgba(26, 31, 46, 0.8);

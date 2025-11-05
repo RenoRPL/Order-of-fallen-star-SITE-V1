@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { contentService } from '../services/contentService';
+import { DiscordAuthService } from '../services/discordAuth';
 import './Footer.css';
 
 export default function Footer() {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [showAdminModal, setShowAdminModal] = useState(false);
-  const [adminCode, setAdminCode] = useState('');
   const [content, setContent] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isCheckingAdmin, setIsCheckingAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,29 +35,92 @@ export default function Footer() {
     // Optional: Add event listener for real-time updates
     window.addEventListener('contentUpdated', updateContent);
     
+    // Check admin status
+    checkAdminStatus();
+    
     return () => {
       window.removeEventListener('contentUpdated', updateContent);
     };
   }, []);
 
+  const checkAdminStatus = async () => {
+    const userData = DiscordAuthService.getUserData();
+    if (!userData || !userData.user) {
+      setIsAdmin(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/.netlify/functions/check-admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          discordId: userData.user.id
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsAdmin(data.isAdmin || false);
+      } else {
+        setIsAdmin(false);
+      }
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      setIsAdmin(false);
+    }
+  };
+
   const toggleDropdown = (dropdown) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown)
   };
 
-  const handleAdminAccess = () => {
-    if (adminCode === '1313') {
-      navigate('/admin/content');
-      setShowAdminModal(false);
-      setAdminCode('');
-    } else {
-      alert('Invalid access code');
-      setAdminCode('');
+  const handleAdminClick = async () => {
+    const userData = DiscordAuthService.getUserData();
+    
+    if (!userData || !userData.user) {
+      // Not logged in with Discord
+      setShowAdminModal(true);
+      return;
+    }
+
+    // Check if user is admin
+    setIsCheckingAdmin(true);
+    try {
+      const response = await fetch('/.netlify/functions/check-admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          discordId: userData.user.id
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isAdmin) {
+          // User is admin, allow access
+          navigate('/admin/content');
+        } else {
+          // User is not admin
+          alert('Access Denied: You must be an admin to access this page.');
+        }
+      } else {
+        alert('Error checking admin status. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      alert('Error checking admin status. Please try again.');
+    } finally {
+      setIsCheckingAdmin(false);
     }
   };
 
   const closeAdminModal = () => {
     setShowAdminModal(false);
-    setAdminCode('');
   };
   return (
     <footer className="site-footer">
@@ -131,31 +196,36 @@ export default function Footer() {
               <p>Star Citizen is a trademark of Cloud Imperium Games Corporation</p>
             </div>
             
-            <div className="admin-access" onClick={() => setShowAdminModal(true)}>
-              ⚙️
-            </div>
+            {isAdmin && (
+              <div className="admin-access" onClick={handleAdminClick} title="Admin: Content Management">
+                ⚙️
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Admin Access Modal */}
+      {/* Admin Login Required Modal */}
       {showAdminModal && (
         <div className="admin-modal-overlay" onClick={closeAdminModal}>
           <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Admin Access</h3>
-            <p>Enter access code:</p>
-            <input
-              type="password"
-              value={adminCode}
-              onChange={(e) => setAdminCode(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleAdminAccess()}
-              placeholder="Enter code"
-              autoFocus
-            />
+            <h3>🔒 Admin Access Required</h3>
+            <p>You must be logged in with Discord to access the Content Management System.</p>
+            <p className="modal-note">Only authorized administrators can access this section.</p>
             <div className="admin-modal-buttons">
-              <button onClick={handleAdminAccess}>Access</button>
+              <button onClick={() => navigate('/profile')}>Go to Profile & Login</button>
               <button onClick={closeAdminModal}>Cancel</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Checking Admin Status */}
+      {isCheckingAdmin && (
+        <div className="admin-modal-overlay">
+          <div className="admin-modal">
+            <h3>Checking Admin Status...</h3>
+            <p>Please wait...</p>
           </div>
         </div>
       )}
