@@ -37,7 +37,8 @@ export default function Primarchs() {
       const primarchData = primarchMembers.map(member => {
         const role = member['Role'] || member.D || member.role || ''
         const backstory = member['Back Story'] || member.J || member.backstory || member['Backstory'] || 'No backstory available.'
-        const name = member['RSI Handle'] || member.B || member['Name'] || 'Unknown'
+        const rsiHandle = member['RSI Handle'] || member.B || member['Name'] || 'Unknown'
+        const username = member['Username'] || member.B || rsiHandle || 'Unknown'
         const discordName = member['Discord Name'] || member.A || ''
         
         console.log('Processing Primarch:', { name, role, backstory })
@@ -64,7 +65,8 @@ export default function Primarchs() {
         }
         
         return {
-          name: name,
+          rsiHandle: rsiHandle,
+          username: username,
           discordName: discordName,
           role: role,
           backstory: backstory,
@@ -90,6 +92,42 @@ export default function Primarchs() {
 
   const closeModal = () => {
     setSelectedPrimarch(null)
+  }
+
+  // Format backstory text (handles both HTML and plain text)
+  const formatBackstoryText = (text) => {
+    if (!text) return null
+    
+    // Check if the text contains HTML tags
+    const hasHtmlTags = /<[^>]*>/.test(text)
+    
+    if (hasHtmlTags) {
+      // For HTML content, render as HTML
+      return (
+        <div 
+          className="backstory-html-content"
+          dangerouslySetInnerHTML={{ __html: text }}
+        />
+      )
+    } else {
+      // For plain text, use paragraph formatting
+      const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim())
+      
+      return paragraphs.map((paragraph, index) => {
+        const formattedParagraph = paragraph.split('\n').map((line, lineIndex) => (
+          <React.Fragment key={lineIndex}>
+            {line}
+            {lineIndex < paragraph.split('\n').length - 1 && <br />}
+          </React.Fragment>
+        ))
+        
+        return (
+          <p key={index} className="backstory-paragraph">
+            {formattedParagraph}
+          </p>
+        )
+      })
+    }
   }
 
   // Handle escape key to close modal
@@ -153,7 +191,7 @@ export default function Primarchs() {
                   <div className="card-image-wrapper">
                     <img
                       src={primarch.cardImage}
-                      alt={primarch.name}
+                      alt={primarch.username}
                       className="card-image"
                       loading="lazy"
                     />
@@ -162,7 +200,7 @@ export default function Primarchs() {
                     </div>
                   </div>
                   <div className="card-info">
-                    <h3 className="card-title">{primarch.name}</h3>
+                    <h3 className="card-title">{primarch.username}</h3>
                     <p className="card-role">Primarch of {primarch.role}</p>
                   </div>
                 </div>
@@ -183,11 +221,11 @@ export default function Primarchs() {
             <div className="modal-hero-image">
               <img
                 src={selectedPrimarch.heroImage}
-                alt={selectedPrimarch.name}
+                alt={selectedPrimarch.username}
                 className="hero-image"
               />
               <div className="modal-hero-overlay">
-                <h2 className="modal-title">{selectedPrimarch.name}</h2>
+                <h2 className="modal-title">{selectedPrimarch.username}</h2>
                 <p className="modal-subtitle">Primarch of {selectedPrimarch.role}</p>
               </div>
             </div>
@@ -195,17 +233,23 @@ export default function Primarchs() {
             <div className="modal-body">
               <h3 className="backstory-title">Backstory</h3>
               <div className="backstory-content">
-                <p>{selectedPrimarch.backstory}</p>
+                {formatBackstoryText(selectedPrimarch.backstory)}
               </div>
               
-              {selectedPrimarch.discordName && (
-                <div className="primarch-details">
+              <div className="primarch-details">
+                {selectedPrimarch.rsiHandle && (
+                  <div className="detail-item">
+                    <span className="detail-label">RSI Handle:</span>
+                    <span className="detail-value">{selectedPrimarch.rsiHandle}</span>
+                  </div>
+                )}
+                {selectedPrimarch.discordName && (
                   <div className="detail-item">
                     <span className="detail-label">Discord:</span>
                     <span className="detail-value">{selectedPrimarch.discordName}</span>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>

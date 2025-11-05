@@ -368,12 +368,64 @@
   margin-bottom: 2rem;
 }
 
-.backstory-content p {
+.backstory-content p,
+.backstory-paragraph {
   font-size: 1.1rem;
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.9);
-  margin: 0;
+  margin: 0 0 1rem 0;
   white-space: pre-wrap;
+}
+
+.backstory-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* HTML Content Formatting */
+.backstory-html-content {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.backstory-html-content p {
+  margin: 0 0 1rem 0;
+}
+
+.backstory-html-content h1,
+.backstory-html-content h2,
+.backstory-html-content h3 {
+  color: #39b9ff;
+  margin: 1.5rem 0 1rem 0;
+}
+
+.backstory-html-content strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.backstory-html-content em {
+  color: #8bb8e8;
+  font-style: italic;
+}
+
+.backstory-html-content ul,
+.backstory-html-content ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.backstory-html-content li {
+  margin: 0.5rem 0;
+}
+
+.backstory-html-content a {
+  color: #39b9ff;
+  text-decoration: underline;
+}
+
+.backstory-html-content a:hover {
+  color: #5fc9ff;
 }
 
 .primarch-details {
@@ -381,6 +433,9 @@
   border: 1px solid rgba(57, 185, 255, 0.2);
   border-radius: 12px;
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .detail-item {
