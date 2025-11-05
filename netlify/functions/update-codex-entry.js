@@ -31,7 +31,7 @@ export async function handler(event, context) {
   try {
     // Parse request body
     const body = JSON.parse(event.body || '{}')
-    const { id, title, content, category, author, tags } = body
+    const { id, title, content, category, author, tags, imageUrl } = body
 
     // Validate required fields
     if (!id || !title || !content) {
@@ -74,7 +74,7 @@ export async function handler(event, context) {
       // First, get all data to find the row with the matching ID
       const response = await sheetsService.sheets.spreadsheets.values.get({
         spreadsheetId: spreadsheetId,
-        range: `${codexSheetName}!A:H`,
+        range: `${codexSheetName}!A:I`,
       })
       
       const allData = response.data.values || []
@@ -115,7 +115,7 @@ export async function handler(event, context) {
       const originalDateCreated = existingRow[5] || new Date().toISOString()
       
       // Prepare the updated row data
-      // Columns: A: ID, B: Title, C: Content, D: Category, E: Author, F: Date Created, G: Last Modified, H: Tags
+      // Columns: A: ID, B: Title, C: Content, D: Category, E: Author, F: Date Created, G: Last Modified, H: Tags, I: Image URL
       const updatedRowData = [
         id, // Keep the original ID
         title,
@@ -124,13 +124,14 @@ export async function handler(event, context) {
         author || existingRow[4] || 'Unknown',
         originalDateCreated, // Keep original creation date
         new Date().toISOString(), // Update last modified
-        Array.isArray(tags) ? tags.join(', ') : (tags || existingRow[7] || '')
+        Array.isArray(tags) ? tags.join(', ') : (tags || existingRow[7] || ''),
+        imageUrl !== undefined ? imageUrl : (existingRow[8] || '')
       ]
 
       // Update the specific row
       const updateResult = await sheetsService.sheets.spreadsheets.values.update({
         spreadsheetId: spreadsheetId,
-        range: `${codexSheetName}!A${targetRowIndex}:H${targetRowIndex}`,
+        range: `${codexSheetName}!A${targetRowIndex}:I${targetRowIndex}`,
         valueInputOption: 'RAW',
         resource: {
           values: [updatedRowData]
@@ -154,7 +155,8 @@ export async function handler(event, context) {
             author: author || existingRow[4] || 'Unknown',
             dateCreated: originalDateCreated,
             lastModified: updatedRowData[6],
-            tags: Array.isArray(tags) ? tags : (tags ? tags.split(',').map(t => t.trim()) : [])
+            tags: Array.isArray(tags) ? tags : (tags ? tags.split(',').map(t => t.trim()) : []),
+            imageUrl: updatedRowData[8]
           }
         })
       }

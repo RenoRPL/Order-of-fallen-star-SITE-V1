@@ -36,7 +36,7 @@ export async function handler(event, context) {
     const spreadsheetId = '12OiRHpEALj1hzXRxaXgBOWjHtmUT5hg2ztxIgr4J4y8'
     
     // Let's try to get the Codex sheet - we'll need to create a sheet with specific columns:
-    // A: ID, B: Title, C: Content, D: Category, E: Author, F: Date Created, G: Last Modified, H: Tags
+    // A: ID, B: Title, C: Content, D: Category, E: Author, F: Date Created, G: Last Modified, H: Tags, I: Image URL
     const codexSheetName = 'Codex'
     
     // Import Google Sheets service dynamically to read from the Codex sheet
@@ -64,7 +64,7 @@ export async function handler(event, context) {
     try {
       const response = await sheetsService.sheets.spreadsheets.values.get({
         spreadsheetId: spreadsheetId,
-        range: `${codexSheetName}!A:H`, // All columns from A to H
+        range: `${codexSheetName}!A:I`, // All columns from A to I (including Image URL)
       })
       
       codexData = response.data.values || []
@@ -89,7 +89,7 @@ export async function handler(event, context) {
                     title: codexSheetName,
                     gridProperties: {
                       rowCount: 1000,
-                      columnCount: 8
+                      columnCount: 9
                     }
                   }
                 }
@@ -101,7 +101,7 @@ export async function handler(event, context) {
           
           // Add headers and sample data
           const headers = [
-            'ID', 'Title', 'Content', 'Category', 'Author', 'Date Created', 'Last Modified', 'Tags'
+            'ID', 'Title', 'Content', 'Category', 'Author', 'Date Created', 'Last Modified', 'Tags', 'Image URL'
           ]
           
           const sampleEntry = [
@@ -112,12 +112,13 @@ export async function handler(event, context) {
             'Order Administration',
             new Date().toISOString(),
             new Date().toISOString(),
-            'introduction, welcome, getting-started, administration'
+            'introduction, welcome, getting-started, administration',
+            '' // Empty image URL
           ]
           
           await sheetsService.sheets.spreadsheets.values.update({
             spreadsheetId: spreadsheetId,
-            range: `${codexSheetName}!A1:H2`,
+            range: `${codexSheetName}!A1:I2`,
             valueInputOption: 'RAW',
             resource: {
               values: [headers, sampleEntry]
@@ -138,7 +139,8 @@ export async function handler(event, context) {
               author: sampleEntry[4],
               dateCreated: sampleEntry[5],
               lastModified: sampleEntry[6],
-              tags: sampleEntry[7].split(',').map(tag => tag.trim())
+              tags: sampleEntry[7].split(',').map(tag => tag.trim()),
+              imageUrl: sampleEntry[8] || ''
             }])
           }
           
@@ -174,7 +176,7 @@ export async function handler(event, context) {
     // Skip header row and parse the data
     const entries = codexData.slice(1).map((row, index) => {
       // Handle rows that might have fewer columns
-      const [id, title, content, category, author, dateCreated, lastModified, tags] = row
+      const [id, title, content, category, author, dateCreated, lastModified, tags, imageUrl] = row
       
       return {
         id: id || `entry_${index + 1}`,
@@ -184,7 +186,8 @@ export async function handler(event, context) {
         author: author || 'Unknown',
         dateCreated: dateCreated || new Date().toISOString(),
         lastModified: lastModified || new Date().toISOString(),
-        tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : []
+        tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : [],
+        imageUrl: imageUrl || ''
       }
     }).filter(entry => entry.title && entry.content) // Only include entries with title and content
 

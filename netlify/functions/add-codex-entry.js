@@ -31,7 +31,7 @@ export async function handler(event, context) {
   try {
     // Parse request body
     const body = JSON.parse(event.body || '{}')
-    const { title, content, category = 'General', author = 'Unknown', tags = [] } = body
+    const { title, content, category = 'General', author = 'Unknown', tags = [], imageUrl = '' } = body
 
     // Validate required fields
     if (!title || !content) {
@@ -75,7 +75,7 @@ export async function handler(event, context) {
     const entryId = `codex_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
     // Prepare the row data
-    // Columns: A: ID, B: Title, C: Content, D: Category, E: Author, F: Date Created, G: Last Modified, H: Tags
+    // Columns: A: ID, B: Title, C: Content, D: Category, E: Author, F: Date Created, G: Last Modified, H: Tags, I: Image URL
     const rowData = [
       entryId,
       title,
@@ -84,7 +84,8 @@ export async function handler(event, context) {
       author || 'Unknown',
       timestamp,
       timestamp,
-      Array.isArray(tags) ? tags.join(', ') : (tags || '')
+      Array.isArray(tags) ? tags.join(', ') : (tags || ''),
+      imageUrl || ''
     ]
 
     try {
@@ -108,7 +109,7 @@ export async function handler(event, context) {
                     title: codexSheetName,
                     gridProperties: {
                       rowCount: 1000,
-                      columnCount: 8
+                      columnCount: 9
                     }
                   }
                 }
@@ -120,12 +121,12 @@ export async function handler(event, context) {
           
           // Add headers to the new sheet
           const headers = [
-            'ID', 'Title', 'Content', 'Category', 'Author', 'Date Created', 'Last Modified', 'Tags'
+            'ID', 'Title', 'Content', 'Category', 'Author', 'Date Created', 'Last Modified', 'Tags', 'Image URL'
           ]
           
           await sheetsService.sheets.spreadsheets.values.update({
             spreadsheetId: spreadsheetId,
-            range: `${codexSheetName}!A1:H1`,
+            range: `${codexSheetName}!A1:I1`,
             valueInputOption: 'RAW',
             resource: {
               values: [headers]
@@ -141,7 +142,7 @@ export async function handler(event, context) {
       // Add the new entry to the sheet
       const appendResult = await sheetsService.sheets.spreadsheets.values.append({
         spreadsheetId: spreadsheetId,
-        range: `${codexSheetName}!A:H`,
+        range: `${codexSheetName}!A:I`,
         valueInputOption: 'RAW',
         insertDataOption: 'INSERT_ROWS',
         resource: {
@@ -166,7 +167,8 @@ export async function handler(event, context) {
             author: author,
             dateCreated: timestamp,
             lastModified: timestamp,
-            tags: Array.isArray(tags) ? tags : (tags ? tags.split(',').map(t => t.trim()) : [])
+            tags: Array.isArray(tags) ? tags : (tags ? tags.split(',').map(t => t.trim()) : []),
+            imageUrl: imageUrl || ''
           }
         })
       }
