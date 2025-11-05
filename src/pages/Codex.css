@@ -9,15 +9,17 @@
 
 .codex-content {
   flex: 1;
-  padding: 100px 20px 20px 20px; /* Reduced top padding */
+  padding: 100px 0 20px 0; /* Remove horizontal padding */
   max-width: 100%;
   margin: 0;
+  width: 100%;
 }
 
 /* Page Header */
 .codex-header {
   text-align: center;
-  margin-bottom: 1.5rem; /* Reduced margin */
+  margin-bottom: 1.5rem;
+  padding: 0 2rem; /* Add padding here instead */
 }
 
 .codex-title {
@@ -44,7 +46,8 @@
 /* Documents Count */
 .codex-count {
   text-align: center;
-  margin-bottom: 1.5rem; /* Reduced margin */
+  margin-bottom: 1.5rem;
+  padding: 0 2rem; /* Add padding here instead */
 }
 
 .codex-count h2 {
@@ -57,13 +60,15 @@
 /* Main Container */
 .codex-container {
   display: grid;
-  grid-template-columns: 350px 1fr; /* Reduced sidebar to give more space to content */
+  grid-template-columns: 350px 1fr; /* Sidebar + flexible content */
   gap: 2rem;
-  max-width: none; /* Remove width constraint for full screen */
+  max-width: none;
   margin: 0;
-  padding: 0 2rem; /* Add padding to edges instead */
+  padding: 0 2rem;
   height: calc(100vh - 320px);
   min-height: 700px;
+  width: 100%; /* Ensure full width */
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 /* Sidebar */
