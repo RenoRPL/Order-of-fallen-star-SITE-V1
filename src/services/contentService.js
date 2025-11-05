@@ -4,7 +4,13 @@ import OFSDataService from './ofsDataService.js';
 
 // Default content structure
 const defaultContent = {
-  version: "1.3.2", // Updated version for Join Org button changes
+  version: "1.4.0", // Updated version for header navigation settings
+  headerNav: {
+    about: { label: "About", visible: true, href: "/#what-we-offer" },
+    fleet: { label: "Fleet", visible: true, href: "/fleet" },
+    primarchs: { label: "Primarchs", visible: true, href: "/primarchs" },
+    codex: { label: "Codex", visible: true, href: "/codex" }
+  },
   hero: {
     title: "Welcome to Order of the Fallen Star",
     subtitle: "Elite Star Citizen Organization - Forging Legends Among the Stars",

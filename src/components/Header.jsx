@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { googleSheetsService } from '../services/googleSheetsService'
+import { contentService } from '../services/contentService'
 import './Header.css'
 import LoginButton from './LoginButton'
 
@@ -13,6 +14,18 @@ export default function Header() {
   const [formattedStats, setFormattedStats] = useState([])
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [displayText, setDisplayText] = useState('')
+  const [headerNav, setHeaderNav] = useState(null)
+
+  // Load header navigation settings
+  useEffect(() => {
+    const content = contentService.getContent()
+    setHeaderNav(content.headerNav || {
+      about: { label: "About", visible: true, href: "/#what-we-offer" },
+      fleet: { label: "Fleet", visible: true, href: "/fleet" },
+      primarchs: { label: "Primarchs", visible: true, href: "/primarchs" },
+      codex: { label: "Codex", visible: true, href: "/codex" }
+    })
+  }, [])
 
   // Fetch user patrol stats when user is available
   useEffect(() => {
@@ -128,10 +141,18 @@ export default function Header() {
         </div>
         
         <nav className="main-nav">
-          <a href="/#what-we-offer" className="nav-link">About</a>
-          <a href="/fleet" className="nav-link">Fleet</a>
-          <a href="/primarchs" className="nav-link">Primarchs</a>
-          <a href="/codex" className="nav-link">Codex</a>
+          {headerNav && headerNav.about?.visible && (
+            <a href={headerNav.about.href} className="nav-link">{headerNav.about.label}</a>
+          )}
+          {headerNav && headerNav.fleet?.visible && (
+            <a href={headerNav.fleet.href} className="nav-link">{headerNav.fleet.label}</a>
+          )}
+          {headerNav && headerNav.primarchs?.visible && (
+            <a href={headerNav.primarchs.href} className="nav-link">{headerNav.primarchs.label}</a>
+          )}
+          {headerNav && headerNav.codex?.visible && (
+            <a href={headerNav.codex.href} className="nav-link">{headerNav.codex.label}</a>
+          )}
         </nav>
         
         <div className="header-actions">

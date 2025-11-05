@@ -113,6 +113,71 @@ export default function ContentManagement() {
     }
   };
 
+  const renderHeaderEditor = () => {
+    // Initialize headerNav if it doesn't exist
+    if (!content.headerNav) {
+      const newContent = { ...content };
+      newContent.headerNav = {
+        about: { label: "About", visible: true, href: "/#what-we-offer" },
+        fleet: { label: "Fleet", visible: true, href: "/fleet" },
+        primarchs: { label: "Primarchs", visible: true, href: "/primarchs" },
+        codex: { label: "Codex", visible: true, href: "/codex" }
+      };
+      setContent(newContent);
+      setHasChanges(true);
+      return <div>Initializing...</div>;
+    }
+
+    return (
+      <div className="editor-section">
+        <h3>Header Navigation Settings</h3>
+        <p className="section-description">
+          Control which pages appear in the header navigation. Uncheck pages you want to temporarily hide while editing them.
+        </p>
+
+        <div className="header-nav-grid">
+          {Object.keys(content.headerNav).map((key) => {
+            const navItem = content.headerNav[key];
+            return (
+              <div key={key} className="header-nav-item">
+                <div className="nav-item-header">
+                  <h4>{navItem.label}</h4>
+                  <label className="checkbox-container">
+                    <input
+                      type="checkbox"
+                      checked={navItem.visible}
+                      onChange={(e) => updateContent('headerNav', [key, 'visible'], e.target.checked)}
+                    />
+                    <span className="checkbox-label">Visible in Header</span>
+                  </label>
+                </div>
+
+                <div className="form-group">
+                  <label>Label Text</label>
+                  <input
+                    type="text"
+                    value={navItem.label}
+                    onChange={(e) => updateContent('headerNav', [key, 'label'], e.target.value)}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Link URL</label>
+                  <input
+                    type="text"
+                    value={navItem.href}
+                    onChange={(e) => updateContent('headerNav', [key, 'href'], e.target.value)}
+                    placeholder="/page or /#section"
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   const renderHeroEditor = () => (
     <div className="editor-section">
       <h3>Hero Section</h3>
@@ -580,6 +645,12 @@ export default function ContentManagement() {
 
       <div className="cm-tabs">
         <button 
+          className={activeTab === 'header' ? 'active' : ''} 
+          onClick={() => setActiveTab('header')}
+        >
+          Header Settings
+        </button>
+        <button 
           className={activeTab === 'hero' ? 'active' : ''} 
           onClick={() => setActiveTab('hero')}
         >
@@ -612,6 +683,7 @@ export default function ContentManagement() {
       </div>
 
       <div className="cm-content">
+        {activeTab === 'header' && renderHeaderEditor()}
         {activeTab === 'hero' && renderHeroEditor()}
         {activeTab === 'features' && renderFeaturesEditor()}
         {activeTab === 'destiny' && renderDestinyEditor()}
