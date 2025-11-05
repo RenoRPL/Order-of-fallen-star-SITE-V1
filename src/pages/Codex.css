@@ -580,7 +580,7 @@
 
 @media (max-width: 900px) {
   .codex-content {
-    padding: 100px 15px 15px 15px;
+    padding: 190px 15px 15px 15px;
   }
   
   .codex-container {
@@ -606,12 +606,55 @@
   
   .codex-title {
     font-size: 2.2rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  .codex-subtitle {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+}
+
+/* Tablet and mobile devices */
+@media (max-width: 768px) {
+  .codex-content {
+    padding: 190px 12px 12px 12px;
+  }
+  
+  .codex-header {
+    padding: 0 1rem;
+    margin-top: 1rem;
+  }
+  
+  .codex-title {
+    font-size: 2rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  .codex-icon {
+    font-size: 2rem;
+  }
+  
+  .codex-subtitle {
+    font-size: 1.15rem;
+  }
+  
+  .codex-container {
+    gap: 1rem;
+  }
+  
+  .document-title {
+    font-size: 1.5rem;
   }
 }
 
 @media (max-width: 600px) {
   .codex-content {
-    padding: 90px 10px 10px 10px;
+    padding: 190px 10px 10px 10px;
   }
   
   .codex-container {
@@ -619,13 +662,22 @@
   }
   
   .codex-title {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     flex-direction: column;
     gap: 0.5rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  .codex-icon {
+    font-size: 1.8rem;
   }
   
   .codex-subtitle {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .sidebar-content {
@@ -641,10 +693,72 @@
   }
   
   .document-title {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
   
   .document-text {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .codex-content {
+    padding: 190px 8px 8px 8px;
+  }
+  
+  .codex-header {
+    padding: 0 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .codex-title {
+    font-size: 1.4rem;
+    gap: 0.4rem;
+  }
+  
+  .codex-icon {
+    font-size: 1.5rem;
+  }
+  
+  .codex-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .codex-container {
+    padding: 0 0.25rem;
+  }
+  
+  .sidebar-content {
+    padding: 0.75rem;
+  }
+  
+  .document-header {
+    padding: 1rem;
+  }
+  
+  .document-content {
+    padding: 1rem;
+  }
+  
+  .document-title {
+    font-size: 1.2rem;
+  }
+  
+  .document-text {
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+  
+  .codex-sidebar {
+    max-height: 350px;
+  }
+  
+  .codex-viewer {
+    min-height: 400px;
   }
 }
