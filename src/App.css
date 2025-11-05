@@ -476,24 +476,44 @@
 }
 
 .skip-splash-checkbox {
-  width: 20px;
-  height: 20px;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
   cursor: pointer;
-  accent-color: #39b9ff;
-  border: 2px solid rgba(57, 185, 255, 0.5);
+  border: 2px solid rgba(57, 185, 255, 0.6);
   border-radius: 4px;
-  background: rgba(11, 15, 25, 0.6);
+  background: rgba(11, 15, 25, 0.8);
+  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  position: relative;
+  flex-shrink: 0;
 }
 
 .skip-splash-checkbox:hover {
   border-color: #39b9ff;
-  box-shadow: 0 0 10px rgba(57, 185, 255, 0.4);
+  box-shadow: 0 0 15px rgba(57, 185, 255, 0.5);
+  background: rgba(11, 15, 25, 0.9);
 }
 
 .skip-splash-checkbox:checked {
-  background: #39b9ff;
+  background: linear-gradient(135deg, #00d4ff, #39b9ff);
   border-color: #39b9ff;
+  box-shadow: 
+    0 0 20px rgba(57, 185, 255, 0.6),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.skip-splash-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #0b0f19;
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 .skip-splash-label span {
