@@ -64,9 +64,12 @@ export default function Fleet() {
           )
           
           // Determine which image to use (prioritize custom image)
-          const shipImage = customShipImage && customShipImage.trim() !== '' 
+          let shipImage = customShipImage && customShipImage.trim() !== '' 
             ? customShipImage 
             : (registryShip?.imageUrl || '/Nebula BG.jpeg')
+          
+          // Convert Google Drive and Imgur URLs to direct image URLs
+          shipImage = OFSDataService.convertImgurUrl(shipImage)
           
           return {
             username,

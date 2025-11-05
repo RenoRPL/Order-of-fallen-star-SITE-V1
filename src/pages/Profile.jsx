@@ -1783,7 +1783,8 @@ I found my faith in flight. The hangars of the Celestial Bastion are temples of 
   const getShipBackgroundUrl = (shipValue, customShipImage) => {
     // Prioritize custom ship image if available
     if (customShipImage && customShipImage.trim() !== '') {
-      return customShipImage
+      // Convert Google Drive and Imgur URLs to direct image URLs
+      return OFSDataService.convertImgurUrl(customShipImage)
     }
     
     // Fallback to registry ship image

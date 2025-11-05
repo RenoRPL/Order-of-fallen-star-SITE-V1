@@ -381,6 +381,21 @@ class OFSDataService {
   static convertImgurUrl(url) {
     if (!url) return url
     
+    // Convert Google Drive share links to direct image URLs
+    // Format: https://drive.google.com/file/d/FILE_ID/view?usp=...
+    // Convert to: https://drive.google.com/uc?export=view&id=FILE_ID
+    if (url.includes('drive.google.com/file/d/')) {
+      try {
+        const fileIdMatch = url.match(/\/d\/([^\/]+)/)
+        if (fileIdMatch && fileIdMatch[1]) {
+          const fileId = fileIdMatch[1]
+          return `https://drive.google.com/uc?export=view&id=${fileId}`
+        }
+      } catch (error) {
+        console.error('Error converting Google Drive URL:', error)
+      }
+    }
+    
     // Convert imgur.com URLs to direct i.imgur.com URLs
     if (url.includes('imgur.com/') && !url.includes('i.imgur.com')) {
       const imgurId = url.split('/').pop()

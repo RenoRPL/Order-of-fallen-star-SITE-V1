@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { contentService } from '../services/contentService'
+import OFSDataService from '../services/ofsDataService'
 import './Home.css'
 
 export default function Home() {
@@ -218,7 +219,7 @@ export default function Home() {
         <section 
           className="join-section"
           style={{
-            backgroundImage: `url('${content?.join?.backgroundImage || '/Join Fallen Star BG.png'}')`
+            backgroundImage: `url('${OFSDataService.convertImgurUrl(content?.join?.backgroundImage) || '/Join Fallen Star BG.png'}')`
           }}
         >
           <div className="join-overlay">
