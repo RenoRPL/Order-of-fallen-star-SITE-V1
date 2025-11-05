@@ -258,7 +258,7 @@ html {
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .home-page {
-    padding-top: 70px;
+    padding-top: 140px; /* Increased to account for taller mobile header */
   }
 
   .home-content {
@@ -266,7 +266,7 @@ html {
   }
 
   .hero-section {
-    padding: 2rem 0 4rem;
+    padding: 1rem 0 4rem;
   }
 
   .hero-container {
@@ -360,11 +360,11 @@ html {
 
 @media (max-width: 600px) {
   .home-page {
-    padding-top: 65px;
+    padding-top: 140px; /* Keep consistent with 768px breakpoint */
   }
 
   .hero-section {
-    padding: 1.5rem 0 3rem;
+    padding: 1rem 0 3rem;
   }
 
   .hero-title {
@@ -389,7 +389,7 @@ html {
 
 @media (max-width: 480px) {
   .home-page {
-    padding-top: 60px;
+    padding-top: 140px; /* Keep consistent for small phones too */
   }
 
   .home-content {
@@ -397,7 +397,7 @@ html {
   }
 
   .hero-section {
-    padding: 1.5rem 0 2.5rem;
+    padding: 1rem 0 2.5rem;
   }
 
   .hero-title {
