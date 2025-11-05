@@ -333,14 +333,20 @@ class OFSDataService {
       const memberLog = await this.fetchCSV(MEMBER_LOG_URL)
       let activeCount = 0
       
+      console.log('Member Log data loaded, processing...')
+      console.log('First row sample:', memberLog[0])
+      
       memberLog.forEach(member => {
-        // Check if member has a rank (not empty/null)
-        const rank = member.RankC || member.Rank || ''
+        // Check if member has a rank in column C (not empty/null)
+        // Try multiple possible header variations for column C
+        const rank = member['Rank'] || member['RankC'] || member['rank'] || ''
+        
         if (rank.trim() !== '') {
           activeCount++
         }
       })
       
+      console.log(`Active member count (with ranks): ${activeCount}`)
       return activeCount
     } catch (error) {
       console.error('Error fetching active member count:', error)
