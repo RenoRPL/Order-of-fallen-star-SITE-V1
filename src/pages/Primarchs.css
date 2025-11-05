@@ -106,7 +106,7 @@
 .card-image-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 3/4;
   overflow: hidden;
 }
 
@@ -344,7 +344,7 @@
 }
 
 .backstory-content {
-  background: rgba(0, 0, 0, 0.6);
+  background: #0a0a0a;
   padding: 30px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
