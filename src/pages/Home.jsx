@@ -7,6 +7,7 @@ import './Home.css'
 export default function Home() {
   const [selectedPath, setSelectedPath] = useState(null);
   const [content, setContent] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Listen for content updates
@@ -36,21 +37,30 @@ export default function Home() {
       }
     };
 
-    // Update content immediately when component mounts
-    updateContent();
+    // Initialize content and wait for dynamic data
+    const initializeContent = async () => {
+      console.log('Initializing Home component...');
+      
+      // Get initial content immediately (default or cached)
+      updateContent();
+      
+      // Wait for dynamic data to load
+      try {
+        await contentService.waitForInitialization();
+        console.log('Content service initialized');
+        // Update with loaded data
+        updateContent();
+      } catch (error) {
+        console.error('Error waiting for initialization:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeContent();
 
     // Add event listener for real-time updates
     window.addEventListener('contentUpdated', updateContent);
-    
-    // Also refresh paths to ensure they're loaded
-    const refreshData = async () => {
-      try {
-        await contentService.refreshPaths();
-      } catch (error) {
-        console.error('Error refreshing paths:', error);
-      }
-    };
-    refreshData();
     
     // Handle escape key to close modal
     const handleEscape = (event) => {

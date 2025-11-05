@@ -91,24 +91,37 @@ const defaultContent = {
 class ContentService {
   constructor() {
     this.content = { ...defaultContent };
+    this.isInitialized = false;
+    this.initPromise = null;
     this.loadContent();
     
-    // Load dynamic data with error handling
-    this.loadDynamicData();
+    // Start loading dynamic data immediately
+    this.initPromise = this.loadDynamicData();
   }
 
   async loadDynamicData() {
     try {
+      console.log('Starting to load dynamic data...');
       // Load paths and stats in parallel with error handling
       await Promise.allSettled([
         this.loadPaths(),
         this.loadDynamicStats(),
         this.loadWhatWeOffer()
       ]);
+      this.isInitialized = true;
+      console.log('Dynamic data loading complete');
     } catch (error) {
       console.error('Error loading dynamic data:', error);
+      this.isInitialized = true; // Mark as initialized even on error
       // Ensure the site still works with default content
     }
+  }
+
+  async waitForInitialization() {
+    if (this.initPromise) {
+      await this.initPromise;
+    }
+    return this.isInitialized;
   }
 
   loadContent() {
