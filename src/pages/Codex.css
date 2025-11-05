@@ -57,12 +57,12 @@
 /* Main Container */
 .codex-container {
   display: grid;
-  grid-template-columns: 400px 1fr;
+  grid-template-columns: 350px 1fr; /* Reduced sidebar to give more space to content */
   gap: 2rem;
-  max-width: 1400px;
+  max-width: 1800px; /* Increased from 1400px */
   margin: 0 auto;
-  height: calc(100vh - 320px); /* Increased height */
-  min-height: 700px; /* Increased min-height */
+  height: calc(100vh - 320px);
+  min-height: 700px;
 }
 
 /* Sidebar */
@@ -72,6 +72,7 @@
   border: 1px solid rgba(57, 185, 255, 0.3);
   backdrop-filter: blur(10px);
   overflow: hidden;
+  max-width: 350px; /* Ensure sidebar doesn't grow too large */
 }
 
 .sidebar-content {
@@ -234,7 +235,7 @@
 }
 
 .document-header {
-  padding: 1.5rem 2rem; /* Reduced vertical padding */
+  padding: 2.5rem 2.5rem 1.5rem 2.5rem; /* Increased top padding and sides */
   border-bottom: 1px solid rgba(57, 185, 255, 0.2);
   background: rgba(0, 0, 0, 0.2);
   flex-shrink: 0; /* Prevent shrinking */
@@ -268,7 +269,7 @@
 
 .document-content {
   flex: 1;
-  padding: 1.5rem 2rem; /* Reduced padding */
+  padding: 2rem 2.5rem; /* Increased padding for better spacing */
   overflow-y: auto;
   min-height: 0; /* Allow flexbox to work properly */
 }
@@ -421,8 +422,9 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
   .codex-container {
-    grid-template-columns: 350px 1fr;
+    grid-template-columns: 320px 1fr;
     gap: 1.5rem;
+    max-width: 1200px;
   }
 }
 
