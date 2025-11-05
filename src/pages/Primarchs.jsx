@@ -218,37 +218,27 @@ export default function Primarchs() {
               ×
             </button>
             
+            {/* Full width hero image at top */}
             <div className="modal-hero-image">
               <img
                 src={selectedPrimarch.heroImage}
                 alt={selectedPrimarch.username}
                 className="hero-image"
               />
-              <div className="modal-hero-overlay">
-                <h2 className="modal-title">{selectedPrimarch.username}</h2>
-                <p className="modal-subtitle">Primarch of {selectedPrimarch.role}</p>
-              </div>
             </div>
             
             <div className="modal-body">
-              <h3 className="backstory-title">Backstory</h3>
-              <div className="backstory-content">
-                {formatBackstoryText(selectedPrimarch.backstory)}
+              <div className="modal-header">
+                <h2 className="modal-title">{selectedPrimarch.username}</h2>
               </div>
               
-              <div className="primarch-details">
-                {selectedPrimarch.rsiHandle && (
-                  <div className="detail-item">
-                    <span className="detail-label">RSI Handle:</span>
-                    <span className="detail-value">{selectedPrimarch.rsiHandle}</span>
-                  </div>
-                )}
-                {selectedPrimarch.discordName && (
-                  <div className="detail-item">
-                    <span className="detail-label">Discord:</span>
-                    <span className="detail-value">{selectedPrimarch.discordName}</span>
-                  </div>
-                )}
+              <div className="backstory-content">
+                {formatBackstoryText(selectedPrimarch.backstory)}
+                
+                {/* Signature at bottom */}
+                <div className="backstory-signature">
+                  {selectedPrimarch.username} - Primarch of {selectedPrimarch.role}
+                </div>
               </div>
             </div>
           </div>

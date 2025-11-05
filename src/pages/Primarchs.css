@@ -305,80 +305,87 @@
 .modal-hero-image {
   position: relative;
   width: 100%;
-  height: 400px;
   overflow: hidden;
-  border-radius: 22px 22px 0 0;
+  flex-shrink: 0;
 }
 
 .hero-image {
   width: 100%;
-  height: 100%;
+  height: 250px;
   object-fit: cover;
   object-position: center;
-}
-
-.modal-hero-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 2rem;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(0, 0, 0, 0.7) 50%,
-    rgba(0, 0, 0, 0.95) 100%
-  );
-}
-
-.modal-title {
-  font-size: 3rem;
-  font-weight: 900;
-  color: #39b9ff;
-  margin: 0 0 0.5rem 0;
-  text-shadow: 
-    0 0 20px rgba(57, 185, 255, 0.6),
-    0 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.modal-subtitle {
-  font-size: 1.5rem;
-  color: #8bb8e8;
-  margin: 0;
-  font-weight: 600;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  display: block;
+  border: none;
+  border-radius: 0;
 }
 
 .modal-body {
-  padding: 2.5rem;
+  padding: 1.5rem 2rem 2rem 2rem;
+  overflow-y: auto;
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.backstory-title {
+.modal-header {
+  text-align: left;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(57, 185, 255, 0.3);
+}
+
+.modal-title {
   font-size: 1.8rem;
   color: #39b9ff;
-  margin: 0 0 1.5rem 0;
+  margin: 0;
+  text-shadow: 
+    0 0 10px rgba(57, 185, 255, 0.6),
+    2px 2px 4px rgba(0, 0, 0, 0.8);
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border-bottom: 2px solid rgba(57, 185, 255, 0.3);
-  padding-bottom: 0.75rem;
 }
 
 .backstory-content {
-  margin-bottom: 2rem;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(57, 185, 255, 0.2);
+  line-height: 1.7;
+  font-size: 1.1rem;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .backstory-content p,
 .backstory-paragraph {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 1rem 0;
-  white-space: pre-wrap;
+  font-size: 1.3rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0 0 1.25rem 0;
+  text-align: justify;
 }
 
 .backstory-paragraph:last-child {
   margin-bottom: 0;
+}
+
+.backstory-signature {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(57, 185, 255, 0.3);
+  text-align: right;
+  font-style: italic;
+  color: #39b9ff;
+  font-size: 1.1rem;
+  font-weight: 400;
+  opacity: 0.9;
+  text-shadow: 0 0 10px rgba(57, 185, 255, 0.4);
 }
 
 /* HTML Content Formatting */
@@ -428,31 +435,41 @@
   color: #5fc9ff;
 }
 
-.primarch-details {
-  background: rgba(57, 185, 255, 0.05);
-  border: 1px solid rgba(57, 185, 255, 0.2);
-  border-radius: 12px;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+/* Scrollbar styling for modal content */
+.backstory-content::-webkit-scrollbar {
+  width: 8px;
 }
 
-.detail-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 1.1rem;
+.backstory-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
 }
 
-.detail-label {
-  color: #8bb8e8;
-  font-weight: 600;
+.backstory-content::-webkit-scrollbar-thumb {
+  background: rgba(57, 185, 255, 0.5);
+  border-radius: 4px;
 }
 
-.detail-value {
-  color: #fff;
-  font-weight: 500;
+.backstory-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(57, 185, 255, 0.7);
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(57, 185, 255, 0.5);
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(57, 185, 255, 0.7);
 }
 
 /* Responsive Design */
@@ -482,20 +499,36 @@
     gap: 1.5rem;
   }
 
-  .modal-hero-image {
-    height: 300px;
+  .hero-image {
+    height: 200px;
   }
 
   .modal-title {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 
-  .modal-subtitle {
-    font-size: 1.2rem;
+  .modal-header {
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
   }
 
   .modal-body {
+    padding: 1.25rem 1.5rem 1.5rem 1.5rem;
+  }
+
+  .backstory-content {
     padding: 1.5rem;
+  }
+
+  .backstory-content p,
+  .backstory-paragraph {
+    font-size: 1.1rem;
+  }
+
+  .backstory-signature {
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
   }
 
   .modal-close {
@@ -536,15 +569,24 @@
   }
 
   .modal-title {
-    font-size: 1.8rem;
-  }
-
-  .backstory-title {
     font-size: 1.5rem;
   }
 
-  .backstory-content p {
+  .modal-header {
+    padding: 0.65rem 0.85rem;
+  }
+
+  .backstory-content {
+    padding: 1.25rem;
+  }
+
+  .backstory-content p,
+  .backstory-paragraph {
     font-size: 1rem;
+  }
+
+  .backstory-signature {
+    font-size: 0.95rem;
   }
 }
 
@@ -573,27 +615,34 @@
     padding: 2rem 1rem;
   }
 
-  .modal-hero-image {
-    height: 250px;
+  .hero-image {
+    height: 180px;
   }
 
   .modal-title {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 
-  .modal-subtitle {
-    font-size: 1.1rem;
+  .modal-header {
+    padding: 0.6rem 0.75rem;
+    margin-bottom: 0.75rem;
   }
 
   .modal-body {
-    padding: 1.25rem;
+    padding: 1rem 1.25rem 1.25rem 1.25rem;
   }
 
-  .backstory-title {
-    font-size: 1.3rem;
+  .backstory-content {
+    padding: 1rem;
   }
 
-  .backstory-content p {
+  .backstory-content p,
+  .backstory-paragraph {
     font-size: 0.95rem;
+  }
+
+  .backstory-signature {
+    font-size: 0.9rem;
+    margin-top: 1.25rem;
   }
 }
