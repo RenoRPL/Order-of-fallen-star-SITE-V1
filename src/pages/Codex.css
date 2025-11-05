@@ -135,7 +135,7 @@
 
 /* When image viewer is present */
 .codex-container:has(.codex-image-viewer) {
-  grid-template-columns: 280px 1fr 500px; /* Add larger image column */
+  grid-template-columns: 280px 1fr 700px; /* Add wider image column */
 }
 
 /* Sidebar */
@@ -551,10 +551,17 @@
   }
 }
 
-@media (max-width: 1600px) {
+@media (max-width: 1800px) {
   /* Reduce image viewer width on smaller large screens */
   .codex-container:has(.codex-image-viewer) {
-    grid-template-columns: 280px 1fr 400px;
+    grid-template-columns: 280px 1fr 600px;
+  }
+}
+
+@media (max-width: 1600px) {
+  /* Further reduce on medium screens */
+  .codex-container:has(.codex-image-viewer) {
+    grid-template-columns: 280px 1fr 500px;
   }
 }
 
