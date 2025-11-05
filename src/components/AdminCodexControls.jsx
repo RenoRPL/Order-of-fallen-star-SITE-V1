@@ -16,7 +16,8 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
     content: '',
     category: '',
     author: '',
-    tags: ''
+    tags: '',
+    imageUrl: ''
   })
 
   const resetForm = () => {
@@ -25,7 +26,8 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
       content: '',
       category: '',
       author: '',
-      tags: ''
+      tags: '',
+      imageUrl: ''
     })
     setError(null)
     setSuccess(null)
@@ -44,7 +46,8 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
       content: selectedEntry.content || '',
       category: selectedEntry.category || '',
       author: selectedEntry.author || '',
-      tags: selectedEntry.tags ? selectedEntry.tags.join(', ') : ''
+      tags: selectedEntry.tags ? selectedEntry.tags.join(', ') : '',
+      imageUrl: selectedEntry.imageUrl || ''
     })
     setError(null)
     setSuccess(null)
@@ -69,7 +72,8 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
         content: formData.content.trim(),
         category: formData.category.trim(),
         author: formData.author.trim(),
-        tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
+        tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0),
+        imageUrl: formData.imageUrl.trim()
       }
 
       // Validate required fields
@@ -282,6 +286,22 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
               </div>
 
               <div className="form-group">
+                <label htmlFor="imageUrl">Image URL</label>
+                <input
+                  type="url"
+                  id="imageUrl"
+                  name="imageUrl"
+                  value={formData.imageUrl}
+                  onChange={handleInputChange}
+                  placeholder="https://example.com/image.jpg"
+                  className="form-input"
+                />
+                <small style={{ color: '#8bb8e8', fontSize: '0.85rem', marginTop: '0.25rem', display: 'block' }}>
+                  Optional: Add an image URL to display alongside this document
+                </small>
+              </div>
+
+              <div className="form-group">
                 <label htmlFor="content">Content *</label>
                 <textarea
                   id="content"
@@ -381,6 +401,22 @@ export default function AdminCodexControls({ onRefresh, selectedEntry }) {
                   placeholder="Comma-separated tags..."
                   className="form-input"
                 />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="edit-imageUrl">Image URL</label>
+                <input
+                  type="url"
+                  id="edit-imageUrl"
+                  name="imageUrl"
+                  value={formData.imageUrl}
+                  onChange={handleInputChange}
+                  placeholder="https://example.com/image.jpg"
+                  className="form-input"
+                />
+                <small style={{ color: '#8bb8e8', fontSize: '0.85rem', marginTop: '0.25rem', display: 'block' }}>
+                  Optional: Add an image URL to display alongside this document
+                </small>
               </div>
 
               <div className="form-group">

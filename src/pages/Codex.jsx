@@ -287,28 +287,18 @@ export default function Codex() {
             )}
           </section>
 
-          {/* Image Viewer Section */}
-          <aside className="codex-image-viewer">
-            <div className="image-viewer-header">
-              <h3>📷 Document Images</h3>
-            </div>
-            <div className="image-viewer-content">
-              {selectedEntry ? (
-                <>
-                  <div className="image-placeholder">
-                    🖼️
-                  </div>
-                  <p className="image-caption">
-                    Image support coming soon
-                  </p>
-                </>
-              ) : (
-                <div className="image-placeholder">
-                  📷
-                </div>
-              )}
-            </div>
-          </aside>
+          {/* Image Viewer Section - Only show if image exists */}
+          {selectedEntry?.imageUrl && (
+            <aside className="codex-image-viewer">
+              <div className="image-viewer-content">
+                <img 
+                  src={selectedEntry.imageUrl} 
+                  alt={selectedEntry.title}
+                  className="document-image"
+                />
+              </div>
+            </aside>
+          )}
         </div>
       </main>
 
