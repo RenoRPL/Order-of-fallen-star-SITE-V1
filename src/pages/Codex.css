@@ -59,8 +59,9 @@
   display: grid;
   grid-template-columns: 350px 1fr; /* Reduced sidebar to give more space to content */
   gap: 2rem;
-  max-width: 1800px; /* Increased from 1400px */
-  margin: 0 auto;
+  max-width: none; /* Remove width constraint for full screen */
+  margin: 0;
+  padding: 0 2rem; /* Add padding to edges instead */
   height: calc(100vh - 320px);
   min-height: 700px;
 }
@@ -424,7 +425,7 @@
   .codex-container {
     grid-template-columns: 320px 1fr;
     gap: 1.5rem;
-    max-width: 1200px;
+    padding: 0 1.5rem;
   }
 }
 
@@ -437,6 +438,7 @@
     grid-template-columns: 1fr;
     gap: 1rem;
     height: auto;
+    padding: 0 1rem;
   }
   
   .codex-sidebar {
@@ -457,6 +459,10 @@
 @media (max-width: 600px) {
   .codex-content {
     padding: 90px 10px 10px 10px;
+  }
+  
+  .codex-container {
+    padding: 0 0.5rem;
   }
   
   .codex-title {
