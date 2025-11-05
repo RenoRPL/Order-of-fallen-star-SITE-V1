@@ -1697,6 +1697,40 @@
     padding: 1rem;
   }
 
+  /* Welcome section mobile layout */
+  .profile-welcome {
+    padding: 1.5rem 1rem;
+  }
+
+  .welcome-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .welcome-rank-section {
+    order: 1;
+  }
+
+  .welcome-content {
+    order: 2;
+  }
+
+  .welcome-badges {
+    order: 3;
+  }
+
+  .welcome-title {
+    font-size: 1.8rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .welcome-subtitle {
+    font-size: 1.1rem;
+  }
+
   .welcome-progress-bar-container {
     max-width: 350px; /* Increased for mobile */
     gap: 0.8rem;
@@ -1814,6 +1848,22 @@
     margin-top: 190px;
   }
 
+  /* Welcome section */
+  .welcome-title {
+    font-size: 1.6rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1rem;
+  }
+
+  .rank-badge,
+  .role-badge,
+  .path-badge {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+
   .hero-title {
     font-size: 2rem;
     word-wrap: break-word;
@@ -1842,6 +1892,43 @@
 
   .profile-container {
     padding: 0.5rem;
+  }
+
+  /* Welcome section - smallest mobile */
+  .profile-welcome {
+    padding: 1rem 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .welcome-title {
+    font-size: 1.4rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .welcome-rank-icon-container {
+    width: 50px;
+    height: 50px;
+  }
+
+  .rank-badge,
+  .role-badge,
+  .path-badge {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .welcome-progress-bar-container {
+    max-width: 100%;
+    gap: 0.5rem;
+  }
+
+  .current-rank-welcome,
+  .next-rank-welcome {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
   }
 
   .profile-hero {
