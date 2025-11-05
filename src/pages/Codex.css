@@ -428,7 +428,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  max-height: calc(100vh - 340px); /* Prevent bleeding into footer */
+  max-height: calc(100vh - 280px); /* Taller images with small margin */
   padding: 0;
   overflow: hidden; /* Contain any overflow */
 }
@@ -450,7 +450,7 @@
 
 .document-image {
   max-width: 100%;
-  max-height: calc(100vh - 400px); /* Keep image within viewport bounds */
+  max-height: calc(100vh - 320px); /* Maximize image height with small border */
   width: auto;
   height: auto;
   object-fit: contain;
