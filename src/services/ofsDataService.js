@@ -383,16 +383,34 @@ class OFSDataService {
     
     // Convert Google Drive share links to direct image URLs
     // Format: https://drive.google.com/file/d/FILE_ID/view?usp=...
-    // Convert to: https://drive.google.com/uc?export=view&id=FILE_ID
+    // Convert to: https://drive.google.com/thumbnail?id=FILE_ID&sz=w2000
     if (url.includes('drive.google.com/file/d/')) {
       try {
         const fileIdMatch = url.match(/\/d\/([^\/]+)/)
         if (fileIdMatch && fileIdMatch[1]) {
           const fileId = fileIdMatch[1]
-          return `https://drive.google.com/uc?export=view&id=${fileId}`
+          // Use thumbnail endpoint with large size parameter for better compatibility
+          const convertedUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`
+          console.log('Converting Google Drive URL:', url, '→', convertedUrl)
+          return convertedUrl
         }
       } catch (error) {
         console.error('Error converting Google Drive URL:', error)
+      }
+    }
+    
+    // Also handle already converted Google Drive URLs
+    if (url.includes('drive.google.com/uc?') && !url.includes('thumbnail?')) {
+      try {
+        const idMatch = url.match(/[?&]id=([^&]+)/)
+        if (idMatch && idMatch[1]) {
+          const fileId = idMatch[1]
+          const convertedUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`
+          console.log('Re-converting Google Drive URL:', url, '→', convertedUrl)
+          return convertedUrl
+        }
+      } catch (error) {
+        console.error('Error re-converting Google Drive URL:', error)
       }
     }
     
