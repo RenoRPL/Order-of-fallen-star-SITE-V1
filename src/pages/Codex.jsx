@@ -149,28 +149,28 @@ export default function Codex() {
       <Header />
       
       <main className="codex-content">
-        <div className="codex-header">
-          <div className="codex-title-section">
-            <h1 className="codex-title">
-              <span className="codex-icon">📜</span>
-              Order of the Fallen Star Codex
-            </h1>
-            <p className="codex-subtitle">
-              Ancient documents and sacred texts of our Order
-            </p>
-          </div>
+        {/* Page Header */}
+        <header className="codex-header">
+          <h1 className="codex-title">
+            <span className="codex-icon">📜</span>
+            Order of the Fallen Star Codex
+          </h1>
+          <p className="codex-subtitle">
+            Ancient documents and sacred texts of our Order
+          </p>
+        </header>
+
+        {/* Documents Count */}
+        <div className="codex-count">
+          <h2>Documents ({filteredEntries.length})</h2>
         </div>
 
-        <div className="codex-main">
-          {/* Documents Count Header - Above Both Sections */}
-          <div className="codex-documents-header">
-            <h3>Documents ({filteredEntries.length})</h3>
-          </div>
-
-          <div className="codex-sections">
-            {/* Sidebar Navigation */}
-            <aside className="codex-sidebar">
-              <div className="codex-search">
+        {/* Main Content Area */}
+        <div className="codex-container">
+          {/* Left Sidebar */}
+          <aside className="codex-sidebar">
+            <div className="sidebar-content">
+              <div className="search-section">
                 <input
                   type="text"
                   placeholder="Search the codex..."
@@ -180,7 +180,7 @@ export default function Codex() {
                 />
               </div>
 
-              <div className="codex-filters">
+              <div className="filter-section">
                 <label>Category:</label>
                 <select
                   value={selectedCategory}
@@ -193,28 +193,28 @@ export default function Codex() {
                 </select>
               </div>
 
-              <div className="codex-navigation">
+              <div className="documents-list">
                 {filteredEntries.length === 0 ? (
                   <p className="no-entries">No documents found</p>
                 ) : (
-                  <ul className="codex-list">
+                  <ul className="document-items">
                     {filteredEntries.map((entry) => (
                       <li
                         key={entry.id}
-                        className={`codex-item ${selectedEntry?.id === entry.id ? 'active' : ''}`}
+                        className={`document-item ${selectedEntry?.id === entry.id ? 'active' : ''}`}
                         onClick={() => handleEntrySelect(entry)}
                       >
-                        <div className="codex-item-header">
-                          <h4 className="codex-item-title">{entry.title}</h4>
+                        <div className="item-header">
+                          <h4 className="item-title">{entry.title}</h4>
                           {entry.category && (
-                            <span className="codex-item-category">{entry.category}</span>
+                            <span className="item-category">{entry.category}</span>
                           )}
                         </div>
                         {entry.author && (
-                          <p className="codex-item-author">By: {entry.author}</p>
+                          <p className="item-author">By: {entry.author}</p>
                         )}
                         {entry.dateCreated && (
-                          <p className="codex-item-date">
+                          <p className="item-date">
                             {new Date(entry.dateCreated).toLocaleDateString()}
                           </p>
                         )}
@@ -223,12 +223,13 @@ export default function Codex() {
                   </ul>
                 )}
               </div>
-            </aside>
+            </div>
+          </aside>
 
-            {/* Main Content Display */}
-            <section className="codex-viewer">
+          {/* Right Content Viewer */}
+          <section className="codex-viewer">
             {selectedEntry ? (
-              <div className="codex-document">
+              <div className="document-display">
                 <header className="document-header">
                   <h1 className="document-title">{selectedEntry.title}</h1>
                   <div className="document-meta">
@@ -285,11 +286,10 @@ export default function Codex() {
               </div>
             )}
           </section>
-          </div> {/* Close codex-sections */}
         </div>
       </main>
 
-      {/* Floating Admin Controls - Bottom Left */}
+      {/* Admin Controls */}
       {!adminLoading && isAdmin && (
         <AdminCodexControls 
           onRefresh={handleRefreshCodex}
