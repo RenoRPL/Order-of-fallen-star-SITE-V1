@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { contentService } from '../services/contentService';
 import { DiscordAuthService } from '../services/discordAuth';
+import OFSDataService from '../services/ofsDataService';
 import './ContentManagement.css';
 
 export default function ContentManagement() {
@@ -474,15 +475,18 @@ export default function ContentManagement() {
         {content.join.backgroundImage && (
           <div className="image-preview-container">
             <img 
-              src={content.join.backgroundImage} 
+              src={OFSDataService.convertImgurUrl(content.join.backgroundImage)} 
               alt="Join section background preview" 
               className="background-preview"
               onError={(e) => {
                 e.target.src = '/Nebula BG.jpeg'
-                e.target.alt = 'Preview failed - check image URL'
+                e.target.alt = 'Preview failed - check image URL or file permissions'
               }}
             />
             <p className="preview-note">Preview (actual display will be full-width)</p>
+            <p className="preview-note" style={{ color: '#39b9ff', fontSize: '0.85rem' }}>
+              Converted URL: {OFSDataService.convertImgurUrl(content.join.backgroundImage)}
+            </p>
           </div>
         )}
       </div>
