@@ -135,7 +135,7 @@
 
 /* When image viewer is present */
 .codex-container:has(.codex-image-viewer) {
-  grid-template-columns: 280px 1fr 350px; /* Add image column */
+  grid-template-columns: 280px 1fr 500px; /* Add larger image column */
 }
 
 /* Sidebar */
@@ -429,6 +429,7 @@
   justify-content: center;
   height: 100%;
   padding: 0;
+  min-height: 600px; /* Ensure minimum height for images */
 }
 
 .codex-image-viewer.hidden {
@@ -441,16 +442,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 1.5rem;
 }
 
 .document-image {
   max-width: 100%;
-  max-height: 100%;
+  max-height: 800px; /* Allow images to be taller */
+  width: auto;
+  height: auto;
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
+  cursor: pointer; /* Indicate it's interactive */
 }
 
 .document-image:hover {
@@ -544,6 +548,13 @@
   .codex-count {
     max-width: none;
     padding: 0 2rem;
+  }
+}
+
+@media (max-width: 1600px) {
+  /* Reduce image viewer width on smaller large screens */
+  .codex-container:has(.codex-image-viewer) {
+    grid-template-columns: 280px 1fr 400px;
   }
 }
 
