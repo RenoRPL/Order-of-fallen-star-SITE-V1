@@ -460,6 +460,33 @@ export default function ContentManagement() {
         />
       </div>
 
+      <div className="form-group">
+        <label>
+          Background Image URL
+          <span className="recommended-size">Recommended: 1920x1080px or larger (16:9 aspect ratio)</span>
+        </label>
+        <input
+          type="text"
+          value={content.join.backgroundImage || '/Join Fallen Star BG.png'}
+          onChange={(e) => updateContent('join', 'backgroundImage', e.target.value)}
+          placeholder="Enter image URL or path (e.g., /images/background.png)"
+        />
+        {content.join.backgroundImage && (
+          <div className="image-preview-container">
+            <img 
+              src={content.join.backgroundImage} 
+              alt="Join section background preview" 
+              className="background-preview"
+              onError={(e) => {
+                e.target.src = '/Nebula BG.jpeg'
+                e.target.alt = 'Preview failed - check image URL'
+              }}
+            />
+            <p className="preview-note">Preview (actual display will be full-width)</p>
+          </div>
+        )}
+      </div>
+
       <h4>Benefits</h4>
       {content.join.benefits.map((benefit, index) => (
         <div key={index} className="benefit-editor">

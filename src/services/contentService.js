@@ -4,7 +4,7 @@ import OFSDataService from './ofsDataService.js';
 
 // Default content structure
 const defaultContent = {
-  version: "1.4.0", // Updated version for header navigation settings
+  version: "1.5.0", // Updated version for join section background image management
   headerNav: {
     about: { label: "About", visible: true, href: "/#what-we-offer" },
     fleet: { label: "Fleet", visible: true, href: "/fleet" },
@@ -63,6 +63,7 @@ const defaultContent = {
   join: {
     title: "Ready to Join the Elite?",
     description: "Take your place among the stars with Order of the Fallen Star. Experience epic adventures, forge unbreakable bonds, and become part of a legendary organization that shapes the galaxy's future.",
+    backgroundImage: "/Join Fallen Star BG.png",
     benefits: [
       { text: "Exclusive missions and events" },
       { text: "Access to organization fleet" },

@@ -215,7 +215,12 @@ export default function Home() {
           )}
         </section>
         
-        <section className="join-section">
+        <section 
+          className="join-section"
+          style={{
+            backgroundImage: `url('${content?.join?.backgroundImage || '/Join Fallen Star BG.png'}')`
+          }}
+        >
           <div className="join-overlay">
             <div className="join-container">
               <div className="join-content">
