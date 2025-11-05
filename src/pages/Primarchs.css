@@ -224,22 +224,20 @@
   transform: translateY(-2px);
 }
 
-/* Modal Styles */
+/* Modal Styles - Matching BackstoryModal */
 .primarch-modal {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 10000;
-  padding: 2rem;
-  overflow-y: auto;
-  backdrop-filter: blur(10px);
-  animation: fadeIn 0.3s ease;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
 }
 
 @keyframes fadeIn {
@@ -252,59 +250,58 @@
 }
 
 .modal-content {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(26, 31, 46, 0.98) 100%);
-  border-radius: 24px;
-  max-width: 900px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
   position: relative;
-  border: 2px solid rgba(57, 185, 255, 0.3);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 95%;
+  max-width: 1200px;
+  max-height: 85vh;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  animation: slideIn 0.3s ease-out;
 }
 
-@keyframes slideUp {
+@keyframes slideIn {
   from {
-    transform: translateY(50px);
     opacity: 0;
+    transform: scale(0.9) translateY(-20px);
   }
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
 
 .modal-close {
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-  width: 50px;
-  height: 50px;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  color: white;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  font-size: 2rem;
+  cursor: pointer;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  z-index: 10;
   transition: all 0.3s ease;
-  line-height: 1;
-  padding: 0;
 }
 
 .modal-close:hover {
-  background: rgba(239, 68, 68, 0.9);
-  border-color: #ef4444;
-  transform: rotate(90deg);
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
 }
 
 .modal-hero-image {
-  position: relative;
   width: 100%;
+  position: relative;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -320,7 +317,7 @@
 }
 
 .modal-body {
-  padding: 1.5rem 2rem 2rem 2rem;
+  padding: 20px 30px 30px 30px;
   overflow-y: auto;
   position: relative;
   flex: 1;
@@ -331,28 +328,26 @@
 
 .modal-header {
   text-align: left;
-  margin-bottom: 1.5rem;
-  padding: 1rem 1.5rem;
+  margin-bottom: 15px;
+  padding: 15px;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 12px;
-  border: 1px solid rgba(57, 185, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-title {
   font-size: 1.8rem;
-  color: #39b9ff;
+  color: #4A90E2;
   margin: 0;
-  text-shadow: 
-    0 0 10px rgba(57, 185, 255, 0.6),
-    2px 2px 4px rgba(0, 0, 0, 0.8);
-  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-weight: bold;
 }
 
 .backstory-content {
   background: rgba(0, 0, 0, 0.6);
-  padding: 2rem;
+  padding: 30px;
   border-radius: 12px;
-  border: 1px solid rgba(57, 185, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   line-height: 1.7;
   font-size: 1.1rem;
   color: #ffffff;
@@ -364,11 +359,11 @@
 
 .backstory-content p,
 .backstory-paragraph {
+  margin-bottom: 20px;
+  text-align: justify;
   font-size: 1.3rem;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.95);
-  margin: 0 0 1.25rem 0;
-  text-align: justify;
+  color: inherit;
 }
 
 .backstory-paragraph:last-child {
@@ -376,33 +371,35 @@
 }
 
 .backstory-signature {
-  margin-top: 2rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid rgba(57, 185, 255, 0.3);
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   text-align: right;
   font-style: italic;
-  color: #39b9ff;
+  color: #4A90E2;
   font-size: 1.1rem;
-  font-weight: 400;
+  font-weight: 300;
   opacity: 0.9;
-  text-shadow: 0 0 10px rgba(57, 185, 255, 0.4);
 }
 
 /* HTML Content Formatting */
 .backstory-html-content {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1.1rem;
-  line-height: 1.8;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
 }
 
 .backstory-html-content p {
-  margin: 0 0 1rem 0;
+  margin-bottom: 20px;
+  text-align: justify;
+  font-size: 1.3rem;
+  line-height: 1.7;
 }
 
 .backstory-html-content h1,
 .backstory-html-content h2,
 .backstory-html-content h3 {
-  color: #39b9ff;
+  color: #4A90E2;
   margin: 1.5rem 0 1rem 0;
 }
 
@@ -412,7 +409,6 @@
 }
 
 .backstory-html-content em {
-  color: #8bb8e8;
   font-style: italic;
 }
 
@@ -427,7 +423,7 @@
 }
 
 .backstory-html-content a {
-  color: #39b9ff;
+  color: #4A90E2;
   text-decoration: underline;
 }
 
@@ -435,25 +431,7 @@
   color: #5fc9ff;
 }
 
-/* Scrollbar styling for modal content */
-.backstory-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.backstory-content::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
-}
-
-.backstory-content::-webkit-scrollbar-thumb {
-  background: rgba(57, 185, 255, 0.5);
-  border-radius: 4px;
-}
-
-.backstory-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(57, 185, 255, 0.7);
-}
-
+/* Scrollbar styling - Matching BackstoryModal */
 .modal-body::-webkit-scrollbar {
   width: 8px;
 }
@@ -464,12 +442,12 @@
 }
 
 .modal-body::-webkit-scrollbar-thumb {
-  background: rgba(57, 185, 255, 0.5);
+  background: rgba(74, 144, 226, 0.6);
   border-radius: 4px;
 }
 
 .modal-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(57, 185, 255, 0.7);
+  background: rgba(74, 144, 226, 0.8);
 }
 
 /* Responsive Design */
@@ -499,42 +477,28 @@
     gap: 1.5rem;
   }
 
-  .hero-image {
-    height: 200px;
-  }
-
-  .modal-title {
-    font-size: 1.6rem;
-  }
-
-  .modal-header {
-    padding: 0.75rem 1rem;
-    margin-bottom: 1rem;
+  /* Modal responsive - Matching BackstoryModal */
+  .modal-content {
+    width: 95%;
+    max-height: 95vh;
   }
 
   .modal-body {
-    padding: 1.25rem 1.5rem 1.5rem 1.5rem;
+    padding: 20px;
+  }
+
+  .modal-header {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .modal-title {
+    font-size: 2rem;
   }
 
   .backstory-content {
-    padding: 1.5rem;
-  }
-
-  .backstory-content p,
-  .backstory-paragraph {
-    font-size: 1.1rem;
-  }
-
-  .backstory-signature {
+    padding: 20px;
     font-size: 1rem;
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-  }
-
-  .modal-close {
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
   }
 }
 
@@ -566,27 +530,6 @@
 
   .card-role {
     font-size: 1rem;
-  }
-
-  .modal-title {
-    font-size: 1.5rem;
-  }
-
-  .modal-header {
-    padding: 0.65rem 0.85rem;
-  }
-
-  .backstory-content {
-    padding: 1.25rem;
-  }
-
-  .backstory-content p,
-  .backstory-paragraph {
-    font-size: 1rem;
-  }
-
-  .backstory-signature {
-    font-size: 0.95rem;
   }
 }
 
