@@ -98,7 +98,7 @@
 /* Editor Content */
 .rich-editor-content {
   min-height: 120px;
-  max-height: 300px;
+  max-height: none; /* Remove max-height to let parent control scrolling */
   padding: 16px;
   background: transparent;
   color: #e2e8f0;
@@ -107,7 +107,7 @@
   line-height: 1.6;
   border: none;
   outline: none;
-  overflow-y: auto;
+  overflow: visible; /* Changed from overflow-y: auto */
   white-space: pre-wrap;
   word-wrap: break-word;
 }
