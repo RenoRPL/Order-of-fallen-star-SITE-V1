@@ -19,7 +19,10 @@
 .codex-header {
   text-align: center;
   margin-bottom: 1.5rem;
-  padding: 0 2rem; /* Add padding here instead */
+  padding: 0 3rem;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .codex-title {
@@ -47,7 +50,10 @@
 .codex-count {
   text-align: center;
   margin-bottom: 1.5rem;
-  padding: 0 2rem; /* Add padding here instead */
+  padding: 0 3rem;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .codex-count h2 {
@@ -60,15 +66,15 @@
 /* Main Container */
 .codex-container {
   display: grid;
-  grid-template-columns: 350px 1fr; /* Sidebar + flexible content */
-  gap: 2rem;
-  max-width: none;
-  margin: 0;
-  padding: 0 2rem;
+  grid-template-columns: 320px 1fr; /* Compact sidebar + wide content */
+  gap: 2.5rem;
+  max-width: 1600px; /* Reasonable max-width for centered layout */
+  margin: 0 auto; /* Center the container */
+  padding: 0 3rem;
   height: calc(100vh - 320px);
   min-height: 700px;
-  width: 100%; /* Ensure full width */
-  box-sizing: border-box; /* Include padding in width calculation */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Sidebar */
@@ -78,7 +84,6 @@
   border: 1px solid rgba(57, 185, 255, 0.3);
   backdrop-filter: blur(10px);
   overflow: hidden;
-  max-width: 350px; /* Ensure sidebar doesn't grow too large */
 }
 
 .sidebar-content {
@@ -428,9 +433,16 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
   .codex-container {
-    grid-template-columns: 320px 1fr;
-    gap: 1.5rem;
-    padding: 0 1.5rem;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+    padding: 0 2rem;
+    max-width: none;
+  }
+  
+  .codex-header,
+  .codex-count {
+    max-width: none;
+    padding: 0 2rem;
   }
 }
 
