@@ -23,7 +23,8 @@ export default function Primarchs() {
       const memberLogUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOU0QnP7yNSblFlVbYOyG1van4dlnt2Xy5v9flJpgLu5OMZDQgLdy_bOgV97Dm2HdYHPKsrXz_b2o/pub?gid=2052923864&single=true&output=csv'
       const members = await OFSDataService.fetchCSV(memberLogUrl)
       
-      console.log('All members:', members)
+      console.log('Total members loaded:', members.length)
+      console.log('Sample member data (first member):', members[0])
       
       // Filter for Primarch rank (Column C)
       const primarchMembers = members.filter(member => {
@@ -31,12 +32,20 @@ export default function Primarchs() {
         const rankLower = rank.toString().toLowerCase().trim()
         const isPrimarch = rankLower.includes('primarch') || rankLower === 'primarch'
         if (isPrimarch) {
-          console.log('Found Primarch:', member)
+          console.log('✅ Found Primarch:', {
+            userId: member['User ID'] || member.A,
+            username: member['Username'] || member.B,
+            rank: rank,
+            role: member['Role'] || member.D
+          })
         }
         return isPrimarch
       })
       
-      console.log('Primarch members found:', primarchMembers.length, primarchMembers)
+      console.log('🎯 Total Primarchs found:', primarchMembers.length)
+      if (primarchMembers.length === 0) {
+        console.warn('⚠️ No Primarchs found! Check if Rank column contains "Primarch" text.')
+      }
       
       // Map to primarch data with role-based images
       const primarchData = primarchMembers.map(member => {
