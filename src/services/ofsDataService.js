@@ -24,23 +24,75 @@ class OFSDataService {
   }
 
   static parseCSV(csvText) {
-    const lines = csvText.split('\n').filter(line => line.trim())
-    if (lines.length === 0) return []
-
-    const headers = lines[0].split(',').map(header => header.replace(/"/g, '').trim())
-    const data = []
-
-    for (let i = 1; i < lines.length; i++) {
-      const values = this.parseCSVLine(lines[i])
-      if (values.length === headers.length) {
-        const row = {}
-        headers.forEach((header, index) => {
-          row[header] = values[index]?.replace(/"/g, '').trim() || ''
-        })
-        data.push(row)
+    // Parse CSV properly handling quoted fields with newlines
+    const rows = []
+    let currentRow = []
+    let currentField = ''
+    let inQuotes = false
+    
+    for (let i = 0; i < csvText.length; i++) {
+      const char = csvText[i]
+      const nextChar = csvText[i + 1]
+      
+      if (char === '"') {
+        if (inQuotes && nextChar === '"') {
+          // Escaped quote
+          currentField += '"'
+          i++ // Skip next quote
+        } else {
+          // Toggle quote state
+          inQuotes = !inQuotes
+        }
+      } else if (char === ',' && !inQuotes) {
+        // End of field
+        currentRow.push(currentField.trim())
+        currentField = ''
+      } else if (char === '\n' && !inQuotes) {
+        // End of row
+        currentRow.push(currentField.trim())
+        if (currentRow.some(field => field)) { // Only add non-empty rows
+          rows.push(currentRow)
+        }
+        currentRow = []
+        currentField = ''
+      } else if (char === '\r' && nextChar === '\n' && !inQuotes) {
+        // Windows line ending
+        currentRow.push(currentField.trim())
+        if (currentRow.some(field => field)) {
+          rows.push(currentRow)
+        }
+        currentRow = []
+        currentField = ''
+        i++ // Skip the \n
+      } else {
+        currentField += char
       }
     }
-
+    
+    // Add last field and row if exists
+    if (currentField || currentRow.length > 0) {
+      currentRow.push(currentField.trim())
+      if (currentRow.some(field => field)) {
+        rows.push(currentRow)
+      }
+    }
+    
+    if (rows.length === 0) return []
+    
+    // First row is headers
+    const headers = rows[0].map(header => header.replace(/^"|"$/g, '').trim())
+    const data = []
+    
+    // Process data rows
+    for (let i = 1; i < rows.length; i++) {
+      const values = rows[i]
+      const row = {}
+      headers.forEach((header, index) => {
+        row[header] = values[index]?.replace(/^"|"$/g, '').trim() || ''
+      })
+      data.push(row)
+    }
+    
     return data
   }
 
