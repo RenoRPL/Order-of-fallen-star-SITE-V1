@@ -28,10 +28,15 @@ export default function Primarchs() {
       // Filter for Primarch rank (Column C)
       const primarchMembers = members.filter(member => {
         const rank = member['Rank'] || member.C || member.rank || ''
-        return rank.toLowerCase().includes('primarch')
+        const rankLower = rank.toString().toLowerCase().trim()
+        const isPrimarch = rankLower.includes('primarch') || rankLower === 'primarch'
+        if (isPrimarch) {
+          console.log('Found Primarch:', member)
+        }
+        return isPrimarch
       })
       
-      console.log('Primarch members found:', primarchMembers)
+      console.log('Primarch members found:', primarchMembers.length, primarchMembers)
       
       // Map to primarch data with role-based images
       const primarchData = primarchMembers.map(member => {
@@ -41,7 +46,7 @@ export default function Primarchs() {
         const username = member['Username'] || member.B || rsiHandle || 'Unknown'
         const discordName = member['Discord Name'] || member.A || ''
         
-        console.log('Processing Primarch:', { name, role, backstory })
+        console.log('Processing Primarch:', { username, rsiHandle, role, backstory })
         
         // Map role to images
         const roleImageMap = {
