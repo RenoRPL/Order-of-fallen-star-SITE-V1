@@ -31,6 +31,19 @@ export default function Primarchs() {
       const uniqueRanks = [...new Set(members.map(m => (m['Rank'] || m.C || '')).filter(r => r))]
       console.log('All unique ranks in data:', uniqueRanks)
       
+      // Check specifically for members with "Primarch" in their username
+      const primarchByName = members.filter(m => {
+        const username = (m['Username'] || m.B || '').toString().toLowerCase()
+        return username.includes('primarch')
+      })
+      console.log('🔍 Members with "Primarch" in username:', primarchByName.length)
+      primarchByName.forEach(m => {
+        console.log('  Username:', m['Username'] || m.B)
+        console.log('  Rank value:', m['Rank'] || m.C)
+        console.log('  Rank column exact:', JSON.stringify(m['Rank']))
+        console.log('  ---')
+      })
+      
       // Filter for Primarch rank (Column C)
       const primarchMembers = members.filter(member => {
         const rank = member['Rank'] || member.C || member.rank || ''
