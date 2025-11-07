@@ -25,18 +25,29 @@ export default function Primarchs() {
       
       console.log('Total members loaded:', members.length)
       console.log('Sample member data (first member):', members[0])
+      console.log('All member column headers:', Object.keys(members[0] || {}))
+      
+      // Log all unique rank values to see what we're working with
+      const uniqueRanks = [...new Set(members.map(m => (m['Rank'] || m.C || '')).filter(r => r))]
+      console.log('All unique ranks in data:', uniqueRanks)
       
       // Filter for Primarch rank (Column C)
       const primarchMembers = members.filter(member => {
         const rank = member['Rank'] || member.C || member.rank || ''
+        const username = member['Username'] || member.B || ''
         const rankLower = rank.toString().toLowerCase().trim()
+        const usernameLower = username.toString().toLowerCase()
+        
+        // Check both rank column and username for "primarch"
         const isPrimarch = rankLower.includes('primarch') || rankLower === 'primarch'
+        
         if (isPrimarch) {
           console.log('✅ Found Primarch:', {
             userId: member['User ID'] || member.A,
-            username: member['Username'] || member.B,
+            username: username,
             rank: rank,
-            role: member['Role'] || member.D
+            role: member['Role'] || member.D,
+            allData: member
           })
         }
         return isPrimarch
