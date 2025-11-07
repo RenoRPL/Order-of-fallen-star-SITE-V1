@@ -44,6 +44,20 @@ export default function Primarchs() {
         console.log('  ---')
       })
       
+      // Check ALL members with Rank = "Primarch"
+      const primarchByRank = members.filter(m => {
+        const rank = (m['Rank'] || m.C || '').toString().toLowerCase().trim()
+        return rank === 'primarch' || rank.includes('primarch')
+      })
+      console.log('🔍 Members with Rank = "Primarch":', primarchByRank.length)
+      primarchByRank.forEach(m => {
+        console.log('  User ID:', m['User ID'] || m.A)
+        console.log('  Username:', m['Username'] || m.B)
+        console.log('  Rank:', m['Rank'] || m.C)
+        console.log('  Role:', m['Role'] || m.D)
+        console.log('  ---')
+      })
+      
       // Filter for Primarch rank (Column C)
       const primarchMembers = members.filter(member => {
         const rank = member['Rank'] || member.C || member.rank || ''
